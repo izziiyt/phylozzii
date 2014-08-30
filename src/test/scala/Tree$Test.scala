@@ -4,7 +4,7 @@ import scala.io.Source
 /**
  * Created by yuto on 14/08/18.
  */
-class Tree$Test extends FunSuite {
+/**class Tree$Test extends FunSuite {
 
   val source = Source.fromFile("/home/yuto/data/myFdur/sample.nh")
   val query = source.getLines().foldLeft("")(_ + _)
@@ -47,3 +47,4 @@ class Tree$Test extends FunSuite {
     f(root)
   }
 }
+**/

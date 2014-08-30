@@ -1,0 +1,3 @@
+[debug] Running TaskDef(ParametersTest, org.scalatest.tools.Framework$$anon$1@305aa6b3, false, [SuiteSelector])
+[debug] Running TaskDef(Tree$Test, org.scalatest.tools.Framework$$anon$1@305aa6b3, false, [SuiteSelector])
+[debug] Running TaskDef(EM$Test, org.scalatest.tools.Framework$$anon$1@305aa6b3, false, [SuiteSelector])

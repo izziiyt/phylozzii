@@ -1,0 +1,60 @@
+[debug] 
+[debug] Initial source changes: 
+[debug] 	removed:Set()
+[debug] 	added: Set(/home/yuto/projects/fdur/src/main/scala/PhylogencyTree.scala, /home/yuto/projects/fdur/src/main/scala/Content.scala, /home/yuto/projects/fdur/src/main/scala/DNA.scala, /home/yuto/projects/fdur/src/main/scala/Tree.scala, /home/yuto/projects/fdur/src/main/scala/EMForUSC.scala, /home/yuto/projects/fdur/src/main/scala/EvolutionModel.scala, /home/yuto/projects/fdur/src/main/scala/EM.scala)
+[debug] 	modified: Set()
+[debug] Removed products: Set()
+[debug] External API changes: API Changes: Set()
+[debug] Modified binary dependencies: Set()
+[debug] Initial directly invalidated sources: Set(/home/yuto/projects/fdur/src/main/scala/PhylogencyTree.scala, /home/yuto/projects/fdur/src/main/scala/Content.scala, /home/yuto/projects/fdur/src/main/scala/DNA.scala, /home/yuto/projects/fdur/src/main/scala/Tree.scala, /home/yuto/projects/fdur/src/main/scala/EMForUSC.scala, /home/yuto/projects/fdur/src/main/scala/EvolutionModel.scala, /home/yuto/projects/fdur/src/main/scala/EM.scala)
+[debug] 
+[debug] Sources indirectly invalidated by:
+[debug] 	product: Set()
+[debug] 	binary dep: Set()
+[debug] 	external source: Set()
+[debug] All initially invalidated sources: Set(/home/yuto/projects/fdur/src/main/scala/PhylogencyTree.scala, /home/yuto/projects/fdur/src/main/scala/Content.scala, /home/yuto/projects/fdur/src/main/scala/DNA.scala, /home/yuto/projects/fdur/src/main/scala/Tree.scala, /home/yuto/projects/fdur/src/main/scala/EMForUSC.scala, /home/yuto/projects/fdur/src/main/scala/EvolutionModel.scala, /home/yuto/projects/fdur/src/main/scala/EM.scala)
+[debug] Recompiling all 7 sources: invalidated sources (7) exceeded 50.0% of all sources
+[info] Compiling 7 Scala sources to /home/yuto/projects/fdur/target/scala-2.10/classes...
+[debug] Getting compiler-interface from component compiler for Scala 2.10.3
+[debug] Getting compiler-interface from component compiler for Scala 2.10.3
+[debug] Running cached compiler 307941f6, interfacing (CompilerInterface) with Scala compiler version 2.10.3
+[debug] Calling Scala compiler with arguments  (CompilerInterface):
+[debug] 	-bootclasspath
+[debug] 	/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/resources.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/rt.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/sunrsasign.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/jsse.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/jce.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/charsets.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/rhino.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/jfr.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/classes:/home/yuto/.sbt/boot/scala-2.10.3/lib/scala-library.jar
+[debug] 	-classpath
+[debug] 	/home/yuto/projects/fdur/target/scala-2.10/classes:/home/yuto/.ivy2/cache/org.scalanlp/breeze_2.10/jars/breeze_2.10-0.8.1.jar:/home/yuto/.ivy2/cache/org.scalanlp/breeze-macros_2.10/jars/breeze-macros_2.10-0.3.1.jar:/home/yuto/.ivy2/cache/com.github.fommil.netlib/core/jars/core-1.1.2.jar:/home/yuto/.ivy2/cache/net.sourceforge.f2j/arpack_combined_all/jars/arpack_combined_all-0.1.jar:/home/yuto/.ivy2/cache/net.sourceforge.f2j/arpack_combined_all/jars/arpack_combined_all-0.1-javadoc.jar:/home/yuto/.ivy2/cache/net.sf.opencsv/opencsv/jars/opencsv-2.3.jar:/home/yuto/.ivy2/cache/com.github.rwl/jtransforms/jars/jtransforms-2.4.0.jar:/home/yuto/.ivy2/cache/junit/junit/jars/junit-4.8.2.jar:/home/yuto/.ivy2/cache/org.apache.commons/commons-math3/jars/commons-math3-3.2.jar:/home/yuto/.ivy2/cache/org.spire-math/spire_2.10/jars/spire_2.10-0.7.4.jar:/home/yuto/.ivy2/cache/org.spire-math/spire-macros_2.10/jars/spire-macros_2.10-0.7.4.jar:/home/yuto/.ivy2/cache/org.scalamacros/quasiquotes_2.10/jars/quasiquotes_2.10-2.0.0.jar:/home/yuto/.ivy2/cache/com.typesafe.scala-logging/scala-logging-slf4j_2.10/jars/scala-logging-slf4j_2.10-2.1.2.jar:/home/yuto/.ivy2/cache/com.typesafe.scala-logging/scala-logging-api_2.10/jars/scala-logging-api_2.10-2.1.2.jar:/home/yuto/.ivy2/cache/org.scala-lang/scala-reflect/jars/scala-reflect-2.10.4.jar:/home/yuto/.ivy2/cache/org.slf4j/slf4j-api/jars/slf4j-api-1.7.7.jar:/home/yuto/.ivy2/cache/org.scalanlp/breeze-natives_2.10/jars/breeze-natives_2.10-0.8.1.jar:/home/yuto/.ivy2/cache/com.github.fommil.netlib/netlib-native_ref-osx-x86_64/jars/netlib-native_ref-osx-x86_64-1.1-natives.jar:/home/yuto/.ivy2/cache/com.github.fommil.netlib/native_ref-java/jars/native_ref-java-1.1.jar:/home/yuto/.ivy2/cache/com.github.fommil/jniloader/jars/jniloader-1.1.jar:/home/yuto/.ivy2/cache/com.github.fommil.netlib/netlib-native_ref-linux-x86_64/jars/netlib-native_ref-linux-x86_64-1.1-natives.jar:/home/yuto/.ivy2/cache/com.github.fommil.netlib/netlib-native_ref-linux-i686/jars/netlib-native_ref-linux-i686-1.1-natives.jar:/home/yuto/.ivy2/cache/com.github.fommil.netlib/netlib-native_ref-win-x86_64/jars/netlib-native_ref-win-x86_64-1.1-natives.jar:/home/yuto/.ivy2/cache/com.github.fommil.netlib/netlib-native_ref-win-i686/jars/netlib-native_ref-win-i686-1.1-natives.jar:/home/yuto/.ivy2/cache/com.github.fommil.netlib/netlib-native_ref-linux-armhf/jars/netlib-native_ref-linux-armhf-1.1-natives.jar:/home/yuto/.ivy2/cache/com.github.fommil.netlib/netlib-native_system-osx-x86_64/jars/netlib-native_system-osx-x86_64-1.1-natives.jar:/home/yuto/.ivy2/cache/com.github.fommil.netlib/native_system-java/jars/native_system-java-1.1.jar:/home/yuto/.ivy2/cache/com.github.fommil.netlib/netlib-native_system-linux-x86_64/jars/netlib-native_system-linux-x86_64-1.1-natives.jar:/home/yuto/.ivy2/cache/com.github.fommil.netlib/netlib-native_system-linux-i686/jars/netlib-native_system-linux-i686-1.1-natives.jar:/home/yuto/.ivy2/cache/com.github.fommil.netlib/netlib-native_system-linux-armhf/jars/netlib-native_system-linux-armhf-1.1-natives.jar:/home/yuto/.ivy2/cache/com.github.fommil.netlib/netlib-native_system-win-x86_64/jars/netlib-native_system-win-x86_64-1.1-natives.jar:/home/yuto/.ivy2/cache/com.github.fommil.netlib/netlib-native_system-win-i686/jars/netlib-native_system-win-i686-1.1-natives.jar
+[debug] Scala compilation took 28.828226776 s
+[debug] Invalidating by inheritance (transitively)...
+[debug] Initial set of included nodes: Set(/home/yuto/projects/fdur/src/main/scala/Content.scala)
+[debug] Invalidated by transitive public inheritance: Set(/home/yuto/projects/fdur/src/main/scala/Content.scala)
+[debug] Invalidated by direct dependency: Set(/home/yuto/projects/fdur/src/main/scala/Tree.scala)
+[debug] Invalidating by inheritance (transitively)...
+[debug] Initial set of included nodes: Set(/home/yuto/projects/fdur/src/main/scala/PhylogencyTree.scala)
+[debug] Invalidated by transitive public inheritance: Set(/home/yuto/projects/fdur/src/main/scala/PhylogencyTree.scala)
+[debug] Invalidated by direct dependency: Set(/home/yuto/projects/fdur/src/main/scala/EM.scala)
+[debug] Invalidating by inheritance (transitively)...
+[debug] Initial set of included nodes: Set(/home/yuto/projects/fdur/src/main/scala/EvolutionModel.scala)
+[debug] Invalidated by transitive public inheritance: Set(/home/yuto/projects/fdur/src/main/scala/EvolutionModel.scala)
+[debug] Invalidated by direct dependency: Set(/home/yuto/projects/fdur/src/main/scala/EM.scala, /home/yuto/projects/fdur/src/main/scala/Tree.scala, /home/yuto/projects/fdur/src/main/scala/Content.scala)
+[debug] Invalidating by inheritance (transitively)...
+[debug] Initial set of included nodes: Set(/home/yuto/projects/fdur/src/main/scala/EMForUSC.scala)
+[debug] Invalidated by transitive public inheritance: Set(/home/yuto/projects/fdur/src/main/scala/EMForUSC.scala)
+[debug] Invalidated by direct dependency: Set()
+[debug] Invalidating by inheritance (transitively)...
+[debug] Initial set of included nodes: Set(/home/yuto/projects/fdur/src/main/scala/EM.scala)
+[debug] Invalidated by transitive public inheritance: Set(/home/yuto/projects/fdur/src/main/scala/EM.scala)
+[debug] Invalidated by direct dependency: Set()
+[debug] Invalidating by inheritance (transitively)...
+[debug] Initial set of included nodes: Set(/home/yuto/projects/fdur/src/main/scala/DNA.scala)
+[debug] Invalidated by transitive public inheritance: Set(/home/yuto/projects/fdur/src/main/scala/DNA.scala)
+[debug] Invalidated by direct dependency: Set()
+[debug] Invalidating by inheritance (transitively)...
+[debug] Initial set of included nodes: Set(/home/yuto/projects/fdur/src/main/scala/Tree.scala)
+[debug] Invalidated by transitive public inheritance: Set(/home/yuto/projects/fdur/src/main/scala/Tree.scala)
+[debug] Invalidated by direct dependency: Set(/home/yuto/projects/fdur/src/main/scala/PhylogencyTree.scala)
+[debug] New invalidations:
+[debug] 	Set()
+[debug] Initial set of included nodes: Set()
+[debug] Previously invalidated, but (transitively) depend on new invalidations:
+[debug] 	Set()
+[debug] All newly invalidated sources after taking into account (previously) recompiled sources:Set()

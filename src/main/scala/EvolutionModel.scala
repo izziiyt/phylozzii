@@ -39,7 +39,7 @@ class Parameters(val a:Double,val b:Double,val c:Double,val d:Double,
       case (3,1) => d
       case (4,2) => e
       case (5,1) => f
-      case _ => 0.0
+      case _ => sys.error("heyhey")
     }
   }
   val R:DenseMatrix[Double] =
@@ -51,7 +51,6 @@ class Parameters(val a:Double,val b:Double,val c:Double,val d:Double,
   (0 until 4) map (i => R(i,i) = 0.0 - sum(R(i,::).t))
   private val tmp:DenseMatrix[Double] = T * R.*(Ti)
   for(i <- 0 until 4;j <- 0 until 4){tmp(j,i) = tmp(i,j)}
-  println(tmp)
   val (lambda:DenseVector[Double],eVecs:DenseMatrix[Double]) = eigSym(tmp)
   val u:DenseMatrix[Double] = Ti * eVecs
   val ui:DenseMatrix[Double] = eVecs.t * T
