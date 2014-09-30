@@ -3,7 +3,7 @@ import scala.annotation.tailrec
 import scala.math._
 
 object EM{
-  def apply(loop:Int,nhFile:String,alignments:List[List[DNA]]){
+  def apply(loop:Int,nhFile:String,alignments:List[List[Char]]){
     var pt = new PhylogencyTree(nhFile,GTR())
     val an:Double = alignments.length
     for(i <- 0 until loop){
@@ -25,7 +25,8 @@ object EM{
     val TdVec:DenseVector[Double] = (FdList,TList).zipped.map(_ * _).reduce(_ + _)
     val NsMat:DenseMatrix[Double] = NsList.reduce(_ + _)
     val tmp = new PhylogencyTree(pt,GTR(Parameters(newB(NsMat,TdVec,pt.model),newPi(NsMat,TdVec,nVec,pt.model))))
-    tmp.setBranch(newT(NsList,FdList,pt.model) :: 0.0)
+    tmp.setBranch(newT(NsList,FdList,pt.model) ::: List(0.0))
+    tmp
   }
 
   def newPi(Ns:DenseMatrix[Double],Td:DenseVector[Double],n:DenseVector[Double],m:EvolutionModel) = {
@@ -62,7 +63,8 @@ object EM{
     DenseVector((u,v).zipped.map((i,j) => i / (j + nlmd)).toArray)
   }
 
-  def eStep(pt:PhylogencyTree,column:List[DNA]):Count = {
+  def eStep(p:PhylogencyTree,column:List[Char]):Count = {
+    val pt = new PhylogencyTree(p,p.model)
     pt.root.setAlignment(column)
     pt.inside(pt.root)
     pt.outside(pt.root)

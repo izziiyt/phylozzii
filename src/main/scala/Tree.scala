@@ -4,11 +4,10 @@ import java.io.FileReader
 import scala.util.parsing.combinator.JavaTokenParsers
 
 sealed trait Tree{
-
   def cont:Content
   def format():Tree
   def setPosterior(likelihood:Double,m:EvolutionModel):Unit
-  def setAlignment(x:List[DNA]):List[DNA]
+  def setAlignment(x:List[Char]):List[Char]
   def setBranch(x:List[Double]):List[Double]
   def collectF(m:EvolutionModel):List[DenseVector[Double]]
   def collectN(m:EvolutionModel):List[DenseMatrix[Double]]
@@ -17,7 +16,7 @@ sealed trait Tree{
 
 case class Node(left:Tree,right:Tree,cont:ContentOfNode) extends Tree{
 
-  def setAlignment(x:List[DNA]) = {
+  def setAlignment(x:List[Char]) = {
     val tmp = left.setAlignment(x)
     right.setAlignment(tmp)
   }
@@ -63,7 +62,7 @@ case class Leaf(species:String,cont:ContentOfLeaf) extends Tree{
     x.tail
   }
 
-  def setAlignment(x:List[DNA]) = {
+  def setAlignment(x:List[Char]) = {
     cont.nuc_=(x.head)
     x.tail
   }
@@ -101,7 +100,7 @@ class NHParser extends JavaTokenParsers {
     {case (left,right)~":"~value => Node(left,right,ContentOfNode(value.toDouble))} | leaf
 
   def leaf: Parser[Leaf] = name~":"~value ^^
-    {case name~":"~value => Leaf(name,ContentOfLeaf(value.toDouble,DNA.N))}
+    {case name~":"~value => Leaf(name,ContentOfLeaf(value.toDouble,4))}
 
   def nodePair: Parser[(Tree,Tree)] = "("~>node~","~node<~")"  ^^
     {case left~","~right => (left,right)}

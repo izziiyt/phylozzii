@@ -6,8 +6,8 @@ object GradientDescent {
       val tmp = alignments.map(eStepLike(pt,_))
       val param = tmp.map(_._1).reduceLeft(_ :* _)
       val t = tmp.map(_._2).reduceLeft(acc)
-      val newParam = pt.model.param + param * delta//?? priority order of functions ??
-      pt = new PhylogencyTree(pt,newParam)
+      //val newParam = pt.model.param + param * delta//?? priority order of functions ??
+      //pt = new PhylogencyTree(pt,newParam)
       //pt.setBranch()
     }
   }
@@ -15,7 +15,7 @@ object GradientDescent {
   def acc(a:List[Double],b:List[Double]) = (a,b).zipped.map(_ * _)
 
   def eStepLike(pt:PhylogencyTree,column:List[DNA]):(Parameters,List[Double]) = {
-    pt.root.setAlignment(column)
+    //pt.root.setAlignment(column)
     pt.inside(pt.root)
     pt.outside(pt.root)
     val likelihood = pt.root.likelihood(pt.model)

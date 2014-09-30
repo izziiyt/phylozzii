@@ -50,6 +50,7 @@ abstract class Content(var t:Double){
     }
     tmp
   }
+
   @deprecated
   def FdVeci(a:Int,b:Int,m:EvolutionModel):DenseVector[Double] = {
     val tmp = DenseVector.zeros[Double](4)
@@ -68,12 +69,12 @@ abstract class Content(var t:Double){
 
 }
 
-case class ContentOfLeaf(var tx:Double,var nuc:DNA) extends Content(tx){
+case class ContentOfLeaf(var tx:Double,var nuc:Char) extends Content(tx){
   override def format(){
     alpha(0 to 3) := 0.0
     beta(0 to 3) := 0.0
     posterior(0 to 3,0 to 3) := 0.0
-    nuc = DNA.N
+    nuc = 4
   }
 }
 
