@@ -1,92 +1,46 @@
 import breeze.linalg.{DenseVector,DenseMatrix}
 import math.exp
-/**
- * Created by yuto on 14/08/18.
- */
+import java.io.FileReader
+import scala.util.parsing.combinator.JavaTokenParsers
+
 sealed trait Tree{
 
   def cont:Content
-  def inside:Seq[Double]
-  def outside(x:Seq[Double],y:Seq[Double]):Unit
-  def calcPosterior(prob:Double):Unit
-  def setAlignment(x:Array[Int]):Array[Int]
+  def format():Tree
+  def setPosterior(likelihood:Double,m:EvolutionModel):Unit
+  def setAlignment(x:List[DNA]):List[DNA]
   def setBranch(x:List[Double]):List[Double]
-
-  def toRoot:Root
-  //vector of Fd(i,C,theta)
-  def FdVec(lambda:DenseVector[Double],u:DenseMatrix[Double],ut:DenseMatrix[Double]) = {
-    def Fd(i:Int) = for(x <- 0 until 4;y<- 0 until 4) yield divExpMatrix(x,y,i,i,lambda,u,ut) * cont.postProb(x)(y)
-    val tmp = (0 until 4) map (i => Fd(i).sum)
-    new DenseVector(tmp.toArray)
-  }
-
-  //Matrix of Ns(i,j,C,theta) i -> j
-  def NsMat(r:DenseMatrix[Double],lambda:DenseVector[Double],u:DenseMatrix[Double],ut:DenseMatrix[Double]) = {
-    def Nss(i:Int,j:Int) = for(x <- 0 until 4;y <- 0 until 4) yield divExpMatrix(x,y,i,j,lambda,u,ut) * cont.postProb(x)(y)
-    val tmp = for(j <- 0 until 4;i <- 0 until 4) yield Nss(i,j).sum
-    new DenseMatrix(4,4,tmp.toArray)
-  }
-
-  //beg -> end and from -> to
-  def divExpMatrix(beg:Int,end:Int,from:Int,to:Int,lambda:DenseVector[Double],u:DenseMatrix[Double],ut:DenseMatrix[Double]) = {
-    def k(x:Double,y:Double) = if(x == y) exp(x) else (exp(x) - exp(y)) / (x - y)
-    val tmp = for(x <- 0 until 4; y <- 0 until 4) yield u(end,x) * ut(x,to) * u(from,y) * ut(y,beg) * k(lambda(x),lambda(y))
-    tmp.sum
-  }
-
-  def collectF:List[DenseVector[Double]]
-
-  def collectN:List[DenseMatrix[Double]]
-
+  def collectF(m:EvolutionModel):List[DenseVector[Double]]
+  def collectN(m:EvolutionModel):List[DenseMatrix[Double]]
   def collectT:List[Double]
-
 }
 
-class Root(l:Tree,r:Tree,c:Content) extends Node(l,r,c){
+case class Node(left:Tree,right:Tree,cont:ContentOfNode) extends Tree{
 
-  private var lh = 0.0
-
-  def collectn = new DenseVector[Double]((cont.alpha,GTR.pi).zipped.map(_ * _ / lh))
-
-  def outside(){
-    for(i <- 0 until 4) cont.beta(i) = GTR.pi(i)
-    innerOutside()
+  def setAlignment(x:List[DNA]) = {
+    val tmp = left.setAlignment(x)
+    right.setAlignment(tmp)
   }
 
-  def count = (l.collectF ::: r.collectF,l.collectN ::: r.collectN,l.collectT ::: r.collectT,collectn,lh)
-
-  def likelihood = lh
-
-  override def setBranch(x:List[Double]) = {
-    val y = left.setBranch(x)
-    val z = right.setBranch(y)
-    if(z.length != 0){sys.error("hey")}
-    z
+  def format() = {
+    cont.format()
+    right.format()
+    left.format()
+    this
   }
 
-  def calcPosterior(){
-    lh = cont.calcLikelihood
-    cont.refactPostProbability(lh)
-    right.calcPosterior(lh)
-    left.calcPosterior(lh)
-  }
-}
+  def likelihood(m:EvolutionModel):Double = cont.likelihood(m)
 
-class Node(val left:Tree,val right:Tree,val cont:Content) extends Tree{
+  def collectF(m:EvolutionModel) = left.collectF(m) ::: right.collectF(m) ::: List(cont.FdVec(m))
 
-  def inside:Seq[Double] = {
-    val fromLeft = left.inside
-    val fromRight = right.inside
-    for(i <- 0 until 4){cont.alpha(i) = fromLeft(i) * fromRight(i)}
-    cont.accumInsideBelief
-  }
+  def collectN(m:EvolutionModel) = left.collectN(m) ::: right.collectN(m) ::: List(cont.NsMat(m))
 
-  def toRoot = new Root(left,right,new Content(0.0))
+  def collectT = left.collectT ::: right.collectT ::: List(cont.t)
 
-  def setAlignment(x:Array[Int]) = {
-    cont.reset()
-    right.setAlignment(left.setAlignment(x))
-  }
+  def collectn(m:EvolutionModel):DenseVector[Double] = (cont.alpha :* m.pi) / likelihood(m)
+
+  def count(m:EvolutionModel) = Count(left.collectF(m) ::: right.collectF(m),
+    left.collectN(m) ::: right.collectN(m),left.collectT ::: right.collectT,collectn(m),likelihood(m))
 
   def setBranch(x:List[Double]) = {
     val y = left.setBranch(x)
@@ -95,105 +49,67 @@ class Node(val left:Tree,val right:Tree,val cont:Content) extends Tree{
     z.tail
   }
 
-  def collectF = left.collectF ::: right.collectF ::: List(FdVec(GTR.lambda,GTR.u,GTR.ui))
-
-  def collectN = left.collectN ::: right.collectN ::: List(NsMat(GTR.R,GTR.lambda,GTR.u,GTR.ui))
-
-  def collectT = left.collectT ::: right.collectT ::: List(cont.t)
-
-
-  def calcPosterior(prob:Double){
-    cont.refactPostProbability(prob)
-    right.calcPosterior(prob)
-    left.calcPosterior(prob)
-  }
-
-  def outside(fromBro:Seq[Double],fromPar:Seq[Double]){
-    for(i <- 0 until 4) cont.beta(i) = fromBro(i) * fromPar(i)
-    innerOutside()
-  }
-
-  def innerOutside(){
-    val fromLeft = left.cont.accumInsideBelief
-    val fromRight = right.cont.accumInsideBelief
-    val fromThis = cont.accumOutsideBelief
-    right.outside(fromLeft,fromThis)
-    left.outside(fromRight,fromThis)
+  def setPosterior(likelihood:Double,m:EvolutionModel){
+    cont.setPosterior(likelihood,m)
+    right.setPosterior(likelihood,m)
+    left.setPosterior(likelihood,m)
   }
 }
 
-class Leaf(val species:String,val cont:Content,private var nuc:Int = 4) extends Tree{
-
-  def inside:Seq[Double] = {
-      if(nuc >= 4) for(i <- 0 until 4) cont.alpha(i) = 1.0
-      else cont.alpha(nuc) = 1.0
-      cont.accumInsideBelief
-  }
-
-  def toRoot = new Root(null,null,new Content(0.0))
+case class Leaf(species:String,cont:ContentOfLeaf) extends Tree{
 
   def setBranch(x:List[Double]) = {
     cont.t_=(x.head)
     x.tail
   }
 
-  def setAlignment(x:Array[Int]) = {
-    cont.reset()
-    nuc = x.head
+  def setAlignment(x:List[DNA]) = {
+    cont.nuc_=(x.head)
     x.tail
   }
 
-  def outside(fromBro:Seq[Double],fromPar:Seq[Double]){
-    for(i <- 0 until 4) cont.beta(i) = fromBro(i) * fromPar(i)
+  def format() = {
+    cont.format()
+    this
   }
 
-  def calcPosterior(prob:Double){
-    cont.refactPostProbability(prob)
+  def setPosterior(likelihood:Double,m:EvolutionModel){
+    cont.setPosterior(likelihood,m)
   }
 
-  def collectF = List(FdVec(GTR.lambda,GTR.u,GTR.ui))
+  def collectF(m:EvolutionModel) = List(cont.FdVec(m))
 
-  def collectN = List(NsMat(GTR.R,GTR.lambda,GTR.u,GTR.ui))
+  def collectN(m:EvolutionModel) = List(cont.NsMat(m))
 
   def collectT = List(cont.t)
 }
 
-object Tree{
+object Tree extends NHParser{
 
-  def apply(query:String):Root = {
-    val stack = new scala.collection.mutable.Stack[Tree]
-    val contents = decode(query)
-    for(c <- contents){
-      if(c == ")"){
-        val a = stack.pop()
-        val b = stack.pop()
-        stack.push(makeTree(a,b))
-      }
-      else if(c != "("){
-        stack.push(makeTree(c))
-      }
-    }
-    val root = stack.pop()
-    root.toRoot
+  def apply(nhFile:String):Node = {
+    val reader = new FileReader(nhFile)
+    parseAll(tree,reader).get
   }
-
-  private def makeTree(name:String):Leaf = new Leaf(name,new Content)
-
-  private def makeTree(n1:Tree,n2:Tree):Node = new Node(n2,n1,new Content)
-
-  def decode(query:String):Array[String] = {
-    val array = new scala.collection.mutable.ArrayBuffer[String]
-    val buf = new StringBuilder
-    for(c <- query){
-      c match{
-        case '(' => array += "("
-        case ')' => array += ")"
-        case ':' => if(buf.nonEmpty) array += buf.toString; buf.clear()
-        case x if x >= 'A' && x <= 'z' => buf += c
-        case _ =>
-      }
-    }
-    array.toArray
-  }
-
 }
+
+class NHParser extends JavaTokenParsers {
+
+  def tree: Parser[Node] =  nodePair<~";"  ^^
+    {case (left,right) => Node(left,right,ContentOfNode(0.0))}
+
+  def node: Parser[Tree] = nodePair~":"~value ^^
+    {case (left,right)~":"~value => Node(left,right,ContentOfNode(value.toDouble))} | leaf
+
+  def leaf: Parser[Leaf] = name~":"~value ^^
+    {case name~":"~value => Leaf(name,ContentOfLeaf(value.toDouble,DNA.N))}
+
+  def nodePair: Parser[(Tree,Tree)] = "("~>node~","~node<~")"  ^^
+    {case left~","~right => (left,right)}
+
+  def value: Parser[Double] = floatingPointNumber ^^ (_.toDouble)
+
+  def name: Parser[String] = ident
+}
+
+case class Count(Fd:List[DenseVector[Double]],Ns:List[DenseMatrix[Double]],
+                 T:List[Double],ns:DenseVector[Double],likelihood:Double)
