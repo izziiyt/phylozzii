@@ -65,10 +65,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="EvolutionModel.scala" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="EvolutionModel.scala" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/scala/EvolutionModel.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="36" column="0" selection-start="1247" selection-end="1247" vertical-scroll-proportion="0.36950147" vertical-offset="504" max-vertical-offset="1470">
+            <state line="36" column="0" selection-start="1247" selection-end="1247" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1470">
               <folding />
             </state>
           </provider>
@@ -77,16 +77,18 @@
       <file leaf-file-name="Content.scala" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/scala/Content.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="28" column="3" selection-start="875" selection-end="875" vertical-scroll-proportion="0.0" vertical-offset="1145" max-vertical-offset="1827">
-              <folding />
+            <state line="24" column="0" selection-start="706" selection-end="706" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1848">
+              <folding>
+                <element signature="e#0#51#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Tree.scala" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="Tree.scala" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/scala/Tree.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="94" column="0" selection-start="2370" selection-end="2370" vertical-scroll-proportion="0.0" vertical-offset="431" max-vertical-offset="2436">
+            <state line="94" column="0" selection-start="2370" selection-end="2370" vertical-scroll-proportion="2.8269231" vertical-offset="0" max-vertical-offset="2436">
               <folding />
             </state>
           </provider>
@@ -95,7 +97,7 @@
       <file leaf-file-name="PhylogencyTree.scala" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/scala/PhylogencyTree.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="56" column="45" selection-start="2320" selection-end="2320" vertical-scroll-proportion="0.0" vertical-offset="557" max-vertical-offset="1806">
+            <state line="56" column="45" selection-start="2320" selection-end="2320" vertical-scroll-proportion="0.0" vertical-offset="1130" max-vertical-offset="1806">
               <folding />
             </state>
           </provider>
@@ -104,7 +106,7 @@
       <file leaf-file-name="EM.scala" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/scala/EM.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="71" column="0" selection-start="3343" selection-end="3343" vertical-scroll-proportion="0.0" vertical-offset="977" max-vertical-offset="1659">
+            <state line="71" column="0" selection-start="3343" selection-end="3343" vertical-scroll-proportion="0.0" vertical-offset="983" max-vertical-offset="1659">
               <folding />
             </state>
           </provider>
@@ -113,10 +115,8 @@
       <file leaf-file-name="EM$Test.scala" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/scala/EM$Test.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="21" column="27" selection-start="717" selection-end="717" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="693">
-              <folding>
-                <element signature="e#0#29#0" expanded="true" />
-              </folding>
+            <state line="22" column="13" selection-start="774" selection-end="774" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="672">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -139,13 +139,13 @@
         <option value="$PROJECT_DIR$/src/main/scala/DNA.scala" />
         <option value="$PROJECT_DIR$/src/test/scala/PhylogencyTreeTest.scala" />
         <option value="$PROJECT_DIR$/.gitignore" />
-        <option value="$PROJECT_DIR$/src/main/scala/Content.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/PhylogencyTree.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/GradientDescent.scala" />
         <option value="$PROJECT_DIR$/src/test/scala/EM$Test.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/Tree.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/EM.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/EvolutionModel.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/Content.scala" />
       </list>
     </option>
   </component>
@@ -153,7 +153,7 @@
     <option name="x" value="65" />
     <option name="y" value="24" />
     <option name="width" value="1855" />
-    <option name="height" value="1176" />
+    <option name="height" value="1056" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -495,36 +495,10 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fdur" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fdur" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="scala" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Content.scala" />
-              <option name="myItemType" value="org.jetbrains.plugins.scala.components.ScalaDefsProjectViewProvider$ScalaFileTreeNode" />
-            </PATH_ELEMENT>
-          </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -837,6 +811,19 @@
       <option name="USE_PATTERN" value="false" />
       <method />
     </configuration>
+    <configuration default="true" type="ScalaTestRunConfiguration" factoryName="ScalaTest">
+      <module name="" />
+      <setting name="path" value="" />
+      <setting name="package" value="" />
+      <setting name="vmparams" value="" />
+      <setting name="params" value="" />
+      <setting name="workingDirectory" value="$PROJECT_DIR$" />
+      <setting name="searchForTest" value="Across module dependencies" />
+      <setting name="testName" value="" />
+      <setting name="testKind" value="Class" />
+      <setting name="showProgressMessages" value="true" />
+      <method />
+    </configuration>
     <configuration default="true" type="AndroidRunConfigurationType" factoryName="Android Application">
       <module name="" />
       <option name="ACTIVITY_CLASS" value="" />
@@ -854,19 +841,6 @@
       <option name="NETWORK_LATENCY" value="none" />
       <option name="CLEAR_LOGCAT" value="false" />
       <option name="SHOW_LOGCAT_AUTOMATICALLY" value="true" />
-      <method />
-    </configuration>
-    <configuration default="true" type="ScalaTestRunConfiguration" factoryName="ScalaTest">
-      <module name="" />
-      <setting name="path" value="" />
-      <setting name="package" value="" />
-      <setting name="vmparams" value="" />
-      <setting name="params" value="" />
-      <setting name="workingDirectory" value="$PROJECT_DIR$" />
-      <setting name="searchForTest" value="Across module dependencies" />
-      <setting name="testName" value="" />
-      <setting name="testKind" value="Class" />
-      <setting name="showProgressMessages" value="true" />
       <method />
     </configuration>
     <list size="3">
@@ -970,21 +944,20 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="65" y="24" width="1855" height="1176" extended-state="6" />
+    <frame x="65" y="24" width="1855" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.26481482" sideWeight="0.4997236" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.26458332" sideWeight="0.4997236" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="SBT Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.34074074" sideWeight="0.4997236" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="SBT Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.34074074" sideWeight="0.4997236" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32962963" sideWeight="0.5002764" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.30555555" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32962963" sideWeight="0.4997236" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="SBT" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32946378" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -996,8 +969,9 @@
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.30555555" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2498618" sideWeight="0.5" order="6" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -1009,8 +983,8 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32962963" sideWeight="0.4997236" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2498618" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32962963" sideWeight="0.4997236" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="6" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32962963" sideWeight="0.4997236" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32962963" sideWeight="0.4997236" order="3" side_tool="false" content_ui="tabs" />
@@ -1058,7 +1032,9 @@
     <entry file="file://$PROJECT_DIR$/src/main/scala/Content.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state line="52" column="13" selection-start="1677" selection-end="1677" vertical-scroll-proportion="0.0" vertical-offset="1092" max-vertical-offset="1680">
-          <folding />
+          <folding>
+            <element signature="e#0#51#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1078,23 +1054,17 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/GradientDescent.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="0" selection-start="351" selection-end="351" vertical-scroll-proportion="0.0" vertical-offset="168" max-vertical-offset="693">
-          <folding />
-        </state>
+        <state line="8" column="0" selection-start="351" selection-end="351" vertical-scroll-proportion="0.0" vertical-offset="168" max-vertical-offset="693" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/scala/PhylogencyTreeTest.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="3" selection-start="339" selection-end="339" vertical-scroll-proportion="0.0" vertical-offset="231" max-vertical-offset="399">
-          <folding />
-        </state>
+        <state line="11" column="3" selection-start="339" selection-end="339" vertical-scroll-proportion="0.0" vertical-offset="231" max-vertical-offset="399" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/build.sbt">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="1" selection-start="740" selection-end="740" vertical-scroll-proportion="0.0" vertical-offset="441" max-vertical-offset="567">
-          <folding />
-        </state>
+        <state line="21" column="1" selection-start="740" selection-end="740" vertical-scroll-proportion="0.0" vertical-offset="441" max-vertical-offset="567" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/EvolutionModel.scala">
@@ -1113,16 +1083,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/scala/PhylogencyTreeTest.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="3" selection-start="339" selection-end="339" vertical-scroll-proportion="0.0" vertical-offset="231" max-vertical-offset="399">
-          <folding />
-        </state>
+        <state line="11" column="3" selection-start="339" selection-end="339" vertical-scroll-proportion="0.0" vertical-offset="231" max-vertical-offset="399" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/build.sbt">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="1" selection-start="740" selection-end="740" vertical-scroll-proportion="0.0" vertical-offset="441" max-vertical-offset="567">
-          <folding />
-        </state>
+        <state line="21" column="1" selection-start="740" selection-end="740" vertical-scroll-proportion="0.0" vertical-offset="441" max-vertical-offset="567" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/EvolutionModel.scala">
@@ -1156,15 +1122,15 @@
     <entry file="file://$PROJECT_DIR$/src/main/scala/Content.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state line="4" column="47" selection-start="88" selection-end="88" vertical-scroll-proportion="0.0" vertical-offset="84" max-vertical-offset="861">
-          <folding />
+          <folding>
+            <element signature="e#0#51#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/build.sbt">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="1" selection-start="740" selection-end="740" vertical-scroll-proportion="0.0" vertical-offset="378" max-vertical-offset="486">
-          <folding />
-        </state>
+        <state line="21" column="1" selection-start="740" selection-end="740" vertical-scroll-proportion="0.0" vertical-offset="378" max-vertical-offset="486" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/EvolutionModel.scala">
@@ -1198,15 +1164,15 @@
     <entry file="file://$PROJECT_DIR$/src/main/scala/Content.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state line="4" column="47" selection-start="88" selection-end="88" vertical-scroll-proportion="0.0" vertical-offset="72" max-vertical-offset="738">
-          <folding />
+          <folding>
+            <element signature="e#0#51#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/build.sbt">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="1" selection-start="740" selection-end="740" vertical-scroll-proportion="0.0" vertical-offset="378" max-vertical-offset="486">
-          <folding />
-        </state>
+        <state line="21" column="1" selection-start="740" selection-end="740" vertical-scroll-proportion="0.0" vertical-offset="378" max-vertical-offset="486" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/EvolutionModel.scala">
@@ -1240,15 +1206,15 @@
     <entry file="file://$PROJECT_DIR$/src/main/scala/Content.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state line="4" column="47" selection-start="88" selection-end="88" vertical-scroll-proportion="0.0" vertical-offset="72" max-vertical-offset="738">
-          <folding />
+          <folding>
+            <element signature="e#0#51#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/build.sbt">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="1" selection-start="740" selection-end="740" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="486">
-          <folding />
-        </state>
+        <state line="21" column="1" selection-start="740" selection-end="740" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="486" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/EvolutionModel.scala">
@@ -1282,15 +1248,15 @@
     <entry file="file://$PROJECT_DIR$/src/main/scala/Content.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state line="4" column="47" selection-start="88" selection-end="88" vertical-scroll-proportion="0.0" vertical-offset="72" max-vertical-offset="738">
-          <folding />
+          <folding>
+            <element signature="e#0#51#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/build.sbt">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="1" selection-start="740" selection-end="740" vertical-scroll-proportion="0.0" vertical-offset="378" max-vertical-offset="486">
-          <folding />
-        </state>
+        <state line="21" column="1" selection-start="740" selection-end="740" vertical-scroll-proportion="0.0" vertical-offset="378" max-vertical-offset="486" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/EvolutionModel.scala">
@@ -1324,7 +1290,9 @@
     <entry file="file://$PROJECT_DIR$/src/main/scala/Content.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state line="18" column="2" selection-start="346" selection-end="346" vertical-scroll-proportion="0.0" vertical-offset="324" max-vertical-offset="720">
-          <folding />
+          <folding>
+            <element signature="e#0#51#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1335,38 +1303,44 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/DNA.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="1" selection-start="619" selection-end="619" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="609">
-          <folding />
-        </state>
+        <state line="23" column="1" selection-start="619" selection-end="619" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="609" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/build.sbt">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="1" selection-start="740" selection-end="740" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="567">
-          <folding />
-        </state>
+        <state line="21" column="1" selection-start="740" selection-end="740" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="567" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/scala/PhylogencyTreeTest.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="3" selection-start="339" selection-end="339" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="399">
-          <folding />
-        </state>
+        <state line="11" column="3" selection-start="339" selection-end="339" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="399" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/GradientDescent.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="6" selection-start="681" selection-end="681" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="651">
+        <state line="17" column="6" selection-start="681" selection-end="681" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="651" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/EvolutionModel.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="36" column="0" selection-start="1247" selection-end="1247" vertical-scroll-proportion="0.0" vertical-offset="794" max-vertical-offset="1470">
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/Content.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="24" column="0" selection-start="706" selection-end="706" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1848">
+          <folding>
+            <element signature="e#0#51#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/scala/EM$Test.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="27" selection-start="717" selection-end="717" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="693">
-          <folding>
-            <element signature="e#0#29#0" expanded="true" />
-          </folding>
+        <state line="22" column="13" selection-start="774" selection-end="774" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="672">
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1386,21 +1360,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/Tree.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="94" column="0" selection-start="2370" selection-end="2370" vertical-scroll-proportion="0.0" vertical-offset="1754" max-vertical-offset="2436">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/Content.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="3" selection-start="875" selection-end="875" vertical-scroll-proportion="0.0" vertical-offset="1145" max-vertical-offset="1827">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/EvolutionModel.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="36" column="0" selection-start="1247" selection-end="1247" vertical-scroll-proportion="0.36950147" vertical-offset="504" max-vertical-offset="1470">
+        <state line="94" column="0" selection-start="2370" selection-end="2370" vertical-scroll-proportion="2.8269231" vertical-offset="0" max-vertical-offset="2436">
           <folding />
         </state>
       </provider>
