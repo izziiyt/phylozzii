@@ -20,7 +20,7 @@ class EM$Test extends FunSuite {
   val x11 = Array[Int](3,1,0)
   val x12 = Array[Int](2,3,0)
   val x13 = Array[Int](3,1,0)
-  val source = Source.fromFile("/home/yuto/data/myFdur/sample.nh")
+  val source = Source.fromFile("/home/yuto/projects/fdur/src/test/resources/sample.nh")
   val query = source.getLines().foldLeft("")(_ + _)
   source.close()
 
