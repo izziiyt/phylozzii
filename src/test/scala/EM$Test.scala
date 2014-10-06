@@ -15,13 +15,10 @@ class EM$Test extends FunSuite {
   val x11 = List[Char](3,1,0)
   val x12 = List[Char](2,3,0)
   val x13 = List[Char](3,1,0)
-  //val source = Source.fromFile("../resources/sample.nh")
-  //val source = Source.fromURL(getClass.getResource("/sample.nh"))
-  //val query = source.getLines().reduce(_ + _)
- // source.close()
-  val source = "/home/yuto/projects/fdur/src/test/resources/sample.nh"
+
+  val source = "src/test/resources/sample.nh"
   test("EM"){
     val alignments = List(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13)
-    EM(100,source,alignments)
+    EM(200,source,alignments)
   }
 }
