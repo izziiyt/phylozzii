@@ -1,3 +1,10 @@
-[debug] Running TaskDef(ParametersTest, org.scalatest.tools.Framework$$anon$1@305aa6b3, false, [SuiteSelector])
-[debug] Running TaskDef(Tree$Test, org.scalatest.tools.Framework$$anon$1@305aa6b3, false, [SuiteSelector])
-[debug] Running TaskDef(EM$Test, org.scalatest.tools.Framework$$anon$1@305aa6b3, false, [SuiteSelector])
+[debug] Running TaskDef(ParametersTest, org.scalatest.tools.Framework$$anon$1@288a2e62, false, [SuiteSelector])
+[debug] Running TaskDef(EM$Test, org.scalatest.tools.Framework$$anon$1@288a2e62, false, [SuiteSelector])
+[info] Run completed in 21 seconds, 599 milliseconds.
+[info] Total number of tests run: 2
+[info] Suites: completed 2, aborted 0
+[info] Tests: succeeded 2, failed 0, canceled 0, ignored 0, pending 0
+[info] All tests passed.
+[debug] Passed tests:
+[debug] 	ParametersTest
+[debug] 	EM$Test
