@@ -1,5 +1,5 @@
 object GradientDescent {
-  def apply(loop:Int,delta:Double,nhFile:String,alignments:List[List[DNA]]){
+  /*def apply(loop:Int,delta:Double,nhFile:String,alignments:List[List[DNA]]){
     var pt = new PhylogencyTree(nhFile,GTR())
     val an:Double = alignments.length
     for(i <- 0 until loop){
@@ -10,16 +10,20 @@ object GradientDescent {
       //pt = new PhylogencyTree(pt,newParam)
       //pt.setBranch()
     }
+  }*/
+
+  def test(loop:Int,delta:Double,nhFile:String,alignments:List[List[DNA]]){
+
   }
 
   def acc(a:List[Double],b:List[Double]) = (a,b).zipped.map(_ * _)
 
-  def eStepLike(pt:PhylogencyTree,column:List[DNA]):(Parameters,List[Double]) = {
+  /*def eStepLike(pt:PhylogencyTree,column:List[DNA]):(Parameters,List[Double]) = {
     //pt.root.setAlignment(column)
     pt.inside(pt.root)
     pt.outside(pt.root)
     val likelihood = pt.root.likelihood(pt.model)
-    pt.root.setPosterior(likelihood,pt.model)
-    pt.deriveLogLikelihood(pt.root)
-  }
+   // pt.root.setPosterior(likelihood,pt.model)
+    //pt.deriveLikelihood(pt.root)
+  }*/
 }

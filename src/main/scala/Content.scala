@@ -46,7 +46,7 @@ abstract class Content(var t:Double){
   def NsMati(a:Int,b:Int,m:EvolutionModel):DenseMatrix[Double] = {
     val tmp = DenseMatrix.zeros[Double](4,4)
     for(i <- 0 to 3;j <- 0 to 3){
-      tmp(i,j) = m.R(i,j) * t * divExpMatrix(a,b,i,j,m) /posterior(a,b)
+      tmp(i,j) = m.R(i,j) * t * divExpMatrix(a,b,i,j,m)
     }
     tmp
   }
@@ -55,7 +55,7 @@ abstract class Content(var t:Double){
   def FdVeci(a:Int,b:Int,m:EvolutionModel):DenseVector[Double] = {
     val tmp = DenseVector.zeros[Double](4)
     for(i <- 0 to 3){
-      tmp(i) = divExpMatrix(a,b,i,i,m) / posterior(a,b)
+      tmp(i) = divExpMatrix(a,b,i,i,m)
     }
     tmp
   }
@@ -63,10 +63,9 @@ abstract class Content(var t:Double){
   //beg -> end and from -> to
   def divExpMatrix(beg:Int,end:Int,from:Int,to:Int,m:EvolutionModel) = {
     def k(x:Double,y:Double) = if(x == y) exp(x) else (exp(x) - exp(y)) / (x - y)
-    val tmp = for(x <- 0 to 3; y <- 0 to 3) yield m.u(end,x) * m.ui(x,to) * m.u(from,y) * m.ui(y,beg) * k(m.lambda(x),m.lambda(y))
+    val tmp = for(x <- 0 to 3; y <- 0 to 3) yield m.u(beg,x) * m.ui(x,from) * m.u(to,y) * m.ui(y,end) * k(m.lambda(x),m.lambda(y))
     tmp.sum
   }
-
 }
 
 case class ContentOfLeaf(var tx:Double,var nuc:Char) extends Content(tx){
@@ -79,5 +78,5 @@ case class ContentOfLeaf(var tx:Double,var nuc:Char) extends Content(tx){
 }
 
 case class ContentOfNode(var tx:Double) extends Content(tx){
-  def likelihood(m:EvolutionModel):Double = sum(alpha :* m.pi)
+  def likelihood(m:EvolutionModel):Double = alpha.t * m.pi
 }

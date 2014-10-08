@@ -10,11 +10,11 @@ abstract class EvolutionModel{
   def B:DenseMatrix[Double]
 }
 
-case class GTR(param:Parameters = Parameters(DenseVector[Double](1.0,1.0,1.0,1.0,1.0,1.0),
+case class GTR(param:Parameters = Parameters(DenseVector[Double](1.0/6.0,1.0/6.0,1.0/6.0,1.0/6.0,1.0/6.0,1.0/6.0),
   DenseVector[Double](0.25,0.25,0.25,0.25))) extends EvolutionModel{
 
-  val T:DenseMatrix[Double] = diag(param.pi.map(math.pow(_,0.5)))
-  val Ti:DenseMatrix[Double] = diag(param.pi.map(math.pow(_,-0.5)))
+  private[this] val T:DenseMatrix[Double] = diag(param.pi.map(math.pow(_,0.5)))
+  private[this] val Ti:DenseMatrix[Double] = diag(param.pi.map(math.pow(_,-0.5)))
 
   val B =
     DenseMatrix(
@@ -32,15 +32,17 @@ case class GTR(param:Parameters = Parameters(DenseVector[Double](1.0,1.0,1.0,1.0
 
   for(i <- 0 to 3){R(i,i) = 0.0 - sum(R(i,::).t)}
 
-  val tmp:DenseMatrix[Double] = T * R.*(Ti)
-  for(i <- 0 until 4;j <- 0 until 4){tmp(j,i) = tmp(i,j)}
+  for(i <- 0 to 3){B(i,i) = R(i,i) / pi(i)}
+
+  private[this] val tmp:DenseMatrix[Double] = T * R * Ti
+  for(i <- 0 to 3;j <- i to 3){tmp(j,i) = tmp(i,j)}
   val (lambda:DenseVector[Double],eVecs:DenseMatrix[Double]) = eigSym(tmp)
   val u:DenseMatrix[Double] = Ti * eVecs
   val ui = eVecs.t * T
 
   def transProb(i:Int,j:Int,t:Double):Double = {//i to j
-  def tmp:DenseMatrix[Double] = u * diag(lambda.map(x => math.exp(x * t)))
-    val transMat:DenseMatrix[Double] = tmp * ui
+    val tmp:DenseMatrix[Double] = diag(lambda.map(x => math.exp(x * t)))
+    val transMat:DenseMatrix[Double] = u * tmp * ui
     transMat(i,j)
   }
 

@@ -6,7 +6,7 @@ object EM{
   def apply(loop:Int,nhFile:String,alignments:List[List[Char]]){
     var pt = new PhylogencyTree(nhFile,GTR())
     val an:Double = alignments.length
-    for(i <- 0 until loop){
+    for(i <- 1 to loop){
       val counts = alignments.map(eStep(pt,_))
       pt = mStep(pt,counts,an)
     }
