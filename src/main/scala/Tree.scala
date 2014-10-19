@@ -6,15 +6,16 @@ import scala.util.parsing.combinator.JavaTokenParsers
 sealed trait Tree{
   def cont:Content
   def format():Tree
-  def setPosterior(likelihood:Double,m:EvolutionModel):Unit
   def setAlignment(x:List[Char]):List[Char]
   def setBranch(x:List[Double]):List[Double]
+  def setTransition(m:EvolutionModel)
+  def setPosterior(l:Double,m:EvolutionModel)
   def collectF(m:EvolutionModel):List[DenseVector[Double]]
   def collectN(m:EvolutionModel):List[DenseMatrix[Double]]
   def collectT:List[Double]
 }
 
-case class Node(left:Tree,right:Tree,cont:ContentOfNode) extends Tree{
+case class Node(left:Tree,right:Tree,cont:Content) extends Tree{
 
   def setAlignment(x:List[Char]) = {
     val tmp = left.setAlignment(x)
@@ -50,8 +51,14 @@ case class Node(left:Tree,right:Tree,cont:ContentOfNode) extends Tree{
 
   def setPosterior(likelihood:Double,m:EvolutionModel){
     cont.setPosterior(likelihood,m)
-    right.setPosterior(likelihood,m)
     left.setPosterior(likelihood,m)
+    right.setPosterior(likelihood,m)
+  }
+
+  def setTransition(m:EvolutionModel){
+    cont.setTransProb(m)
+    left.setTransition(m)
+    right.setTransition(m)
   }
 }
 
@@ -76,6 +83,10 @@ case class Leaf(species:String,cont:ContentOfLeaf) extends Tree{
     cont.setPosterior(likelihood,m)
   }
 
+  def setTransition(m:EvolutionModel){
+    cont.setTransProb(m)
+  }
+
   def collectF(m:EvolutionModel) = List(cont.FdVec(m))
 
   def collectN(m:EvolutionModel) = List(cont.NsMat(m))
@@ -94,7 +105,7 @@ object Tree extends NHParser{
 class NHParser extends JavaTokenParsers {
 
   def tree: Parser[Node] =  nodePair<~";"  ^^
-    {case (left,right) => Node(left,right,ContentOfNode(0.0))}
+    {case (left,right) => Node(left,right,ContentOfRoot())}
 
   def node: Parser[Tree] = nodePair~":"~value ^^
     {case (left,right)~":"~value => Node(left,right,ContentOfNode(value.toDouble))} | leaf

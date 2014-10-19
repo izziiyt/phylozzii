@@ -1,7 +1,6 @@
 import breeze.linalg._
 
 abstract class EvolutionModel{
-  def transProb(i:Int,j:Int,t:Double):Double
   def R:DenseMatrix[Double]
   def u:DenseMatrix[Double]
   def ui:DenseMatrix[Double]
@@ -10,8 +9,8 @@ abstract class EvolutionModel{
   def B:DenseMatrix[Double]
 }
 
-case class GTR(param:Parameters = Parameters(DenseVector[Double](1.0/6.0,1.0/6.0,1.0/6.0,1.0/6.0,1.0/6.0,1.0/6.0),
-  DenseVector[Double](0.25,0.25,0.25,0.25))) extends EvolutionModel{
+case class GTR(param:Parameters = Parameters(DenseVector[Double](1.0/12.0,2.0/12.0,3.0/12.0,1.0/12.0,2.0/12.0,3.0/12.0),
+    DenseVector[Double](0.1,0.2,0.3,0.4))) extends EvolutionModel{
 
   private[this] val T:DenseMatrix[Double] = diag(param.pi.map(math.pow(_,0.5)))
   private[this] val Ti:DenseMatrix[Double] = diag(param.pi.map(math.pow(_,-0.5)))
@@ -34,18 +33,12 @@ case class GTR(param:Parameters = Parameters(DenseVector[Double](1.0/6.0,1.0/6.0
 
   for(i <- 0 to 3){B(i,i) = R(i,i) / pi(i)}
 
-  private[this] val tmp:DenseMatrix[Double] = T * R * Ti
+  val tmp:DenseMatrix[Double] = T * R * Ti
   for(i <- 0 to 3;j <- i to 3){tmp(j,i) = tmp(i,j)}
   val (lambda:DenseVector[Double],eVecs:DenseMatrix[Double]) = eigSym(tmp)
-  val u:DenseMatrix[Double] = Ti * eVecs
-  val ui = eVecs.t * T
 
-  def transProb(i:Int,j:Int,t:Double):Double = {//i to j
-    val tmp:DenseMatrix[Double] = diag(lambda.map(x => math.exp(x * t)))
-    val transMat:DenseMatrix[Double] = u * tmp * ui
-    transMat(i,j)
-  }
-
+  val u = Ti * eVecs
+  val ui = inv(u)
   def pi = param.pi
 }
 

@@ -2,13 +2,15 @@ import breeze.linalg.{DenseMatrix,DenseVector,sum,trace,diag}
 
 class PhylogencyTree(val root:Node,val model:EvolutionModel){
 
+  root.setTransition(model)
+
   def this(nhFormatQuery:String,m:EvolutionModel) = this(Tree(nhFormatQuery),m)
 
   def this(that:PhylogencyTree,m:EvolutionModel) = this(that.root.format(),m)
 
   def setBranch(x:List[Double]){root.setBranch(x)}
 
-  def deriveLL():(Parameters,List[Double]) = {
+  def deriveLL:(Parameters,List[Double]) = {
     val (lParam,lT) = deriveLL(root.left)
     val (rParam,rT) = deriveLL(root.right)
     val param = lParam + rParam
@@ -18,16 +20,16 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
   }
 
   private[this] def deriveLL(tree:Tree):(Parameters,List[Double]) = {
-    lazy val rs = for(i <- 0 to 3;j <- 0 to 3) yield deriveLWithLogR(i,j,tree.cont)
-    lazy val post = for(i <- 0 to 3;j <- 0 to 3) yield tree.cont.posterior(i,j)
-    lazy val ps = (rs,post).zipped.map((r,p) => deriveLWithPi(tree.cont,r) * p).reduceLeft(_ + _)
-    lazy val bs = (rs,post).zipped.map((r,p) => deriveLWithB(tree.cont,r) * p).reduceLeft(_ + _)
-    lazy val ts = (rs,post).zipped.map((r,p) => deriveLWithT(tree.cont,r) * p).reduceLeft(_ + _)
+    val rs = for(i <- 0 to 3;j <- 0 to 3) yield deriveLWithLogR(i,j,tree.cont)
+    val post = for(i <- 0 to 3;j <- 0 to 3) yield tree.cont.posterior(i,j)
+    val ps = (rs,post).zipped.map((r,p) => deriveLWithPi(tree.cont,r) * p).reduceLeft(_ + _)
+    val bs = (rs,post).zipped.map((r,p) => deriveLWithB(tree.cont,r) * p).reduceLeft(_ + _)
+    val ts = (rs,post).zipped.map((r,p) => deriveLWithT(tree.cont,r) * p).reduceLeft(_ + _)
 
     tree match{
       case Node(left,right,cont) =>
-        val (rParam,rT) = deriveLL(right)
         val (lParam,lT) = deriveLL(left)
+        val (rParam,rT) = deriveLL(right)
         val param = lParam + rParam + Parameters(bs,ps)
         val tlist:List[Double] = lT ::: rT ::: List(ts)
         Pair(param,tlist)
@@ -36,13 +38,11 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
     }
   }
 
-  def deriveLWithLogR(a:Int,b:Int,cont:Content):DenseMatrix[Double] = {
+  def deriveLWithLogR(a:Int,b:Int,cont:Content):DenseMatrix[Double] =
     cont.NsMati(a,b,model) - (diag(cont.FdVeci(a,b,model)) * model.R * cont.t)
-  }
 
-  def deriveLWithPi(cont:Content,r:DenseMatrix[Double]):DenseVector[Double] = {
-    DenseVector((0 to 3).map(i => (sum(r(i,::).t) - r(i,i)) / model.pi(i)).toArray)
-  }
+  def deriveLWithPi(cont:Content,r:DenseMatrix[Double]):DenseVector[Double] =
+    DenseVector((0 to 3).map(i => (sum(r(::,i)) - r(i,i)) / model.pi(i)).toArray)
 
   def deriveLWithB(cont:Content,r:DenseMatrix[Double]):DenseVector[Double] = {
     val tmp = (r + r.t) :/ model.B
@@ -50,9 +50,7 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
   }
 
   //No problem.
-  def deriveLWithT(cont:Content,r:DenseMatrix[Double]):Double = {
-    (sum(r) - trace(r)) / cont.t
-  }
+  def deriveLWithT(cont:Content,r:DenseMatrix[Double]):Double = (sum(r) - trace(r)) / cont.t
 
   def inside(tree:Tree):DenseVector[Double] = {
     tree match{
