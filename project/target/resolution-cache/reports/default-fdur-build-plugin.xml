@@ -9,7 +9,11 @@
 		extra-scalaVersion="2.10"
 		conf="plugin"
 		confs="compile, runtime, test, provided, optional, compile-internal, runtime-internal, test-internal, plugin, sources, docs, pom, scala-tool"
+<<<<<<< HEAD
 		date="20141006090627"/>
+=======
+		date="20141006103401"/>
+>>>>>>> wennew
 	<dependencies>
 	</dependencies>
 </ivy-report>
