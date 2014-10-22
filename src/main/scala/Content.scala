@@ -57,14 +57,14 @@ abstract class Content(var t:Double){
   def NsMati(a:Int,b:Int,m:EvolutionModel):DenseMatrix[Double] = {
     val tmp = DenseMatrix.zeros[Double](4,4)
     for(i <- 0 to 3;j <- 0 to 3;if i != j){tmp(i,j) = m.R(i,j) * t * divExpMatrix(a,b,i,j,m)}
-    tmp
+    tmp /transProb(a,b)
   }
 
   @deprecated
   def FdVeci(a:Int,b:Int,m:EvolutionModel):DenseVector[Double] = {
     val tmp = DenseVector.zeros[Double](4)
     for(i <- 0 to 3){tmp(i) = divExpMatrix(a,b,i,i,m)}
-    tmp
+    tmp /transProb(a,b)
   }
 
   //beg -> end and from -> to

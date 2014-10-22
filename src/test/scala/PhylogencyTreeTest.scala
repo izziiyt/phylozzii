@@ -22,25 +22,25 @@ class PhylogencyTreeTest extends FunSuite {
   }
 
   test("gradient descent"){
-    val n = numerical()
-    val a = analytical()
-    println("analyze " + a)
-    println("numerical " + n)
-    println(abs(n-a))
+    val (param,branch) = numerical()
+    val a = analyticalPi()
+    val b = analyticalB()
+    val c = analyticalT()
+    assert(abs(param.pi(1)-a) < math.exp(-5))
+    assert(abs(param.a - b) < math.exp(-5))
+    println(branch)
+    println(c)
+    assert(abs(branch(2) - c) < math.exp(-5))
   }
-
-  def numerical():Double = {
+  def numerical()  = {
     val source = "src/test/resources/sample.nh"
     val pt = new PhylogencyTree(Tree(source),GTR())
     pt.root.setAlignment(List[Char](2,3,1))
     pt.inside(pt.root)
     pt.outside(pt.root)
     val likelihood = pt.root.likelihood(pt.model)
-    println(log(likelihood))
     pt.root.setPosterior(likelihood,pt.model)
-    val (param,_) = pt.deriveLL
-    println(param)
-    param.pi(0)
+    pt.deriveLL
   }
 
   def prepare(pt:PhylogencyTree):Double = {
@@ -50,17 +50,40 @@ class PhylogencyTreeTest extends FunSuite {
     log(pt.root.likelihood(pt.model))
   }
 
-  def analytical():Double = {
-    val h = 0.01
+  def analyticalPi():Double = {
+    val h = 0.001
     val PlusModel = GTR(Parameters(DenseVector[Double](1.0/12.0,2.0/12.0,3.0/12.0,1.0/12.0,2.0/12.0,3.0/12.0),
-      DenseVector[Double](0.1+h/2,0.2,0.3,0.4)))
+      DenseVector[Double](0.1,0.2+h/2,0.3,0.4)))
     val MinsModel = GTR(Parameters(DenseVector[Double](1.0/12.0,2.0/12.0,3.0/12.0,1.0/12.0,2.0/12.0,3.0/12.0),
-      DenseVector[Double](0.1-h/2,0.2,0.3,0.4)))
+      DenseVector[Double](0.1,0.2-h/2,0.3,0.4)))
     val source = "src/test/resources/sample.nh"
     val Pluspt = new PhylogencyTree(Tree(source),PlusModel)
     val Minspt = new PhylogencyTree(Tree(source),MinsModel)
     (prepare(Pluspt) - prepare(Minspt)) / h
   }
+
+  def analyticalB():Double = {
+    val h = 0.01
+    val PlusModel = GTR(Parameters(DenseVector[Double](1.0/12.0+h/2,2.0/12.0,3.0/12.0,1.0/12.0,2.0/12.0,3.0/12.0),
+      DenseVector[Double](0.1,0.2,0.3,0.4)))
+    val MinsModel = GTR(Parameters(DenseVector[Double](1.0/12.0-h/2,2.0/12.0,3.0/12.0,1.0/12.0,2.0/12.0,3.0/12.0),
+      DenseVector[Double](0.1,0.2,0.3,0.4)))
+    val source = "src/test/resources/sample.nh"
+    val Pluspt = new PhylogencyTree(Tree(source),PlusModel)
+    val Minspt = new PhylogencyTree(Tree(source),MinsModel)
+    (prepare(Pluspt) - prepare(Minspt)) / h
+  }
+
+  def analyticalT():Double = {
+    val h = 0.01
+    val source = "src/test/resources/sample.nh"
+    val Pluspt = new PhylogencyTree(Tree(source),GTR())
+    val Minspt = new PhylogencyTree(Tree(source),GTR())
+    Pluspt.setBranch(List(0.5,0.4,0.3+h/2,0.2,0.0))
+    Minspt.setBranch(List(0.5,0.4,0.3-h/2,0.2,0.0))
+    (prepare(Pluspt) - prepare(Minspt)) / h
+  }
+
 
   test("inside&outside"){
     val source = "src/test/resources/sample.nh"

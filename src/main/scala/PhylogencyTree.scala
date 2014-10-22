@@ -8,7 +8,10 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
 
   def this(that:PhylogencyTree,m:EvolutionModel) = this(that.root.format(),m)
 
-  def setBranch(x:List[Double]){root.setBranch(x)}
+  def setBranch(x:List[Double]){
+    root.setBranch(x)
+    root.setTransition(model)
+  }
 
   def deriveLL:(Parameters,List[Double]) = {
     val (lParam,lT) = deriveLL(root.left)
@@ -42,17 +45,17 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
     cont.NsMati(a,b,model) - (diag(cont.FdVeci(a,b,model)) * model.R * cont.t)
 
   def deriveLWithPi(cont:Content,r:DenseMatrix[Double]):DenseVector[Double] =
-    DenseVector((0 to 3).map(i => (sum(r(::,i)) - r(i,i)) / model.pi(i)).toArray)
+    DenseVector((0 to 3).map(i => sum(for(j <- 0 to 3;if j != i) yield r(j,i)) / model.pi(i)).toArray)
 
   def deriveLWithB(cont:Content,r:DenseMatrix[Double]):DenseVector[Double] = {
     val tmp = (r + r.t) :/ model.B
     DenseVector((for(i <- 0 to 2;j <- i+1 to 3) yield tmp(i,j)).toArray)
   }
 
-  //No problem.
-  def deriveLWithT(cont:Content,r:DenseMatrix[Double]):Double = (sum(r) - trace(r)) / cont.t
+  def deriveLWithT(cont:Content,r:DenseMatrix[Double]):Double =
+    (sum(r) - trace(r)) / cont.t
 
-  def inside(tree:Tree):DenseVector[Double] = {
+  def inside(tree:Tree = root):DenseVector[Double] = {
     tree match{
       case Node(left,right,cont) =>
         val fromLeft = inside(left)
@@ -66,7 +69,7 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
     }
   }
 
-  def outside(tree:Tree,fromBro:DenseVector[Double] = model.pi,fromPar:DenseVector[Double] = DenseVector(1,1,1,1)){
+  def outside(tree:Tree = root,fromBro:DenseVector[Double] = model.pi,fromPar:DenseVector[Double] = DenseVector(1,1,1,1)){
     tree match{
       case Node(left,right,cont) =>
         for(i <- 0 to 3) cont.beta(i) = fromBro(i) * fromPar(i)
