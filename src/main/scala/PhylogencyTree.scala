@@ -13,6 +13,38 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
     root.setTransition(model)
   }
 
+  def inside(tree:Tree = root):DenseVector[Double] = {
+    tree match{
+      case Node(left,right,cont) =>
+        val fromLeft = inside(left)
+        val fromRight = inside(right)
+        for(i <- 0 to 3){cont.alpha(i) = fromLeft(i) * fromRight(i)}
+        cont.accumInsideBelief(model)
+      case Leaf(_,cont) =>
+        if(cont.nuc > 3) cont.alpha(0 to 3) := 1.0
+        else cont.alpha(cont.nuc.toInt) = 1.0
+        cont.accumInsideBelief(model)
+    }
+  }
+
+  def outside(tree:Tree = root,fromBro:DenseVector[Double] = model.pi,fromPar:DenseVector[Double] = DenseVector(1,1,1,1)){
+    tree match{
+      case Node(left,right,cont) =>
+        for(i <- 0 to 3) cont.beta(i) = fromBro(i) * fromPar(i)
+        innerOutside(left,right,cont)
+      case Leaf(_,cont) =>
+        for(i <- 0 to 3) cont.beta(i) = fromBro(i) * fromPar(i)
+    }
+  }
+
+  def innerOutside(left:Tree,right:Tree,cont:Content){
+    val fromLeft = left.cont.accumInsideBelief(model)
+    val fromRight = right.cont.accumInsideBelief(model)
+    val fromThis = cont.accumOutsideBelief(model)
+    outside(right,fromLeft,fromThis)
+    outside(left,fromRight,fromThis)
+  }
+
   def deriveLL:(Parameters,List[Double]) = {
     val (lParam,lT) = deriveLL(root.left)
     val (rParam,rT) = deriveLL(root.right)
@@ -55,35 +87,4 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
   def deriveLWithT(cont:Content,r:DenseMatrix[Double]):Double =
     (sum(r) - trace(r)) / cont.t
 
-  def inside(tree:Tree = root):DenseVector[Double] = {
-    tree match{
-      case Node(left,right,cont) =>
-        val fromLeft = inside(left)
-        val fromRight = inside(right)
-        for(i <- 0 to 3){cont.alpha(i) = fromLeft(i) * fromRight(i)}
-        cont.accumInsideBelief(model)
-      case Leaf(_,cont) =>
-        if(cont.nuc > 3) cont.alpha(0 to 3) := 1.0
-        else cont.alpha(cont.nuc.toInt) = 1.0
-        cont.accumInsideBelief(model)
-    }
-  }
-
-  def outside(tree:Tree = root,fromBro:DenseVector[Double] = model.pi,fromPar:DenseVector[Double] = DenseVector(1,1,1,1)){
-    tree match{
-      case Node(left,right,cont) =>
-        for(i <- 0 to 3) cont.beta(i) = fromBro(i) * fromPar(i)
-        innerOutside(left,right,cont)
-      case Leaf(_,cont) =>
-        for(i <- 0 to 3) cont.beta(i) = fromBro(i) * fromPar(i)
-    }
-  }
-
-  def innerOutside(left:Tree,right:Tree,cont:Content){
-    val fromLeft = left.cont.accumInsideBelief(model)
-    val fromRight = right.cont.accumInsideBelief(model)
-    val fromThis = cont.accumOutsideBelief(model)
-    outside(right,fromLeft,fromThis)
-    outside(left,fromRight,fromThis)
-  }
 }
