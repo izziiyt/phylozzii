@@ -1,6 +1,8 @@
 import breeze.linalg.{DenseMatrix, DenseVector,sum,trace}
 import scala.annotation.tailrec
+import scala.collection.mutable.{ArrayBuffer, ListBuffer}
 import scala.math._
+import java.io.PrintWriter
 
 object EM{
   def apply(loop:Int,nhFile:String,alignments:List[List[Char]]){
@@ -10,6 +12,38 @@ object EM{
       val counts = alignments.map(eStep(pt,_))
       pt = mStep(pt,counts,an)
     }
+  }
+
+  def test(loop:Int,nhFile:String,alignments:List[List[Char]]){
+    val paramLog = ArrayBuffer[Parameters]()
+    val branchLog = ArrayBuffer[List[Double]]()
+    val derivFile = new PrintWriter("target/derivation.txt")
+    var pt = new PhylogencyTree(nhFile,GTR())
+    val an:Double = alignments.length
+    for(i <- 1 to loop){
+      val counts = alignments.map(eStep(pt,_))
+      pt = mStep(pt,counts,an)
+      paramLog += pt.model.param
+      branchLog += pt.branches
+    }
+    println(pt.branches())
+    def f(p:PhylogencyTree,col:List[Char]):(Parameters,List[Double]) = {
+      val pt = new PhylogencyTree(p,p.model)
+      pt.setAlignment(col)
+      pt.inside()
+      pt.outside()
+      val likelihood = pt.likelihood
+      pt.root.setPosterior(likelihood,pt.model)
+      pt.deriveLL
+    }
+    val pairs = alignments.map(f(pt,_))
+    val param = pairs.map(_._1).reduceLeft(_ + _)
+    Visualize.paramViz(paramLog.toList)
+    Visualize.branchViz(branchLog.toList)
+    derivFile.print(param + " ")
+    val brnc = pairs.map(_._2).reduceLeft((_,_).zipped.map(_ + _))
+    derivFile.println("branch " + brnc)
+    derivFile.close()
   }
 
   def mStep(pt:PhylogencyTree,counts:List[Count],an:Double):PhylogencyTree = {

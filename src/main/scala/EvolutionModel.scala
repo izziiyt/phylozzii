@@ -7,6 +7,7 @@ abstract class EvolutionModel{
   def lambda:DenseVector[Double]
   def pi:DenseVector[Double]
   def B:DenseMatrix[Double]
+  def param:Parameters
 }
 
 case class GTR(param:Parameters = Parameters(DenseVector[Double](1.0/12.0,2.0/12.0,3.0/12.0,1.0/12.0,2.0/12.0,3.0/12.0),

@@ -13,6 +13,14 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
     root.setTransition(model)
   }
 
+  def likelihood:Double = root.likelihood(model)
+
+  def setAlignment(al:List[Char]){root.setAlignment(al)}
+
+  def setPosterior(){root.setPosterior(likelihood,model)}
+
+  def branches() = root.left.branches ::: root.right.branches
+
   def inside(tree:Tree = root):DenseVector[Double] = {
     tree match{
       case Node(left,right,cont) =>
@@ -37,7 +45,7 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
     }
   }
 
-  def innerOutside(left:Tree,right:Tree,cont:Content){
+  private def innerOutside(left:Tree,right:Tree,cont:Content){
     val fromLeft = left.cont.accumInsideBelief(model)
     val fromRight = right.cont.accumInsideBelief(model)
     val fromThis = cont.accumOutsideBelief(model)
@@ -54,7 +62,7 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
     Pair(Parameters(param.Bvec,param.pi + tmp),t)
   }
 
-  private[this] def deriveLL(tree:Tree):(Parameters,List[Double]) = {
+  private def deriveLL(tree:Tree):(Parameters,List[Double]) = {
     val rs = for(i <- 0 to 3;j <- 0 to 3) yield deriveLWithLogR(i,j,tree.cont)
     val post = for(i <- 0 to 3;j <- 0 to 3) yield tree.cont.posterior(i,j)
     val ps = (rs,post).zipped.map((r,p) => deriveLWithPi(tree.cont,r) * p).reduceLeft(_ + _)
@@ -73,18 +81,18 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
     }
   }
 
-  def deriveLWithLogR(a:Int,b:Int,cont:Content):DenseMatrix[Double] =
+  private def deriveLWithLogR(a:Int,b:Int,cont:Content):DenseMatrix[Double] =
     cont.NsMati(a,b,model) - (diag(cont.FdVeci(a,b,model)) * model.R * cont.t)
 
-  def deriveLWithPi(cont:Content,r:DenseMatrix[Double]):DenseVector[Double] =
+  private def deriveLWithPi(cont:Content,r:DenseMatrix[Double]):DenseVector[Double] =
     DenseVector((0 to 3).map(i => sum(for(j <- 0 to 3;if j != i) yield r(j,i)) / model.pi(i)).toArray)
 
-  def deriveLWithB(cont:Content,r:DenseMatrix[Double]):DenseVector[Double] = {
+  private def deriveLWithB(cont:Content,r:DenseMatrix[Double]):DenseVector[Double] = {
     val tmp = (r + r.t) :/ model.B
     DenseVector((for(i <- 0 to 2;j <- i+1 to 3) yield tmp(i,j)).toArray)
   }
 
-  def deriveLWithT(cont:Content,r:DenseMatrix[Double]):Double =
+  private def deriveLWithT(cont:Content,r:DenseMatrix[Double]):Double =
     (sum(r) - trace(r)) / cont.t
 
 }

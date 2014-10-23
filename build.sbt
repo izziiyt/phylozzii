@@ -7,6 +7,8 @@ scalaVersion := "2.10.3"
 libraryDependencies += "org.scalatest" % "scalatest_2.10" % "2.0" % "test"
 
 libraryDependencies  ++= Seq(
+  "org.jfree" % "jfreechart" % "1.0.14",
+  "com.github.wookietreiber" %% "scala-chart" % "latest.integration",
   // other dependencies here
   "org.scalanlp" %% "breeze" % "0.8.1",
   // native libraries are not included by default. add this if you want them (as of 0.7)

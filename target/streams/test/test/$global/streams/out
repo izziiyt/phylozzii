@@ -1,10 +1,14 @@
-[debug] Running TaskDef(ParametersTest, org.scalatest.tools.Framework$$anon$1@288a2e62, false, [SuiteSelector])
-[debug] Running TaskDef(EM$Test, org.scalatest.tools.Framework$$anon$1@288a2e62, false, [SuiteSelector])
-[info] Run completed in 21 seconds, 599 milliseconds.
-[info] Total number of tests run: 2
-[info] Suites: completed 2, aborted 0
-[info] Tests: succeeded 2, failed 0, canceled 0, ignored 0, pending 0
+[debug] Running TaskDef(GTRTest, org.scalatest.tools.Framework$$anon$1@789d222b, false, [SuiteSelector])
+[debug] Running TaskDef(TreeTest, org.scalatest.tools.Framework$$anon$1@789d222b, false, [SuiteSelector])
+[debug] Running TaskDef(PhylogencyTreeTest, org.scalatest.tools.Framework$$anon$1@789d222b, false, [SuiteSelector])
+[debug] Running TaskDef(EM$Test, org.scalatest.tools.Framework$$anon$1@789d222b, false, [SuiteSelector])
+[info] Run completed in 7 seconds, 878 milliseconds.
+[info] Total number of tests run: 9
+[info] Suites: completed 4, aborted 0
+[info] Tests: succeeded 9, failed 0, canceled 0, ignored 0, pending 0
 [info] All tests passed.
 [debug] Passed tests:
-[debug] 	ParametersTest
+[debug] 	TreeTest
+[debug] 	PhylogencyTreeTest
+[debug] 	GTRTest
 [debug] 	EM$Test

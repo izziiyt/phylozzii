@@ -1,2 +1,3 @@
 [debug] Copy resource mappings: 
+[debug] 	(/home/yuto/projects/fdur/src/test/resources/sample.nh~,/home/yuto/projects/fdur/target/scala-2.10/test-classes/sample.nh~)
 [debug] 	(/home/yuto/projects/fdur/src/test/resources/sample.nh,/home/yuto/projects/fdur/target/scala-2.10/test-classes/sample.nh)

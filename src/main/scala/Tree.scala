@@ -13,6 +13,7 @@ sealed trait Tree{
   def collectF(m:EvolutionModel):List[DenseVector[Double]]
   def collectN(m:EvolutionModel):List[DenseMatrix[Double]]
   def collectT:List[Double]
+  def branches:List[Double]
 }
 
 case class Node(left:Tree,right:Tree,cont:Content) extends Tree{
@@ -28,6 +29,8 @@ case class Node(left:Tree,right:Tree,cont:Content) extends Tree{
     left.format()
     this
   }
+
+  def branches = left.branches ::: right.branches ::: List(cont.t)
 
   def likelihood(m:EvolutionModel):Double = cont.likelihood(m)
 
@@ -68,6 +71,8 @@ case class Leaf(species:String,cont:ContentOfLeaf) extends Tree{
     cont.t_=(x.head)
     x.tail
   }
+
+  def branches = List(cont.t)
 
   def setAlignment(x:List[Char]) = {
     cont.nuc_=(x.head)

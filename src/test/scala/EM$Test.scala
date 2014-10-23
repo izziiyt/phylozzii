@@ -19,14 +19,13 @@ class EM$Test extends FunSuite {
   val source = "src/test/resources/sample.nh"
   test("EM"){
     val alignments = List(x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13)
-    printExecutionTime(EM(100,source,alignments))
+    printExecutionTime(EM.test(100,source,alignments))
   }
 
   def printExecutionTime(proc: => Unit) = {
     val start = System.currentTimeMillis
     proc
     println((System.currentTimeMillis - start) + "msec")
-
   }
 
 }
