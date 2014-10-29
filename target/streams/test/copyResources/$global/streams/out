@@ -1,3 +1,5 @@
 [debug] Copy resource mappings: 
-[debug] 	(/home/yuto/projects/fdur/src/test/resources/sample.nh~,/home/yuto/projects/fdur/target/scala-2.10/test-classes/sample.nh~)
+[debug] 	(/home/yuto/projects/fdur/src/test/resources/data.filtered.maf,/home/yuto/projects/fdur/target/scala-2.10/test-classes/data.filtered.maf)
+[debug] 	(/home/yuto/projects/fdur/src/test/resources/ce10.7way.nh,/home/yuto/projects/fdur/target/scala-2.10/test-classes/ce10.7way.nh)
+[debug] 	(/home/yuto/projects/fdur/src/test/resources/test.al,/home/yuto/projects/fdur/target/scala-2.10/test-classes/test.al)
 [debug] 	(/home/yuto/projects/fdur/src/test/resources/sample.nh,/home/yuto/projects/fdur/target/scala-2.10/test-classes/sample.nh)

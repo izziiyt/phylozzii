@@ -14,6 +14,7 @@ sealed trait Tree{
   def collectN(m:EvolutionModel):List[DenseMatrix[Double]]
   def collectT:List[Double]
   def branches:List[Double]
+  def names:List[String]
 }
 
 case class Node(left:Tree,right:Tree,cont:Content) extends Tree{
@@ -29,6 +30,8 @@ case class Node(left:Tree,right:Tree,cont:Content) extends Tree{
     left.format()
     this
   }
+
+  def names = left.names ::: right.names
 
   def branches = left.branches ::: right.branches ::: List(cont.t)
 
@@ -73,6 +76,8 @@ case class Leaf(species:String,cont:ContentOfLeaf) extends Tree{
   }
 
   def branches = List(cont.t)
+
+  def names = List(species)
 
   def setAlignment(x:List[Char]) = {
     cont.nuc_=(x.head)

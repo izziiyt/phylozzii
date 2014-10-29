@@ -13,7 +13,6 @@ object EM{
       pt = mStep(pt,counts,an)
     }
   }
-
   def test(loop:Int,nhFile:String,alignments:List[List[Char]]){
     val paramLog = ArrayBuffer[Parameters]()
     val branchLog = ArrayBuffer[List[Double]]()

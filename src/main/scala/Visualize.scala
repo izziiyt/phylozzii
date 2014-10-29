@@ -20,6 +20,5 @@ object Visualize {
     val xs =  for(i <- 0 until bs.length) yield (i,Z zip bs(i))
     val chart = XYLineChart(xs.toXYSeriesCollection(),title = "branch")
     chart.saveAsPNG("target/branches.png")
-    chart.show()
   }
 }

@@ -29,8 +29,13 @@ object FilteredMafParser extends FilteredMaf {
 
 case class Chromosome(name:String,chr:String)
 case class Index(index:Int,direction:Char)
-case class Sequence(feature:Feature,chr:Chromosome,index:Index,seq:String)
+
+case class Sequence(feature:Feature,chr:Chromosome,index:Index,seq:String){
+  def length = seq.length
+}
+
 case class MafUnit(score:Double,seqs:List[Sequence])
+
 case class MafHeader(text:String)
 
 sealed trait Feature{
@@ -41,3 +46,4 @@ case object S extends Feature{
 }
 case object E extends Feature
 case object I extends Feature
+
