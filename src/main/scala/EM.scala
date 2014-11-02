@@ -13,6 +13,16 @@ object EM{
       pt = mStep(pt,counts,an)
     }
   }
+
+ /* @tailrec
+  def em(loop:Int,al:List[List[Char]],pt:PhylogencyTree){
+    if(loop < 1) return
+    else{
+      val counts = al.map(eStep(pt,_)
+      em(loop - 1,al,mStep(pt,counts,al.length))
+    }
+  }*/
+
   def test(loop:Int,nhFile:String,alignments:List[List[Char]]){
     val paramLog = ArrayBuffer[Parameters]()
     val branchLog = ArrayBuffer[List[Double]]()
@@ -25,7 +35,6 @@ object EM{
       paramLog += pt.model.param
       branchLog += pt.branches
     }
-    println(pt.branches())
     def f(p:PhylogencyTree,col:List[Char]):(Parameters,List[Double]) = {
       val pt = new PhylogencyTree(p,p.model)
       pt.setAlignment(col)
@@ -46,37 +55,41 @@ object EM{
   }
 
   def mStep(pt:PhylogencyTree,counts:List[Count],an:Double):PhylogencyTree = {
-    def foldDouble(xs:List[List[Double]]):List[Double] = xs.reduce((x,y) => (x,y).zipped.map(_ + _)).map(_ / an)
-    def foldMatrix(xs:List[List[DenseMatrix[Double]]]):List[DenseMatrix[Double]] = xs.reduce((x,y) => (x,y).zipped.map(_ + _)).map(_ / an)
-    def foldVector(xs:List[List[DenseVector[Double]]]):List[DenseVector[Double]] = xs.reduce((x,y) => (x,y).zipped.map(_ + _)).map(_ / an)
-    def folding(xs:List[DenseVector[Double]]):DenseVector[Double] = xs.reduce(_ + _) / an
-    val FdList:List[DenseVector[Double]] = foldVector(counts.map(_.Fd))
-    val NsList:List[DenseMatrix[Double]] = foldMatrix(counts.map(_.Ns))
-    val TList:List[Double] = foldDouble(counts.map(_.T))
-    val nVec:DenseVector[Double] = folding(counts.map(_.ns))
-    println("total likelihood: " + counts.map(_.likelihood).sum)
-    val TdVec:DenseVector[Double] = (FdList,TList).zipped.map(_ * _).reduce(_ + _)
-    val NsMat:DenseMatrix[Double] = NsList.reduce(_ + _)
-    val tmp = new PhylogencyTree(pt,GTR(Parameters(newB(NsMat,TdVec,pt.model),newPi(NsMat,TdVec,nVec,pt.model))))
-    tmp.setBranch(newT(NsList,FdList,pt.model) ::: List(0.0))
+    val sumCount = counts.reduce(_+_) / counts.length
+    println("qFunction: " + qFunction(sumCount,pt.model))
+    val Ns = sumCount.Ns.reduce(_+_).map(_ / sumCount.Ns.length)
+    val Td = (sumCount.Fd,sumCount.T).zipped.map(_*_).reduce(_+_).map(_ / sumCount.Fd.length)
+    val tmp = new PhylogencyTree(pt,GTR(Parameters(newB(Ns,Td,pt.model),newPi(Ns,Td,sumCount.ns,pt.model))))
+    tmp.setBranch(newT(sumCount.Ns,sumCount.Fd,pt.model) ::: List(0.0))
     tmp
   }
 
+  def qFunction(c:Count,m:EvolutionModel):Double = {
+    val tmp = for{
+      i <- 0 to 3
+      j <- 0 to 3
+      x = c.ns(i) * log(m.pi(i))
+    } yield
+      if(i == j) x + (c.T,c.Fd).zipped.map((t,f) => t * f(i) * m.R(i,i)).sum
+      else x + (c.T,c.Ns).zipped.map((t,n) => n(i,j) * log(t*m.R(i,j))).sum
+    tmp.sum
+  }
+
   def newPi(Ns:DenseMatrix[Double],Td:DenseVector[Double],n:DenseVector[Double],m:EvolutionModel) = {
-    val u = (0 until 4) map (i => n(i) + sum(Ns(::,i)) - Ns(i,i))
-    val v = (0 until 4) map (i => (0 until 4).foldLeft(0.0)((x,j) => if(i != j) x + m.B(j,i) * Td(j) else x))
+    val u = (0 to 3) map (i => n(i) + sum(Ns(::,i)) - Ns(i,i))
+    val v = (0 to 3) map (i => (0 to 3).foldLeft(0.0)((x,j) => if(i != j) x + m.B(j,i) * Td(j) else x))
     calcNewParameter(u.toList,v.toList)
   }
 
   def newB(Ns:DenseMatrix[Double],Td:DenseVector[Double],m:EvolutionModel) = {
-    val u = for(i <- 0 until 4;j <- i+1 until 4) yield Ns(i,j) + Ns(j,i)
-    val v = for(i <- 0 until 4;j <- i+1 until 4) yield m.pi(j) * Td(i) + m.pi(i) * Td(j)
+    val u = for(i <- 0 to 3;j <- i+1 to 3) yield Ns(i,j) + Ns(j,i)
+    val v = for(i <- 0 to 3;j <- i+1 to 3) yield m.pi(j) * Td(i) + m.pi(i) * Td(j)
     calcNewParameter(u.toList,v.toList)
   }
 
   def newT(Ns:List[DenseMatrix[Double]],Fd:List[DenseVector[Double]],m:EvolutionModel):List[Double] = {
     val Ns0:List[Double] = Ns.map(m => sum(m) - trace(m))
-    (Ns0,Fd).zipped.map((ns0,fd) => ns0 / (0 until 4).foldLeft(0.0)((x,i) => x + abs(m.R(i,i)) * fd(i)))
+    (Ns0,Fd).zipped.map((ns0,fd) => ns0 / (0 to 3).foldLeft(0.0)((x,i) => x + abs(m.R(i,i)) * fd(i)))
   }
 
   def calcNewParameter(u:List[Double],v:List[Double]):DenseVector[Double] = {

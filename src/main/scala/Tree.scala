@@ -132,4 +132,15 @@ class NHParser extends JavaTokenParsers {
 }
 
 case class Count(Fd:List[DenseVector[Double]],Ns:List[DenseMatrix[Double]],
-                 T:List[Double],ns:DenseVector[Double],likelihood:Double)
+                 T:List[Double],ns:DenseVector[Double],likelihood:Double){
+
+  def +(that:Count) = Count((Fd,that.Fd).zipped.map(_ + _),
+    (Ns,that.Ns).zipped.map(_ + _),
+    (T,that.T).zipped.map(_ + _),
+    ns + that.ns,
+    likelihood+that.likelihood)
+
+  def *(arg:Double) = Count(Fd.map(_*arg),Ns.map(_*arg),T.map(_*arg),ns.map(_*arg),likelihood)
+
+  def /(arg:Double) = Count(Fd.map(_/arg),Ns.map(_/arg),T.map(_/arg),ns.map(_/arg),likelihood)
+}
