@@ -4,17 +4,18 @@ import scala.collection.mutable.ArrayBuffer
 import scala.math._
 
 object EM{
-  def apply(loop:Int,nhFile:String,alignments:List[List[Char]]){
+  /*def apply(loop:Int,nhFile:String,alignments:List[List[Char]]){
     var pt = new PhylogencyTree(nhFile,GTR())
     for(i <- 1 to loop){
       val counts = alignments.map(eStep(pt,_))
       pt = mStep(pt,counts)
     }
-  }
+  }*/
 
   def test(loop:Int,nhFile:String,alignments:List[List[Char]]){
     val paramLog = ArrayBuffer[Parameters]()
     val branchLog = ArrayBuffer[List[Double]]()
+    val llLog = ArrayBuffer[Double]()
     var pt = new PhylogencyTree(nhFile,GTR())
     for(i <- 1 to loop){
       val counts = alignments.map(eStep(pt,_))

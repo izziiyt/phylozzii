@@ -14,11 +14,15 @@ object MafToAlignments {
         for(seq <- unit.seqs){
           buf(mymap(seq.chr.name)) = trans(seq.seq(i))
         }
-        buf.foreach(b => out.print(b + " "))
-        out.println()
+        if(!isGerbage(buf)){buf.foreach(b => out.print(b + " "));out.println()}
       }
     }
     out.close()
+  }
+
+  private def isGerbage(xs:Array[Int]) = {
+    val tmp = xs.foldLeft(0)((x,i) => if(i == 4) x + 1 else x)
+    if(tmp >= xs.length - 1) true else false
   }
 
   private def trans(x:Char):Char = {
