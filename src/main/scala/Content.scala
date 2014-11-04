@@ -6,7 +6,7 @@ abstract class Content(var t:Double){
   val alpha = DenseVector.zeros[Double](4)
   val beta = DenseVector.zeros[Double](4)
   val posterior = DenseMatrix.zeros[Double](4,4)
-  var transProb = DenseMatrix.zeros[Double](4,4)
+  private var transProb = DenseMatrix.zeros[Double](4,4)
 
   def format(){
     alpha(0 to 3) := 0.0
@@ -41,37 +41,37 @@ abstract class Content(var t:Double){
 
   //vector of Fd(i,C,theta)
   def FdVec(m:EvolutionModel) = {
-    def Fd(i:Int) = for(x <- 0 until 4;y<- 0 until 4) yield divExpMatrix(x,y,i,i,m) * posterior(x,y)
-    val tmp = (0 until 4) map (i => Fd(i).sum)
+    def fd(i:Int) = for(x <- 0 to 3;y<- 0 to 3) yield kai(x,y,i,i,m) * posterior(x,y)
+    val tmp = (0 to 3) map (i => fd(i).sum)
     new DenseVector(tmp.toArray)
   }
 
   //Matrix of Ns(i,j,C,theta) i -> j
   def NsMat(m:EvolutionModel) = {
-    def Nss(i:Int,j:Int) = for(x <- 0 until 4;y <- 0 until 4) yield divExpMatrix(x,y,i,j,m) * posterior(x,y)
-    val tmp = for(j <- 0 until 4;i <- 0 until 4) yield Nss(i,j).sum
+    def ns(i:Int,j:Int) = for(x <- 0 to 3;y <- 0 to 3) yield kai(x,y,i,j,m) * posterior(x,y)
+    val tmp = for(j <- 0 to 3;i <- 0 to 3) yield ns(i,j).sum * m.R(i,j) * t
     new DenseMatrix(4,4,tmp.toArray)
   }
 
   @deprecated
   def NsMati(a:Int,b:Int,m:EvolutionModel):DenseMatrix[Double] = {
     val tmp = DenseMatrix.zeros[Double](4,4)
-    for(i <- 0 to 3;j <- 0 to 3;if i != j){tmp(i,j) = m.R(i,j) * t * divExpMatrix(a,b,i,j,m)}
-    tmp /transProb(a,b)
+    for(i <- 0 to 3;j <- 0 to 3;if i != j){tmp(i,j) = m.R(i,j) * t * kai(a,b,i,j,m)}
+    tmp
   }
 
   @deprecated
   def FdVeci(a:Int,b:Int,m:EvolutionModel):DenseVector[Double] = {
     val tmp = DenseVector.zeros[Double](4)
-    for(i <- 0 to 3){tmp(i) = divExpMatrix(a,b,i,i,m)}
-    tmp /transProb(a,b)
+    for(i <- 0 to 3){tmp(i) = kai(a,b,i,i,m)}
+    tmp
   }
 
   //beg -> end and from -> to
-  def divExpMatrix(beg:Int,end:Int,from:Int,to:Int,m:EvolutionModel) = {
+  private def kai(beg:Int,end:Int,from:Int,to:Int,m:EvolutionModel) = {
     def k(x:Double,y:Double) = if(DoubleChecker(x,y)) exp(x) else (exp(x) - exp(y)) / (x - y)
     val tmp = for(x <- 0 to 3; y <- 0 to 3) yield m.u(beg,x) * m.ui(x,from) * m.u(to,y) * m.ui(y,end) * k(t*m.lambda(x),t*m.lambda(y))
-    tmp.sum
+    tmp.sum / transProb(beg,end)
   }
 
   def likelihood(m:EvolutionModel):Double = alpha.t * m.pi

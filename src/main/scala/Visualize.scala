@@ -8,8 +8,8 @@ object Visualize {
     val xs = for(i <- 0 to 3) yield ("(" + i + ")",Z zip pis(i))
     val chart1 = XYLineChart(xs.toXYSeriesCollection(),title = "pi")
     chart1.saveAsPNG("target/pi.png")
-    val bs = for(i <- 0 to 3) yield params.map(_.Bvec(i))
-    val ys = for(i <- 0 to 3) yield ("(" + i + ")",Z zip bs(i))
+    val bs = for(i <- 0 to 5) yield params.map(_.Bvec(i))
+    val ys = for(i <- 0 to 5) yield ("(" + i + ")",Z zip bs(i))
     val chart2 = XYLineChart(ys.toXYSeriesCollection(),title = "b")
     chart2.saveAsPNG("target/b.png")
   }

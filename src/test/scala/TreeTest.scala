@@ -29,7 +29,7 @@ class TreeTest extends FunSuite {
   }
 
   test("setAlignment"){
-    tree.setAlignment(List(1,2,3))
+    tree.setColumn(List(1,2,3))
 
     def column(tree:Tree):List[Char] = {
       tree match{

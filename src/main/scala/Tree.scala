@@ -6,7 +6,7 @@ import scala.util.parsing.combinator.JavaTokenParsers
 sealed trait Tree{
   def cont:Content
   def format():Tree
-  def setAlignment(x:List[Char]):List[Char]
+  def setColumn(x:List[Char]):List[Char]
   def setBranch(x:List[Double]):List[Double]
   def setTransition(m:EvolutionModel)
   def setPosterior(l:Double,m:EvolutionModel)
@@ -19,9 +19,9 @@ sealed trait Tree{
 
 case class Node(left:Tree,right:Tree,cont:Content) extends Tree{
 
-  def setAlignment(x:List[Char]) = {
-    val tmp = left.setAlignment(x)
-    right.setAlignment(tmp)
+  def setColumn(x:List[Char]) = {
+    val tmp = left.setColumn(x)
+    right.setColumn(tmp)
   }
 
   def format() = {
@@ -44,9 +44,6 @@ case class Node(left:Tree,right:Tree,cont:Content) extends Tree{
   def collectT = left.collectT ::: right.collectT ::: List(cont.t)
 
   def collectn(m:EvolutionModel):DenseVector[Double] = (cont.alpha :* m.pi) / likelihood(m)
-
-  def count(m:EvolutionModel) = Count(left.collectF(m) ::: right.collectF(m),
-    left.collectN(m) ::: right.collectN(m),left.collectT ::: right.collectT,collectn(m),likelihood(m))
 
   def setBranch(x:List[Double]) = {
     val y = left.setBranch(x)
@@ -79,7 +76,7 @@ case class Leaf(species:String,cont:ContentOfLeaf) extends Tree{
 
   def names = List(species)
 
-  def setAlignment(x:List[Char]) = {
+  def setColumn(x:List[Char]) = {
     cont.nuc_=(x.head)
     x.tail
   }
@@ -132,15 +129,12 @@ class NHParser extends JavaTokenParsers {
 }
 
 case class Count(Fd:List[DenseVector[Double]],Ns:List[DenseMatrix[Double]],
-                 T:List[Double],ns:DenseVector[Double],likelihood:Double){
+                 T:List[Double],ns:DenseVector[Double],ll:Double){
 
-  def +(that:Count) = Count((Fd,that.Fd).zipped.map(_ + _),
-    (Ns,that.Ns).zipped.map(_ + _),
-    (T,that.T).zipped.map(_ + _),
-    ns + that.ns,
-    likelihood+that.likelihood)
+  def +(that:Count) =
+    Count((Fd,that.Fd).zipped.map(_ + _),(Ns,that.Ns).zipped.map(_ + _),(T,that.T).zipped.map(_ + _),ns + that.ns,ll + that.ll)
 
-  def *(arg:Double) = Count(Fd.map(_*arg),Ns.map(_*arg),T.map(_*arg),ns.map(_*arg),likelihood)
+  def *(arg:Double) = Count(Fd.map(_*arg),Ns.map(_*arg),T.map(_*arg),ns * arg,ll)
 
-  def /(arg:Double) = Count(Fd.map(_/arg),Ns.map(_/arg),T.map(_/arg),ns.map(_/arg),likelihood)
+  def /(arg:Double) = Count(Fd.map(_/arg),Ns.map(_/arg),T.map(_/arg),ns / arg,ll)
 }

@@ -1,10 +1,12 @@
 import breeze.linalg.{sum, DenseMatrix,DenseVector,eigSym,diag}
 import org.scalatest.FunSuite
 import math.{abs,log}
+import scala.io.Source
 
 class PhylogencyTreeTest extends FunSuite {
   test("breeze.linalg"){
     val a = DenseMatrix((1,2),(3,4))
+    assert(a == new DenseMatrix(2,2,Array(1,3,2,4)))
     val b = DenseVector(1,2)
     val c = DenseMatrix((1.0,2.0),(2.0,1.0))
     val d = DenseMatrix(
@@ -22,68 +24,82 @@ class PhylogencyTreeTest extends FunSuite {
   }
 
   test("gradient descent"){
-    val (param,branch) = numerical()
-    val a = analyticalPi()
-    val b = analyticalB()
-    val c = analyticalT()
-    assert(abs(param.pi(1)-a) < math.exp(-5))
-    assert(abs(param.a - b) < math.exp(-5))
-    println(branch)
-    println(c)
-    assert(abs(branch(2) - c) < math.exp(-5))
+    val al = getAlignments("src/test/resources/test.al")
+    for(col <- al){
+      val (param,branch) = numerical(col)
+      val a = analyticalPi(col)
+      val b = analyticalB(col)
+      val c = analyticalT(col)
+      def f(x:List[Char]) = x.map(_.toInt)
+      if(abs(param.pi(1)-a) > math.exp(-5)) println("pi " + abs(param.pi(1)-a))
+      if(abs(param.a - b) > math.exp(-5)) println("b " + abs(param.a - b))
+      if(abs(branch(2) - c) > math.exp(-5)) println("br " + abs(branch(2) - c))
+    }
   }
-  def numerical()  = {
-    val source = "src/test/resources/sample.nh"
+
+  def getAlignments(al:String):List[List[Char]] = {
+    val source = Source.fromFile(al)
+    val cols = for{
+      l <- source.getLines().take(1000)
+      chrs = l.split(" ")
+    } yield chrs.map(_.toInt.toChar).toList
+    cols.toList
+  }
+
+  def numerical(colmn:List[Char])  = {
+    val source = "src/test/resources/ce10.7way.nh"
     val pt = new PhylogencyTree(Tree(source),GTR())
-    pt.root.setAlignment(List[Char](2,3,1))
-    pt.inside(pt.root)
-    pt.outside(pt.root)
-    val likelihood = pt.root.likelihood(pt.model)
-    pt.root.setPosterior(likelihood,pt.model)
+    pt.setColumn(colmn)
+    pt.setBranch(List(0.5,0.4,0.3,0.2,0.3,0.4,0.2,0.4,0.6,0.1,0.5,0.7))
+    pt.inside()
+    pt.outside()
+    pt.setPosterior()
     pt.deriveLL
   }
 
-  def prepare(pt:PhylogencyTree):Double = {
-    pt.root.setAlignment(List[Char](2,3,1))
-    pt.inside(pt.root)
-    println(log(pt.root.likelihood(pt.model)))
-    log(pt.root.likelihood(pt.model))
+  def prepare(pt:PhylogencyTree,colmn:List[Char]):Double = {
+    pt.setColumn(colmn)
+    pt.inside()
+    log(pt.likelihood)
   }
 
-  def analyticalPi():Double = {
+  def analyticalPi(branch:List[Char]):Double = {
     val h = 0.001
     val PlusModel = GTR(Parameters(DenseVector[Double](1.0/12.0,2.0/12.0,3.0/12.0,1.0/12.0,2.0/12.0,3.0/12.0),
       DenseVector[Double](0.1,0.2+h/2,0.3,0.4)))
     val MinsModel = GTR(Parameters(DenseVector[Double](1.0/12.0,2.0/12.0,3.0/12.0,1.0/12.0,2.0/12.0,3.0/12.0),
       DenseVector[Double](0.1,0.2-h/2,0.3,0.4)))
-    val source = "src/test/resources/sample.nh"
+    val source = "src/test/resources/ce10.7way.nh"
     val Pluspt = new PhylogencyTree(Tree(source),PlusModel)
     val Minspt = new PhylogencyTree(Tree(source),MinsModel)
-    (prepare(Pluspt) - prepare(Minspt)) / h
+    Pluspt.setBranch(List(0.5,0.4,0.3,0.2,0.3,0.4,0.2,0.4,0.6,0.1,0.5,0.7))
+    Minspt.setBranch(List(0.5,0.4,0.3,0.2,0.3,0.4,0.2,0.4,0.6,0.1,0.5,0.7))
+    (prepare(Pluspt,branch) - prepare(Minspt,branch)) / h
   }
 
-  def analyticalB():Double = {
-    val h = 0.01
+  def analyticalB(branch:List[Char]):Double = {
+    val h = 0.001
     val PlusModel = GTR(Parameters(DenseVector[Double](1.0/12.0+h/2,2.0/12.0,3.0/12.0,1.0/12.0,2.0/12.0,3.0/12.0),
       DenseVector[Double](0.1,0.2,0.3,0.4)))
     val MinsModel = GTR(Parameters(DenseVector[Double](1.0/12.0-h/2,2.0/12.0,3.0/12.0,1.0/12.0,2.0/12.0,3.0/12.0),
       DenseVector[Double](0.1,0.2,0.3,0.4)))
-    val source = "src/test/resources/sample.nh"
+    val source = "src/test/resources/ce10.7way.nh"
     val Pluspt = new PhylogencyTree(Tree(source),PlusModel)
     val Minspt = new PhylogencyTree(Tree(source),MinsModel)
-    (prepare(Pluspt) - prepare(Minspt)) / h
+    Pluspt.setBranch(List(0.5,0.4,0.3,0.2,0.3,0.4,0.2,0.4,0.6,0.1,0.5,0.7))
+    Minspt.setBranch(List(0.5,0.4,0.3,0.2,0.3,0.4,0.2,0.4,0.6,0.1,0.5,0.7))
+    (prepare(Pluspt,branch) - prepare(Minspt,branch)) / h
   }
 
-  def analyticalT():Double = {
-    val h = 0.01
-    val source = "src/test/resources/sample.nh"
+  def analyticalT(branch:List[Char]):Double = {
+    val h = 0.001
+    val source = "src/test/resources/ce10.7way.nh"
     val Pluspt = new PhylogencyTree(Tree(source),GTR())
     val Minspt = new PhylogencyTree(Tree(source),GTR())
-    Pluspt.setBranch(List(0.5,0.4,0.3+h/2,0.2,0.0))
-    Minspt.setBranch(List(0.5,0.4,0.3-h/2,0.2,0.0))
-    (prepare(Pluspt) - prepare(Minspt)) / h
+    Pluspt.setBranch(List(0.5,0.4,0.3+h/2,0.2,0.3,0.4,0.2,0.4,0.6,0.1,0.5,0.7))
+    Minspt.setBranch(List(0.5,0.4,0.3-h/2,0.2,0.3,0.4,0.2,0.4,0.6,0.1,0.5,0.7))
+    (prepare(Pluspt,branch) - prepare(Minspt,branch)) / h
   }
-
 
   test("inside&outside"){
     val source = "src/test/resources/sample.nh"
@@ -105,7 +121,7 @@ class PhylogencyTreeTest extends FunSuite {
       }
     }
     hoge(pt.root)
-    pt.root.setAlignment(List[Char](2,3,1))
+    pt.root.setColumn(List[Char](2,3,1))
     pt.inside(pt.root)
     pt.outside(pt.root)
     assert(pt.root.cont.alpha == DenseVector(150.0, 240.0, 50.0, 120.0))

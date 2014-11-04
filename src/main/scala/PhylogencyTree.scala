@@ -1,4 +1,5 @@
 import breeze.linalg.{DenseMatrix,DenseVector,sum,trace,diag}
+import math.log
 
 class PhylogencyTree(val root:Node,val model:EvolutionModel){
 
@@ -9,13 +10,19 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
   def this(that:PhylogencyTree,m:EvolutionModel) = this(that.root.format(),m)
 
   def setBranch(x:List[Double]){
-    root.setBranch(x)
+    val tmp = root.left.setBranch(x)
+    root.right.setBranch(tmp)
     root.setTransition(model)
   }
 
+  def count = Count(root.left.collectF(model) ::: root.right.collectF(model),
+    root.left.collectN(model) ::: root.right.collectN(model),root.left.collectT ::: root.right.collectT,root.collectn(model),log(likelihood))
+
   def likelihood:Double = root.likelihood(model)
 
-  def setAlignment(al:List[Char]){root.setAlignment(al)}
+  def setColumn(al:List[Char]){
+    root.setColumn(al)
+  }
 
   def setPosterior(){root.setPosterior(likelihood,model)}
 
@@ -92,7 +99,6 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
     DenseVector((for(i <- 0 to 2;j <- i+1 to 3) yield tmp(i,j)).toArray)
   }
 
-  private def deriveLWithT(cont:Content,r:DenseMatrix[Double]):Double =
-    (sum(r) - trace(r)) / cont.t
+  private def deriveLWithT(cont:Content,r:DenseMatrix[Double]):Double = (sum(r) - trace(r)) / cont.t
 
 }
