@@ -37,7 +37,7 @@ class EM$Test extends FunSuite {
   def getAlignments(al:String):List[List[Char]] = {
     val source = Source.fromFile(al)
     val cols = for{
-      l <- source.getLines().take(1000)
+      l <- source.getLines().take(100)
       chrs = l.split(" ")
     } yield chrs.map(_.toInt.toChar).toList
     cols.toList
