@@ -37,7 +37,10 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
         cont.accumInsideBelief(model)
       case Leaf(_,cont) =>
         if(cont.nuc > 3) cont.alpha(0 to 3) := 1.0
-        else cont.alpha(cont.nuc.toInt) = 1.0
+        else{
+          cont.alpha(0 to 3) := 0.0
+          cont.alpha(cont.nuc.toInt) = 1.0
+        }
         cont.accumInsideBelief(model)
     }
   }

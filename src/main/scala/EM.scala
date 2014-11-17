@@ -1,6 +1,8 @@
 import breeze.linalg.{DenseMatrix, DenseVector,sum,trace}
+import java.io.PrintWriter
 import scala.annotation.tailrec
 import scala.collection.mutable.ArrayBuffer
+import scala.io.Source
 import scala.math._
 
 object EM{
@@ -37,12 +39,25 @@ object EM{
     tmp
   }
 
-  private def qFunction(c:Count,m:EvolutionModel):Double = {
+ /* def parMstep(countFiles:List[String],paramFile:String,nhFile:String){
+    val sumCount = countFiles.map(getCount(_)).reduce(_+_) / counts.length
+    println("likelihood : " + sumCount.ll)
+    val model = GTR(getParameter(paramFile))
+    val Ns = sumCount.Ns.reduce(_+_)
+    val Td:DenseVector[Double] = (sumCount.Fd,sumCount.T).zipped.map(_*_).reduce(_+_)
+    printParam(Parameters(newB(Ns,Td,model),newPi(Ns,Td,sumCount.ns,model)))
+    val tree = Tree(nhFile)
+    printNh(nhFile,newT(sumCount.Ns,sumCount.Fd,model))
+  }
+
+  def getParameter(paramFile:String):Parameters
+*/
+  /*private def qFunction(c:Count,m:EvolutionModel):Double = {
     val n = for(i <- 0 to 3;j <- 0 to 3;if i != j) yield (c.Ns,c.T).zipped.map((x,y) => x(i,j) * log(y * m.R(i,j))).sum
     val f = for(i <- 0 to 3) yield (c.Fd,c.T).zipped.map((x,y) => x(i) * y * m.R(i,i)).sum
     val t = for(i <- 0 to 3) yield c.ns(i) * log(m.pi(i))
     n.sum + f.sum + t.sum
-  }
+  }*/
 
   private def newPi(Ns:DenseMatrix[Double],Td:DenseVector[Double],n:DenseVector[Double],m:EvolutionModel) = {
     val u = (0 to 3) map (i => n(i) + sum(Ns(::,i)) - Ns(i,i))
@@ -78,8 +93,7 @@ object EM{
     DenseVector((u,v).zipped.map((i,j) => i / (j + nlmd)).toArray)
   }
 
-  private def eStep(p:PhylogencyTree,column:List[Char]):Count = {
-    val pt = new PhylogencyTree(p,p.model)
+  def eStep(pt:PhylogencyTree,column:List[Char]):Count = {
     pt.setColumn(column)
     pt.inside()
     pt.outside()
