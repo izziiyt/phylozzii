@@ -42,20 +42,3 @@ case class GTR(param:Parameters = Parameters(DenseVector[Double](1.0/12.0,2.0/12
   val ui = inv(u)
   def pi = param.pi
 }
-
-case class Parameters(Bvec:DenseVector[Double],pi:DenseVector[Double]){
-  require(Bvec.length == 6)
-  require(pi.length == 4)
-
-  def + (that:Parameters) = Parameters(this.Bvec + that.Bvec,this.pi + that.pi)
-  def / (that:Double) = Parameters(this.Bvec / that,this.pi / that)
-  def :* (that:Parameters) = Parameters(this.Bvec :* that.Bvec,this.pi :* that.pi)
-  def * (that:Double) = Parameters(this.Bvec * that,this.pi * that)
-
-  def a = Bvec(0)
-  def b = Bvec(1)
-  def c = Bvec(2)
-  def d = Bvec(3)
-  def e = Bvec(4)
-  def f = Bvec(5)
-}

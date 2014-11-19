@@ -15,6 +15,7 @@ sealed trait Tree{
   def collectT:List[Double]
   def branches:List[Double]
   def names:List[String]
+  override def toString:String
 }
 
 case class Node(left:Tree,right:Tree,cont:Content) extends Tree{
@@ -29,6 +30,13 @@ case class Node(left:Tree,right:Tree,cont:Content) extends Tree{
     right.format()
     left.format()
     this
+  }
+
+  override def toString = {
+    cont match {
+      case ContentOfRoot(_) => "(" + left + "," + right + ");"
+      case ContentOfNode(t) => "(" + left + "," + right + "):" + t
+    }
   }
 
   def names = left.names ::: right.names
@@ -72,6 +80,8 @@ case class Leaf(species:String,cont:ContentOfLeaf) extends Tree{
     x.tail
   }
 
+  override def toString = species + ":" + cont.t
+
   def branches = List(cont.t)
 
   def names = List(species)
@@ -102,7 +112,6 @@ case class Leaf(species:String,cont:ContentOfLeaf) extends Tree{
 }
 
 object Tree extends NHParser{
-
   def apply(nhFile:String):Node = {
     val reader = new FileReader(nhFile)
     parseAll(tree,reader).get
@@ -128,13 +137,3 @@ class NHParser extends JavaTokenParsers {
   def name: Parser[String] = ident
 }
 
-case class Count(Fd:List[DenseVector[Double]],Ns:List[DenseMatrix[Double]],
-                 T:List[Double],ns:DenseVector[Double],ll:Double){
-
-  def +(that:Count) =
-    Count((Fd,that.Fd).zipped.map(_ + _),(Ns,that.Ns).zipped.map(_ + _),(T,that.T).zipped.map(_ + _),ns + that.ns,ll + that.ll)
-
-  def *(arg:Double) = Count(Fd.map(_*arg),Ns.map(_*arg),T.map(_*arg),ns * arg,ll)
-
-  def /(arg:Double) = Count(Fd.map(_/arg),Ns.map(_/arg),T.map(_/arg),ns / arg,ll)
-}
