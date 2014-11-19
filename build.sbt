@@ -1,3 +1,5 @@
+import AssemblyKeys._
+
 name := "fdur"
 
 version := "0.1"
@@ -23,3 +25,12 @@ lazy val buildSettings = Seq(
   organization := "izzii",
   scalaVersion := "2.10.3"
 )
+
+val app = (project in file("app")).
+  settings(buildSettings: _*).
+  settings(assemblySettings: _*).
+  settings(
+    // your settings here
+  )
+
+test in assembly := {}
