@@ -1,4 +1,4 @@
-import breeze.linalg.{sum, DenseMatrix, DenseVector, diag}
+import breeze.linalg.{DenseMatrix, DenseVector, diag}
 import scala.math._
 
 abstract class Content(var t:Double){

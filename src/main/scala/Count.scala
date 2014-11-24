@@ -37,8 +37,8 @@ class CountParser extends JavaTokenParsers {
   def vector: Parser[DenseVector[Double]] =  "DenseVector("~> repsep(value,",") <~")"  ^^
     {case x => DenseVector(x.toArray)}
 
-  def matrix: Parser[DenseMatrix[Double]] = "DenseMatrix(" ~> repsep(value,"," | "),(") <~")" ^^
-    {case x => DenseMatrix(4,4,x.toArray).t}
+  def matrix: Parser[DenseMatrix[Double]] = repsep(value,"") ^^
+    {case x => println("hoge");new DenseMatrix(4,4,x.toArray).t}
 
   def mlist: Parser[List[DenseMatrix[Double]]] = "List(" ~> repsep(matrix,",") <~ ")"
 
@@ -46,7 +46,7 @@ class CountParser extends JavaTokenParsers {
 
   def dlist: Parser[List[Double]] = "List(" ~> repsep(value,",") <~ ")"
 
-  def count: Parser[Count] = "Count("~> vlist~","~mlist~","~repsep(value,",")~","~vector~","~value <~")" ^^
+  def count: Parser[Count] = "Count("~> vlist~","~mlist~","~dlist~","~vector~","~value <~")" ^^
     {case a~","~b~","~c~","~d~","~e => Count(a,b,c,d,e)}
 
   def value: Parser[Double] = floatingPointNumber ^^ (_.toDouble)

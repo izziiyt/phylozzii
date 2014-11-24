@@ -29,6 +29,7 @@ object Parameters extends ParameterParser{
     reader.close()
     tmp
   }
+  def fromString(txt:String):Parameters = parseAll(parameters,txt).get
 }
 
 class ParameterParser extends JavaTokenParsers {

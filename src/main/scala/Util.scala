@@ -1,4 +1,5 @@
 import scala.io.Source
+import scala.math.{abs,exp}
 
 object Util {
   def getAlignments(al:String):List[List[Char]] = {
@@ -10,5 +11,9 @@ object Util {
     } yield chrs.map(_.toInt.toChar).toList
     source.close()
     cols.toList
+  }
+  def doubleChecker(x:Double,y:Double,p:Double = exp(-10)):Boolean = {
+    val tmp = abs(x - y)
+    if(tmp < p) true else false
   }
 }

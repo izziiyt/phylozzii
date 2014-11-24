@@ -1,5 +1,4 @@
 import breeze.linalg.{DenseVector,DenseMatrix}
-import math.exp
 import java.io.FileReader
 import scala.util.parsing.combinator.JavaTokenParsers
 

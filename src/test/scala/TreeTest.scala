@@ -1,4 +1,5 @@
 import org.scalatest.FunSuite
+import scala.io.Source
 
 class TreeTest extends FunSuite {
   val source = "src/test/resources/sample.nh"
@@ -8,19 +9,15 @@ class TreeTest extends FunSuite {
 
     def names(tree:Tree):List[String] = {
       tree match {
-        case Node(left,right,_) =>
-          names(left) ::: names(right)
-        case Leaf(name,_) =>
-          List(name)
+        case Node(left,right,_) => names(left) ::: names(right)
+        case Leaf(name,_) => List(name)
       }
     }
 
     def branches(tree:Tree):List[Double] = {
       tree match {
-        case Node(left,right,cont) =>
-          branches(left) ::: branches(right) ::: List(cont.t)
-        case Leaf(_,cont) =>
-          List(cont.t)
+        case Node(left,right,cont) => branches(left) ::: branches(right) ::: List(cont.t)
+        case Leaf(_,cont) => List(cont.t)
       }
     }
 
@@ -29,7 +26,7 @@ class TreeTest extends FunSuite {
   }
 
   test("setAlignment"){
-    tree.setColumn(List(1,2,3))
+    tree.setColumn(List(1,2,3).map(_.toChar))
 
     def column(tree:Tree):List[Char] = {
       tree match{
@@ -41,4 +38,8 @@ class TreeTest extends FunSuite {
     assert(column(tree) == List(1,2,3))
   }
 
+  test("toString"){
+    val txt = Source.fromFile(source).getLines().reduce(_+_)
+    assert(tree.toString == txt)
+  }
 }

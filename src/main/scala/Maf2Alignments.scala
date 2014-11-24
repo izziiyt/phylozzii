@@ -1,32 +1,32 @@
 import java.io.PrintWriter
+import scala.collection.mutable.ArrayBuffer
 
 object Maf2Alignments{
   def main(args:Array[String]){
     exe(args(0),args(1),args(2),args(3).toInt)
   }
 
-  private def exe(maf:String,nh:String,outDir:String,perSize:Int){
-    val mafunits = FilteredMafParser(maf).grouped(perSize)
+  private def exe(maf:String,nh:String,outFilePrefix:String,perSize:Int){
+    val mafunits = FilteredMafParser(maf)
     val names = Tree(nh).names
     val map = (names,0 until names.length).zipped.map(_ -> _).toMap
-    val buf = Array.fill(names.length)(4)
-    var c = 0
-    for(units <- mafunits){
-      val out = new PrintWriter(outDir + "/" + c)
-      for(unit <- units){
-        for(i <- 0 until unit.seqs(0).length){
-          for(seq <- unit.seqs){
-            buf(map(seq.chr.name)) = trans(seq.seq(i))
-          }
-          buf.foreach(b => out.print(b + " "))
-          out.println()
-          (0 until buf.length).foreach(buf(_) = 4)
-        }
+    val buf = new ArrayBuffer[Array[Int]]
+    val printer = Printer(outFilePrefix)
+    for(unit <- mafunits){
+      for(i <- 0 until unit.seqs(0).length){
+        val col = Array.fill(names.length)(4)
+        for(seq <- unit.seqs){col(map(seq.chr.name)) = trans(seq.seq(i))}
+        if(isGoodColumn(col)) buf += col
+        if(buf.size == perSize){printer(buf);buf.clear()}
       }
-      out.close()
-      c += 1
     }
   }
+
+  private def isGoodColumn(col:Array[Int]) = {
+    val c = col.foldLeft(0)((x,y) => if(y==4) x+1 else x)
+    if(c+1 >= col.size) false else true
+  }
+
   private def trans(x:Char):Int = {
     x match {
       case 'a' | 'A' => 0
@@ -34,6 +34,19 @@ object Maf2Alignments{
       case 'g' | 'G' => 2
       case 't' | 'T' => 3
       case _ => 4
+    }
+  }
+
+  sealed case class Printer(outPrefix:String){
+    private var count = 0
+    def apply(buf:ArrayBuffer[Array[Int]]){
+      val out = new PrintWriter(outPrefix + "." + count + ".al")
+      for(b <- buf){
+        b.foreach(x => out.print(x + " "))
+        out.println()
+      }
+      out.close()
+      count += 1
     }
   }
 }
