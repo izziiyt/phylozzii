@@ -1,11 +1,11 @@
 import breeze.linalg.{DenseMatrix, DenseVector,sum,trace}
 import scala.annotation.tailrec
 import scala.collection.mutable.ArrayBuffer
-import scala.math._
+import scala.math.{exp,pow,abs}
 
 class EM{
 
-  def test(loop:Int,nhFile:String,alignments:List[List[Char]]){
+  def test(loop:Int,nhFile:String,alignments:Array[Array[Char]]){
     val paramLog = ArrayBuffer[Parameters]()
     val branchLog = ArrayBuffer[List[Double]]()
     val llLog = ArrayBuffer[Double]()
@@ -20,7 +20,7 @@ class EM{
     Visualize.branchViz(branchLog.toList)
   }
 
-  protected def mStep(pt:PhylogencyTree,counts:List[Count]):PhylogencyTree = {
+  protected def mStep(pt:PhylogencyTree,counts:Array[Count]):PhylogencyTree = {
     val sumCount = counts.reduce(_+_) / counts.length
     println("likelihood : " + sumCount.ll)
     val Ns = sumCount.Ns.reduce(_+_)
@@ -71,7 +71,7 @@ class EM{
     DenseVector((u,v).zipped.map((i,j) => i / (j + nlmd)).toArray)
   }
 
-  def eStep(pt:PhylogencyTree,column:List[Char]):Count = {
+  def eStep(pt:PhylogencyTree,column:Array[Char]):Count = {
     pt.setColumn(column)
     pt.inside()
     pt.outside()

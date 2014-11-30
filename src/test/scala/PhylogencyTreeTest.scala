@@ -1,4 +1,4 @@
-import breeze.linalg.{sum, DenseMatrix,DenseVector,eigSym,diag}
+import breeze.linalg.{sum, DenseMatrix,DenseVector,eigSym}
 import org.scalatest.FunSuite
 import math.{abs,log}
 import scala.io.Source
@@ -37,16 +37,16 @@ class PhylogencyTreeTest extends FunSuite {
     }
   }
 
-  def getAlignments(al:String):List[List[Char]] = {
+  def getAlignments(al:String):Array[Array[Char]] = {
     val source = Source.fromFile(al)
     val cols = for{
       l <- source.getLines().take(1000)
       chrs = l.split(" ")
-    } yield chrs.map(_.toInt.toChar).toList
-    cols.toList
+    } yield chrs.map(_.toInt.toChar)
+    cols.toArray
   }
 
-  def numerical(colmn:List[Char])  = {
+  def numerical(colmn:Array[Char])  = {
     val source = "src/test/resources/ce10.7way.nh"
     val pt = new PhylogencyTree(Tree(source),GTR())
     pt.setColumn(colmn)
@@ -57,13 +57,13 @@ class PhylogencyTreeTest extends FunSuite {
     pt.deriveLL
   }
 
-  def prepare(pt:PhylogencyTree,colmn:List[Char]):Double = {
+  def prepare(pt:PhylogencyTree,colmn:Array[Char]):Double = {
     pt.setColumn(colmn)
     pt.inside()
     log(pt.likelihood)
   }
 
-  def analyticalPi(branch:List[Char]):Double = {
+  def analyticalPi(branch:Array[Char]):Double = {
     val h = 0.001
     val PlusModel = GTR(Parameters(DenseVector[Double](1.0/12.0,2.0/12.0,3.0/12.0,1.0/12.0,2.0/12.0,3.0/12.0),
       DenseVector[Double](0.1,0.2+h/2,0.3,0.4)))
@@ -77,7 +77,7 @@ class PhylogencyTreeTest extends FunSuite {
     (prepare(Pluspt,branch) - prepare(Minspt,branch)) / h
   }
 
-  def analyticalB(branch:List[Char]):Double = {
+  def analyticalB(branch:Array[Char]):Double = {
     val h = 0.001
     val PlusModel = GTR(Parameters(DenseVector[Double](1.0/12.0+h/2,2.0/12.0,3.0/12.0,1.0/12.0,2.0/12.0,3.0/12.0),
       DenseVector[Double](0.1,0.2,0.3,0.4)))
@@ -91,7 +91,7 @@ class PhylogencyTreeTest extends FunSuite {
     (prepare(Pluspt,branch) - prepare(Minspt,branch)) / h
   }
 
-  def analyticalT(branch:List[Char]):Double = {
+  def analyticalT(branch:Array[Char]):Double = {
     val h = 0.001
     val source = "src/test/resources/ce10.7way.nh"
     val Pluspt = new PhylogencyTree(Tree(source),GTR())
@@ -121,7 +121,7 @@ class PhylogencyTreeTest extends FunSuite {
       }
     }
     hoge(pt.root)
-    pt.root.setColumn(List[Char](2,3,1))
+    pt.root.setColumn(Array[Char](2,3,1))
     pt.inside(pt.root)
     pt.outside(pt.root)
     assert(pt.root.cont.alpha == DenseVector(150.0, 240.0, 50.0, 120.0))

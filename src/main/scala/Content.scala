@@ -1,5 +1,5 @@
 import breeze.linalg.{DenseMatrix, DenseVector, diag}
-import scala.math._
+import scala.math.exp
 
 abstract class Content(var t:Double){
 

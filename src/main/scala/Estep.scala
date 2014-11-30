@@ -1,7 +1,12 @@
 import java.io.PrintWriter
 
 object Estep extends EM{
-  def parEtep(paramFile:String,alFile:String,nhFile:String,fout:String){
+
+  def main(args:Array[String]){
+    exe(args(0),args(1),args(2),args(3))
+  }
+
+  private def exe(paramFile:String,alFile:String,nhFile:String,fout:String){
     val param = Parameters.fromFile(paramFile)
     val tree = Tree(nhFile)
     val pt = new PhylogencyTree(tree,GTR(param))

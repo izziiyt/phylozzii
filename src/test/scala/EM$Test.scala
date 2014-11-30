@@ -35,13 +35,13 @@ class EM$Test extends FunSuite {
     printExecutionTime(em.test(10,"src/test/resources/ce10.7way.nh",alignments),"EM")
   }
 
-  def getAlignments(al:String):List[List[Char]] = {
+  def getAlignments(al:String):Array[Array[Char]] = {
     val source = Source.fromFile(al)
     val cols = for{
       l <- source.getLines().take(100)
       chrs = l.split(" ")
-    } yield chrs.map(_.toInt.toChar).toList
-    cols.toList
+    } yield chrs.map(_.toInt.toChar)
+    cols.toArray
   }
 
 }

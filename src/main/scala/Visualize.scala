@@ -1,4 +1,3 @@
-import java.io.File
 import scalax.chart.api._
 
 object Visualize {

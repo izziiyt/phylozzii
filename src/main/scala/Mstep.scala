@@ -2,7 +2,13 @@ import breeze.linalg.DenseVector
 import java.io.PrintWriter
 
 object Mstep extends EM{
-  def parMstep(countFiles:List[String],paramFile:String,nhFile:String,outParamFile:String,outNhFile:String){
+
+  def main(args:Array[String]){
+    val cfl = new java.io.File(args(0)).listFiles.filter(_.getName.endsWith(".al")).map(_.getName)
+    exe(cfl,args(1),args(2),args(3),args(4))
+  }
+
+  private def exe(countFiles:Array[String],paramFile:String,nhFile:String,outParamFile:String,outNhFile:String){
     val can = countFiles.map(readCount)
     val count = can.map(_._1).reduce(_+_) / can.map(_._2).sum
     println("likelihood : " + count.ll)

@@ -1,4 +1,4 @@
-import breeze.linalg._
+import breeze.linalg.{DenseMatrix,DenseVector,diag,sum,eigSym,inv}
 
 abstract class EvolutionModel{
   def R:DenseMatrix[Double]

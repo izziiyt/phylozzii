@@ -20,7 +20,7 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
 
   def likelihood:Double = root.likelihood(model)
 
-  def setColumn(al:List[Char]){
+  def setColumn(al:Array[Char]){
     root.setColumn(al)
   }
 

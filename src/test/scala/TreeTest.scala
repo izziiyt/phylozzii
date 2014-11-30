@@ -26,7 +26,7 @@ class TreeTest extends FunSuite {
   }
 
   test("setAlignment"){
-    tree.setColumn(List(1,2,3).map(_.toChar))
+    tree.setColumn(Array(1,2,3).map(_.toChar))
 
     def column(tree:Tree):List[Char] = {
       tree match{
@@ -35,7 +35,7 @@ class TreeTest extends FunSuite {
       }
     }
 
-    assert(column(tree) == List(1,2,3))
+    assert(column(tree) == Array(1,2,3))
   }
 
   test("toString"){

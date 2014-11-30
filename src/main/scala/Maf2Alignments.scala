@@ -41,10 +41,7 @@ object Maf2Alignments{
     private var count = 0
     def apply(buf:ArrayBuffer[Array[Int]]){
       val out = new PrintWriter(outPrefix + "." + count + ".al")
-      for(b <- buf){
-        b.foreach(x => out.print(x + " "))
-        out.println()
-      }
+      buf.foreach(b => out.println(b.mkString(" ")))
       out.close()
       count += 1
     }

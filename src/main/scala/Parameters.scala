@@ -1,5 +1,5 @@
 import breeze.linalg.DenseVector
-import java.io.FileReader
+import java.io.{FileNotFoundException, FileReader}
 import scala.util.parsing.combinator.JavaTokenParsers
 
 class Parameters(val Bvec:DenseVector[Double],val pi:DenseVector[Double]){
@@ -23,11 +23,15 @@ class Parameters(val Bvec:DenseVector[Double],val pi:DenseVector[Double]){
 
 object Parameters extends ParameterParser{
   def apply(Bvec:DenseVector[Double],pi:DenseVector[Double]) = new Parameters(Bvec,pi)
-  def fromFile(fin:String):Parameters = {
+  def fromFile(fin:String):Parameters = try{
     val reader = new FileReader(fin)
     val tmp = parseAll(parameters,reader).get
     reader.close()
     tmp
+  }
+  catch{
+    case _:FileNotFoundException =>
+      Parameters(DenseVector(1.0/6.0,1.0/6.0,1.0/6.0,1.0/6.0,1.0/6.0,1.0/6.0),DenseVector(0.25,0.25,0.25,0.25))
   }
   def fromString(txt:String):Parameters = parseAll(parameters,txt).get
 }

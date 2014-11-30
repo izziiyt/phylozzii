@@ -5,7 +5,7 @@ import scala.util.parsing.combinator.JavaTokenParsers
 sealed trait Tree{
   def cont:Content
   def format():Tree
-  def setColumn(x:List[Char]):List[Char]
+  def setColumn(x:Array[Char]):Array[Char]
   def setBranch(x:List[Double]):List[Double]
   def setTransition(m:EvolutionModel)
   def setPosterior(l:Double,m:EvolutionModel)
@@ -19,7 +19,7 @@ sealed trait Tree{
 
 case class Node(left:Tree,right:Tree,cont:Content) extends Tree{
 
-  def setColumn(x:List[Char]) = {
+  def setColumn(x:Array[Char]) = {
     val tmp = left.setColumn(x)
     right.setColumn(tmp)
   }
@@ -85,7 +85,7 @@ case class Leaf(species:String,cont:ContentOfLeaf) extends Tree{
 
   def names = List(species)
 
-  def setColumn(x:List[Char]) = {
+  def setColumn(x:Array[Char]) = {
     cont.nuc_=(x.head)
     x.tail
   }
