@@ -3,7 +3,7 @@ import java.io.PrintWriter
 object Estep extends EM{
 
   def main(args:Array[String]){
-    exe(args(0),args(1),args(2),args(3))
+    Util.printExecutionTime(exe(args(0),args(1),args(2),args(3)),"estep")
   }
 
   private def exe(paramFile:String,alFile:String,nhFile:String,fout:String){

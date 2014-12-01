@@ -5,7 +5,7 @@ object Mstep extends EM{
 
   def main(args:Array[String]){
     val cfl = new java.io.File(args(0)).listFiles.filter(_.getName.endsWith(".al")).map(_.getName)
-    exe(cfl,args(1),args(2),args(3),args(4))
+    Util.printExecutionTime(exe(cfl,args(1),args(2),args(3),args(4)),"mstep")
   }
 
   private def exe(countFiles:Array[String],paramFile:String,nhFile:String,outParamFile:String,outNhFile:String){
