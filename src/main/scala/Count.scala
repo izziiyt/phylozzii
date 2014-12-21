@@ -8,12 +8,11 @@ class Count(val Fd:List[DenseVector[Double]],val Ns:List[DenseMatrix[Double]],
   def +(that:Count):Count =
     Count((Fd,that.Fd).zipped.map(_ + _),(Ns,that.Ns).zipped.map(_ + _),(T,that.T).zipped.map(_ + _),ns + that.ns,ll + that.ll)
 
-  def *(arg:Double) = Count(Fd.map(_*arg),Ns.map(_*arg),T.map(_*arg),ns * arg,ll)
+  //def *(arg:Double) = Count(Fd.map(_*arg),Ns.map(_*arg),T.map(_*arg),ns * arg,ll)
 
-  def /(arg:Double) = Count(Fd.map(_/arg),Ns.map(_/arg),T.map(_/arg),ns / arg,ll)
+  def /(arg:Double) = Count(Fd.map(_/arg),Ns.map(_/arg),T.map(_/arg),ns / arg,ll / arg)
 
   override def toString = "Count(" + Fd + "," + Ns + "," + T + "," + ns + "," + ll + ")"
-
 }
 
 object Count extends CountParser{
@@ -38,7 +37,7 @@ class CountParser extends JavaTokenParsers {
     {case x => DenseVector(x.toArray)}
 
   def matrix: Parser[DenseMatrix[Double]] = repsep(value,"") ^^
-    {case x => println("hoge");new DenseMatrix(4,4,x.toArray).t}
+    {case x => new DenseMatrix(4,4,x.toArray).t}
 
   def mlist: Parser[List[DenseMatrix[Double]]] = "List(" ~> repsep(matrix,",") <~ ")"
 

@@ -1,3 +1,5 @@
+import scala.collection.mutable.{ArrayBuffer, ListBuffer}
+import scala.io.Source
 import scalax.chart.api._
 
 object Visualize {
@@ -12,6 +14,25 @@ object Visualize {
     val chart2 = XYLineChart(ys.toXYSeriesCollection(),title = "b")
     chart2.saveAsPNG("target/b.png")
   }
+
+  def paramViz(paramFile:String){
+    val source = Source.fromFile(paramFile)
+    val lines = source.getLines()
+    val cache = new StringBuilder
+    val paramList = new ListBuffer[Parameters]
+    for(line <- lines){
+      if(line == ">" && !cache.isEmpty){
+        paramList += Parameters.fromString(cache.toString())
+        cache.clear()
+      }
+      else if(line != ">"){
+        cache ++= line
+      }
+    }
+    source.close()
+    paramViz(paramList.toList)
+  }
+
   def branchViz(branches:List[List[Double]]){
     val bl = branches(0).length
     val bs = for(i <- 0 until bl) yield branches.map(_(i))
@@ -19,5 +40,37 @@ object Visualize {
     val xs =  for(i <- 0 until bs.length) yield (i,Z zip bs(i))
     val chart = XYLineChart(xs.toXYSeriesCollection(),title = "branch")
     chart.saveAsPNG("target/branches.png")
+  }
+
+  def branchViz(treeFile:String){
+    val source = Source.fromFile(treeFile)
+    val lines = source.getLines()
+    val cache = new StringBuilder
+    val treeList = new ListBuffer[List[Double]]
+    for(line <- lines){
+      if(line == ">" && !cache.isEmpty){
+        val tree = Tree.fromString(cache.toString())
+        treeList += tree.branches
+        cache.clear()
+      }
+      else if(line != ">"){
+        cache ++= line
+      }
+    }
+    source.close()
+    branchViz(treeList.toList)
+  }
+
+  def llViz(llFile:String){
+    val source = Source.fromFile(llFile)
+    val lines = source.getLines()
+    val ll = new ArrayBuffer[Double]
+    for(line <- lines;if line != ">"){
+        ll += line.toDouble
+    }
+    source.close()
+    val xs = (0 until ll.length) zip ll
+    val chart = XYLineChart(xs.toXYSeriesCollection(),title = "logLikelihood")
+    chart.saveAsPNG("target/logLikelihood.png")
   }
 }

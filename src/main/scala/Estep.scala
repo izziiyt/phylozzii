@@ -14,8 +14,8 @@ object Estep extends EM{
     val counts = al.map(eStep(pt,_))
     val sumCount = counts.reduce(_+_)
     val writer = new PrintWriter(fout)
-    writer.println(sumCount)
     writer.println(counts.length)
+    writer.println(sumCount)
     writer.close()
   }
 }

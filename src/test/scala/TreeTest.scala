@@ -42,4 +42,13 @@ class TreeTest extends FunSuite {
     val txt = Source.fromFile(source).getLines().reduce(_+_)
     assert(tree.toString == txt)
   }
+
+  test("branch"){
+    val tree = Tree.fromFile("src/test/resources/ce10.7way.nh")
+    println(tree.branches)
+    val branches = tree.branches.map(_/2.0)
+    tree.setBranch(branches)
+    println(tree.branches)
+    println(tree)
+  }
 }

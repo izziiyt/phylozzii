@@ -34,7 +34,7 @@ case class Node(left:Tree,right:Tree,cont:Content) extends Tree{
   override def toString = {
     cont match {
       case ContentOfRoot(_) => "(" + left + "," + right + ");"
-      case ContentOfNode(t) => "(" + left + "," + right + "):" + t
+      case ContentOfNode(_) => "(" + left + "," + right + "):" + cont.t
     }
   }
 
@@ -55,7 +55,7 @@ case class Node(left:Tree,right:Tree,cont:Content) extends Tree{
   def setBranch(x:List[Double]) = {
     val y = left.setBranch(x)
     val z = right.setBranch(y)
-    cont.t_=(z.head)
+    if(!z.isEmpty) cont.t_=(z.head)
     z.tail
   }
 
@@ -111,9 +111,17 @@ case class Leaf(species:String,cont:ContentOfLeaf) extends Tree{
 }
 
 object Tree extends NHParser{
+  @deprecated
   def apply(nhFile:String):Node = {
     val reader = new FileReader(nhFile)
     parseAll(tree,reader).get
+  }
+  def fromFile(nhFile:String):Node = {
+    val reader = new FileReader(nhFile)
+    parseAll(tree,reader).get
+  }
+  def fromString(nhString:String) = {
+    parseAll(tree,nhString).get
   }
 }
 
