@@ -8,7 +8,7 @@ object Estep extends EM{
 
   private def exe(paramFile:String,alFile:String,nhFile:String,fout:String){
     val param = Parameters.fromFile(paramFile)
-    val tree = Tree(nhFile)
+    val tree = Tree.fromFile(nhFile)
     val pt = new PhylogencyTree(tree,GTR(param))
     val al = Util.getAlignments(alFile)
     val counts = al.map(eStep(pt,_))

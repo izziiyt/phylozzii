@@ -1,5 +1,3 @@
-
-
 import breeze.linalg.{trace, sum}
 import java.io.PrintWriter
 

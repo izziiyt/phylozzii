@@ -13,13 +13,10 @@ object Mstep extends EM{
   private def exe(countFiles:Array[String],paramFile:String,nhFile:String,outParamFile:String,outNhFile:String,logDir:String){
     val can = countFiles.map(readCount)
     val count = can.map(_._1).reduce(_+_) / can.map(_._2).sum
-    val out = new PrintWriter("errLog")
-    out.println(can.map(_._2).sum)
-    out.close()
     val model = GTR(Parameters.fromFile(paramFile))
     val Ns = count.Ns.reduce(_+_)
     val Td:DenseVector[Double] = (count.Fd,count.T).zipped.map(_*_).reduce(_+_)
-    val pt = new PhylogencyTree(Tree(nhFile),GTR(Parameters(newB(Ns,Td,model),newPi(Ns,Td,count.ns,model))))
+    val pt = new PhylogencyTree(Tree.fromFile(nhFile),GTR(Parameters(newB(Ns,Td,model),newPi(Ns,Td,count.ns,model))))
     pt.setBranch(newT(count.Ns,count.Fd,model))
     logger(pt,count.ll,outParamFile,outNhFile,logDir)
   }
