@@ -69,7 +69,7 @@ abstract class Content(var t:Double){
 
   //beg -> end and from -> to
   private def kai(beg:Int,end:Int,from:Int,to:Int,m:EvolutionModel) = {
-    def k(x:Double,y:Double) = if(DoubleChecker(x,y)) exp(x) else (exp(x) - exp(y)) / (x - y)
+    def k(x:Double,y:Double) = if(Util.doubleChecker(exp(x),exp(y))) exp(x) else (exp(x) - exp(y)) / (x - y)
     val tmp = for(x <- 0 to 3; y <- 0 to 3) yield m.u(beg,x) * m.ui(x,from) * m.u(to,y) * m.ui(y,end) * k(t*m.lambda(x),t*m.lambda(y))
     tmp.sum / transProb(beg,end)
   }

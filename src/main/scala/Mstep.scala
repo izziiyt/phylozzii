@@ -1,43 +1,51 @@
 import breeze.linalg.DenseVector
 import java.io.{FileOutputStream, PrintWriter}
-import math.log
 
 object Mstep extends EM{
 
   def main(args:Array[String]){
+    /*
+    args(0):a directory which contains files Count written
+    args(1):a file current parameter written
+    args(2):a file current structure and branch length of phylogency tree written
+    args(3):a file Count and size of the Count written
+    args(4):a file consumed time written
+    */
     val tmp = if(args(0).endsWith("/")) "" else "/"
-    val cfl = new java.io.File(args(0)).listFiles.filter(_.getName.endsWith(".ct")).map(args(0) + tmp + _.getName)
-    Util.printExecutionTime(exe(cfl,args(1),args(2),args(3),args(4),args(5)),"mstep")
+    val countFileList = new java.io.File(args(0)).listFiles.filter(_.getName.endsWith(".ct")).map(args(0) + tmp + _.getName)
+    val os = new FileOutputStream(args(4),true)
+    Util.printExecutionTime(exe(countFileList,args(1),args(2),args(3)),"mstep",os)
+    os.close()
   }
 
-  private def exe(countFiles:Array[String],paramFile:String,nhFile:String,outParamFile:String,outNhFile:String,logDir:String){
-    val can = countFiles.map(readCount)
+  def exe(countFiles:Array[String],paramFile:String,nhFile:String,logDir:String){
+    val can = countFiles.map(file2Count)
     val count = can.map(_._1).reduce(_+_) / can.map(_._2).sum
     val model = GTR(Parameters.fromFile(paramFile))
     val Ns = count.Ns.reduce(_+_)
     val Td:DenseVector[Double] = (count.Fd,count.T).zipped.map(_*_).reduce(_+_)
     val pt = new PhylogencyTree(Tree.fromFile(nhFile),GTR(Parameters(newB(Ns,Td,model),newPi(Ns,Td,count.ns,model))))
     pt.setBranch(newT(count.Ns,count.Fd,model))
-    logger(pt,count.ll,outParamFile,outNhFile,logDir)
+    logger(pt,count.ll,paramFile,nhFile,logDir)
   }
 
-  private def readCount(fin:String):(Count,Int) = {
+  private def file2Count(fin:String):(Count,Int) = {
     val lines = scala.io.Source.fromFile(fin).getLines()
     val n = lines.next().toInt
     val c = Count.fromString(lines.reduce(_+_))
     Pair(c,n)
   }
 
-  private def logger(pt:PhylogencyTree,ll:Double,paramout:String,nhout:String,logDir:String){
-    val writeP = new PrintWriter(paramout)
+  private def logger(pt:PhylogencyTree,ll:Double,paramOut:String,nhOut:String,logDir:String){
+    val writeP = new PrintWriter(paramOut)
     writeP.println(pt.model.param)
     writeP.close()
-    val writeN = new PrintWriter(nhout)
+    val writeN = new PrintWriter(nhOut)
     writeN.println(pt.root)
     writeN.close()
-    innerLogger(ll,logDir+"/log.ll")
-    innerLogger(pt.root,logDir+"/log.tree")
-    innerLogger(pt.model.param,logDir+"/log.param")
+    innerLogger(ll,logDir+"/ll.log")
+    innerLogger(pt.root,logDir+"/tree.log")
+    innerLogger(pt.model.param,logDir+"/param.log")
   }
 
   private def innerLogger[T](content:T,fout:String){

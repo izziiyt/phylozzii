@@ -20,6 +20,8 @@ resolvers ++= Seq(
   "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases/"
 )
 
+unmanagedJars in Compile += file("/home/yuto/R/x86_64-pc-linux-gnu-library/3.1/jvmr/java/jvmr_2.11-2.11.2.1.jar")
+
 lazy val buildSettings = Seq(
   version := "0.1",
   organization := "izzii",

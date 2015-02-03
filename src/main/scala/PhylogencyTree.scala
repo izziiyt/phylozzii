@@ -5,7 +5,7 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
 
   root.setTransition(model)
 
-  def this(nhFormatQuery:String,m:EvolutionModel) = this(Tree(nhFormatQuery),m)
+  def this(nhFile:String,m:EvolutionModel) = this(Tree.fromFile(nhFile),m)
 
   def this(that:PhylogencyTree,m:EvolutionModel) = this(that.root.format(),m)
 
@@ -36,8 +36,9 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
         for(i <- 0 to 3){cont.alpha(i) = fromLeft(i) * fromRight(i)}
         cont.accumInsideBelief(model)
       case Leaf(_,cont) =>
-        if(cont.nuc > 3) cont.alpha(0 to 3) := 1.0
-        else{
+        if(cont.nuc > 3){
+          cont.alpha(0 to 3) := 1.0
+        }else{
           cont.alpha(0 to 3) := 0.0
           cont.alpha(cont.nuc.toInt) = 1.0
         }

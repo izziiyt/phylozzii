@@ -8,7 +8,7 @@ object Maf2Alignments{
 
   private def exe(maf:String,nh:String,outFilePrefix:String,perSize:Int){
     val mafunits = FilteredMafParser(maf)
-    val names = Tree(nh).names
+    val names = Tree.fromFile(nh).names
     val map = (names,0 until names.length).zipped.map(_ -> _).toMap
     val buf = new ArrayBuffer[Array[Int]]
     val printer = Printer(outFilePrefix)

@@ -1,28 +1,35 @@
 import breeze.linalg.{trace, sum}
-import java.io.PrintWriter
+import java.io.{FileOutputStream, OutputStream, PrintWriter}
 
 object PostProc {
 
   def main(args:Array[String]){
-    exe(args(0),args(1),args(2),args(3),args(4))
+    /*
+    args(0):an input directory which contains log files
+    args(1):an input file current structure and branch length of phylogency tree written
+    args(2):an input file current parameters written
+    args(3):an output file regularized branch lenght of phylogency tree will be writtten
+    */
+    val tmp = if(args(0).endsWith("/")) "" else "/"
+    exe(args(0)+tmp,args(1),args(2),args(3))
   }
 
-  private def exe(paramLog:String,treeLog:String,llLog:String,treeFile:String,paramFile:String){
-    Visualize.paramViz(paramLog)
-    Visualize.branchViz(treeLog)
-    Visualize.llViz(llLog)
-    regulalize(treeFile,paramFile)
-  }
-
-  private def regulalize(treeFile:String,paramFile:String){
+  def exe(logDir:String,treeFile:String,paramFile:String,rtreeFile:String){
+    Visualize.paramViz(logDir + "param.log")
+    Visualize.branchViz(logDir + "tree.log")
+    Visualize.llViz(logDir + "ll.log")
     val tree = Tree.fromFile(treeFile)
     val param = Parameters.fromFile(paramFile)
+    regularize(tree,param,new FileOutputStream(rtreeFile))
+  }
+
+  def regularize(tree:Tree,param:Parameters,out:OutputStream){
     val mat = GTR(param).R
     val summ = sum(mat) - trace(mat)
     val br = tree.branches.map(_/summ)
     tree.setBranch(br)
-    val write = new PrintWriter(treeFile)
+    val write = new PrintWriter(out)
     write.println(tree)
-    write.close()
+    write.flush()
   }
 }

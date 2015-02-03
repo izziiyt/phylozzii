@@ -73,4 +73,10 @@ object Visualize {
     val chart = XYLineChart(xs.toXYSeriesCollection(),title = "logLikelihood")
     chart.saveAsPNG("target/logLikelihood.png")
   }
+
+  def llViz(ll:List[Double]){
+    val xs = (0 until ll.length) zip ll
+    val chart = XYLineChart(xs.toXYSeriesCollection(),title = "logLikelihood")
+    chart.saveAsPNG("target/logLikelihood.png")
+  }
 }

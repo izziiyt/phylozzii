@@ -10,7 +10,7 @@ abstract class EvolutionModel{
   def param:Parameters
 }
 
-case class GTR(param:Parameters = Parameters(DenseVector[Double](1.0/12.0,2.0/12.0,3.0/12.0,1.0/12.0,2.0/12.0,3.0/12.0),
+case class GTR(param:Parameters = Parameters(DenseVector[Double](0.16,0.16,0.17,0.17,0.17,0.17),
     DenseVector[Double](0.1,0.2,0.3,0.4))) extends EvolutionModel{
 
   private[this] val T:DenseMatrix[Double] = diag(param.pi.map(math.pow(_,0.5)))

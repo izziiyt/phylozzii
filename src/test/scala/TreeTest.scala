@@ -3,7 +3,7 @@ import scala.io.Source
 
 class TreeTest extends FunSuite {
   val source = "src/test/resources/sample.nh"
-  val tree = Tree(source)
+  val tree = Tree.fromFile(source)
 
   test("construct"){
 

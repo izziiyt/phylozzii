@@ -1,8 +1,11 @@
+import java.io.{OutputStream, PrintWriter}
 import scala.io.Source
-import scala.math.{abs,exp}
+import scala.math.{abs,max,pow}
 
 object Util {
 
+  val EPSILON = pow(10,-10)
+  //.al file name to col alignments.
   def getAlignments(al:String):Array[Array[Char]] = {
     val source = Source.fromFile(al)
     val lines = source.getLines()
@@ -11,16 +14,15 @@ object Util {
     cols
   }
 
-  def doubleChecker(x:Double,y:Double,p:Double = exp(-10)):Boolean = {
-    val tmp = abs(x - y)
-    if(tmp < p) true else false
-  }
+  def doubleChecker(x:Double,y:Double,sig:Double=EPSILON):Boolean = abs(x - y) < sig * max(x,y)
 
-  def printExecutionTime[T](proc: => T,txt:String) = {
+  def printExecutionTime[T](proc: => T,txt:String,os:OutputStream=System.out) = {
     val start = System.currentTimeMillis
-    val x = proc
-    println(txt + " : " + (System.currentTimeMillis - start) + "msec")
-    x
+    val result = proc
+    val writer = new PrintWriter(os)
+    writer.println(txt + " : " + (System.currentTimeMillis - start) + "msec")
+    writer.flush()
+    result
   }
 
 }

@@ -1,12 +1,21 @@
-import java.io.PrintWriter
+import java.io.{FileOutputStream, PrintWriter}
 
 object Estep extends EM{
 
   def main(args:Array[String]){
-    Util.printExecutionTime(exe(args(0),args(1),args(2),args(3)),"estep")
+    /*
+    args(0):a file current parameter written
+    args(1):a file alignments written
+    args(2):a file structure and branch length of phylogency tree written
+    args(3):a file Count and size of the Count written
+    args(4):a file consumed time written.The file must be different in each jobs.
+    */
+    val os = new FileOutputStream(args(4),true)
+    Util.printExecutionTime(exe(args(0),args(1),args(2),args(3)),"estep",os)
+    os.close()
   }
 
-  private def exe(paramFile:String,alFile:String,nhFile:String,fout:String){
+  def exe(paramFile:String,alFile:String,nhFile:String,fout:String){
     val param = Parameters.fromFile(paramFile)
     val tree = Tree.fromFile(nhFile)
     val pt = new PhylogencyTree(tree,GTR(param))
