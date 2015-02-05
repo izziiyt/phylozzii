@@ -1,8 +1,6 @@
 import breeze.linalg.{DenseMatrix, DenseVector}
 import org.scalatest.FunSuite
-import scala.collection.mutable.ArrayBuffer
 import scala.io.Source
-import scala.math._
 
 class EM$Test extends FunSuite {
   val em = new EM
@@ -36,7 +34,7 @@ class EM$Test extends FunSuite {
     val tmp = for(i <- 0 until lines(0).length)yield {Array(lines(0)(i).toChar,lines(1)(i).toChar,lines(2)(i).toChar,lines(3)(i).toChar)}
     val em = new EM
     em.test(30,"src/test/resources/ce10.7way.nh",tmp.toArray)
-    }
+  }
   /*test("M"){
     val em = new TestEM
     val alignments = Util.getAlignments("src/test/resources/1.al")
