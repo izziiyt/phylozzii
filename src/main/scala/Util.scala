@@ -4,7 +4,7 @@ import scala.math.{abs,max,pow}
 
 object Util {
 
-  val EPSILON = pow(10,-10)
+  val EPSILON = 0.00001
   //.al file name to col alignments.
   def getAlignments(al:String):Array[Array[Char]] = {
     val source = Source.fromFile(al)
@@ -14,7 +14,7 @@ object Util {
     cols
   }
 
-  def doubleChecker(x:Double,y:Double,sig:Double=EPSILON):Boolean = abs(x - y) < sig * max(x,y)
+  def doubleChecker(x:Double,y:Double,sig:Double=EPSILON):Boolean = abs(x - y) < sig * abs(max(x,y))
 
   def printExecutionTime[T](proc: => T,txt:String,os:OutputStream=System.out) = {
     val start = System.currentTimeMillis

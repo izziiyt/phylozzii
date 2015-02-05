@@ -15,7 +15,7 @@ class FilteredMaf extends JavaTokenParsers {
   def index: Parser[Index] =
     floatingPointNumber~floatingPointNumber~"[\\+\\-\\?]".r~floatingPointNumber ^^
       {case index~_~pm~_ => if(pm == "+") Index(index.toInt,0) else Index(index.toInt,1)}
-  def sequence: Parser[String] = "[atcgnATCGN-]*".r
+  def sequence: Parser[String] = "[atcgnATCGN-.]*".r
 }
 
 object FilteredMafParser extends FilteredMaf {

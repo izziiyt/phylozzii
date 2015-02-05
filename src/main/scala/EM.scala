@@ -5,8 +5,9 @@ import math.{log,pow,exp}
 
 class EM{
 
-  def test(loop:Int,nhFile:String,alFile:String){
-    val alignments = Util.getAlignments(alFile)
+  //def test(loop:Int,nhFile:String,alFile:String){
+    def test(loop:Int,nhFile:String,alignments:Array[Array[Char]]){
+    //val alignments = Util.getAlignments(alFile)
     val paramLog = ArrayBuffer[Parameters]()
     val branchLog = ArrayBuffer[List[Double]]()
     val llLog = ArrayBuffer[Double]()
@@ -28,7 +29,7 @@ class EM{
   protected def mStep(pt:PhylogencyTree,counts:Array[Count]):PhylogencyTree = {
     val sumCount = counts.reduce(_+_) / counts.length
     val Ns = sumCount.Ns.reduce(_+_)
-    val Td:DenseVector[Double] = (sumCount.Fd,sumCount.T).zipped.map(_*_).reduce(_+_)
+    val Td:DenseVector[Double] = (sumCount.Fd,pt.branches).zipped.map(_*_).reduce(_+_)
     val tmp = new PhylogencyTree(pt,GTR(Parameters(newB(Ns,Td,pt.model),newPi(Ns,Td,sumCount.ns,pt.model))))
     tmp.setBranch(newT(sumCount.Ns,sumCount.Fd,pt.model))
     tmp
@@ -55,7 +56,7 @@ class EM{
     if(u.exists(_ < 0) || u.sum <= 0) throw new Exception
     @tailrec
     def f(l:Double,loop:Int=0):Double = {
-      if(loop != 0 && loop % 100 == 0){println(l);println(loop)}
+      if(loop != 0 && loop % 1000 == 0){println(l);println(loop)}
       val boy = (u,v).zipped.foldLeft(0.0){case (x,(i,j)) => x + i / (j + l)} - 1.0
       val mom = (u,v).zipped.foldLeft(0.0){case (x,(i,j)) => x + i / pow(j + l,2.0)}
       val newL = l + boy / mom
@@ -63,7 +64,11 @@ class EM{
     }
     val lmd:Double = (u,v).zipped.collect{case (i,j) if i >= 0 => i - j}.max
     val nlmd = f(lmd)
-    DenseVector((u,v).zipped.map((i,j) => i / (j + nlmd)).toArray)
+    val hoge = DenseVector((u,v).zipped.map((i,j) => i / (j + nlmd)).toArray)
+    println("newtonRaphson: " + (hoge(3)*(v(3)+nlmd)-u(3)))
+    println(nlmd)
+    println(hoge)
+    hoge
   }
 
   def eStep(pt:PhylogencyTree,column:Array[Char]):Count = {

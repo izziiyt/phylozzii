@@ -2,23 +2,21 @@ import breeze.linalg.{DenseMatrix, DenseVector}
 import java.io.FileReader
 import scala.util.parsing.combinator.JavaTokenParsers
 
-class Count(val Fd:List[DenseVector[Double]],val Ns:List[DenseMatrix[Double]],
-                 val T:List[Double],val ns:DenseVector[Double],val ll:Double){
+class Count(val Fd:List[DenseVector[Double]],val Ns:List[DenseMatrix[Double]],val ns:DenseVector[Double],val ll:Double){
 
   def +(that:Count):Count =
-    Count((Fd,that.Fd).zipped.map(_ + _),(Ns,that.Ns).zipped.map(_ + _),(T,that.T).zipped.map(_ + _),ns + that.ns,ll + that.ll)
+    Count((Fd,that.Fd).zipped.map(_ + _),(Ns,that.Ns).zipped.map(_ + _),ns + that.ns,ll + that.ll)
 
   //def *(arg:Double) = Count(Fd.map(_*arg),Ns.map(_*arg),T.map(_*arg),ns * arg,ll)
 
-  def /(arg:Double) = Count(Fd.map(_/arg),Ns.map(_/arg),T.map(_/arg),ns / arg,ll / arg)
+  def /(arg:Double) = Count(Fd.map(_/arg),Ns.map(_/arg),ns / arg,ll / arg)
 
-  override def toString = "Count(" + Fd + "," + Ns + "," + T + "," + ns + "," + ll + ")"
+  override def toString = "Count(" + Fd + "," + Ns + "," + "," + ns + "," + ll + ")"
 }
 
 object Count extends CountParser{
 
-  def apply(Fd:List[DenseVector[Double]],Ns:List[DenseMatrix[Double]],
-            T:List[Double],ns:DenseVector[Double],ll:Double) = new Count(Fd,Ns,T,ns,ll)
+  def apply(Fd:List[DenseVector[Double]],Ns:List[DenseMatrix[Double]],ns:DenseVector[Double],ll:Double) = new Count(Fd,Ns,ns,ll)
 
   def fromString(txt:String):Count = parseAll(count,txt).get
 
@@ -45,8 +43,8 @@ class CountParser extends JavaTokenParsers {
 
   def dlist: Parser[List[Double]] = "List(" ~> repsep(value,",") <~ ")"
 
-  def count: Parser[Count] = "Count("~> vlist~","~mlist~","~dlist~","~vector~","~value <~")" ^^
-    {case a~","~b~","~c~","~d~","~e => Count(a,b,c,d,e)}
+  def count: Parser[Count] = "Count("~> vlist~","~mlist~","~vector~","~value <~")" ^^
+    {case a~","~b~","~c~","~d => Count(a,b,c,d)}
 
   def value: Parser[Double] = floatingPointNumber ^^ (_.toDouble)
 }

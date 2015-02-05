@@ -16,7 +16,7 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
   }
 
   def count = Count(root.left.collectF(model) ::: root.right.collectF(model),
-    root.left.collectN(model) ::: root.right.collectN(model),root.left.collectT ::: root.right.collectT,root.collectn(model),log(likelihood))
+    root.left.collectN(model) ::: root.right.collectN(model),root.collectn(model),log(likelihood))
 
   def likelihood:Double = root.likelihood(model)
 
@@ -26,7 +26,7 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
 
   def setPosterior(){root.setPosterior(likelihood,model)}
 
-  def branches() = root.left.branches ::: root.right.branches
+  def branches = root.left.branches ::: root.right.branches
 
   def inside(tree:Tree = root):DenseVector[Double] = {
     tree match{
