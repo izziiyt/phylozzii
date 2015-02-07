@@ -13,7 +13,6 @@ class EM{
     val llLog = ArrayBuffer[Double]()
     var pt = new PhylogencyTree(nhFile,GTR())
     for(i <- 1 to loop){
-      println(i)
       val counts = alignments.map(eStep(pt,_))
       pt = mStep(pt,counts)
       paramLog += pt.model.param
@@ -54,21 +53,17 @@ class EM{
 
   protected def calcNewParameter(u:List[Double],v:List[Double]):DenseVector[Double] = {
     if(u.exists(_ < 0) || u.sum <= 0) throw new Exception
-    @tailrec
-    def f(l:Double,loop:Int=0):Double = {
-      if(loop != 0 && loop % 1000 == 0){println(l);println(loop)}
-      val boy = (u,v).zipped.foldLeft(0.0){case (x,(i,j)) => x + i / (j + l)} - 1.0
-      val mom = (u,v).zipped.foldLeft(0.0){case (x,(i,j)) => x + i / pow(j + l,2.0)}
-      val newL = l + boy / mom
-      if(Util.doubleChecker(l,newL)) newL else f(newL,loop+1)
-    }
     val lmd:Double = (u,v).zipped.collect{case (i,j) if i >= 0 => i - j}.max
-    val nlmd = f(lmd)
-    val hoge = DenseVector((u,v).zipped.map((i,j) => i / (j + nlmd)).toArray)
-    println("newtonRaphson: " + (hoge(3)*(v(3)+nlmd)-u(3)))
-    println(nlmd)
-    println(hoge)
-    hoge
+    val nlmd = newtonRaphson(lmd,u,v)
+    DenseVector((u,v).zipped.map((i,j) => i / (j + nlmd)).toArray)
+  }
+
+  @tailrec
+  private def newtonRaphson(l:Double,u:List[Double],v:List[Double]):Double = {
+    val boy = (u,v).zipped.foldLeft(0.0){case (x,(i,j)) => x + i / (j + l)} - 1.0
+    val mom = (u,v).zipped.foldLeft(0.0){case (x,(i,j)) => x + i / pow(j + l,2.0)}
+    val newL = l + boy / mom
+    if(Util.doubleChecker(l,newL)) newL else newtonRaphson(newL,u,v)
   }
 
   def eStep(pt:PhylogencyTree,column:Array[Char]):Count = {

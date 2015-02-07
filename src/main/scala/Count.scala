@@ -11,7 +11,7 @@ class Count(val Fd:List[DenseVector[Double]],val Ns:List[DenseMatrix[Double]],va
 
   def /(arg:Double) = Count(Fd.map(_/arg),Ns.map(_/arg),ns / arg,ll / arg)
 
-  override def toString = "Count(" + Fd + "," + Ns + "," + "," + ns + "," + ll + ")"
+  override def toString = "Count(" + Fd + "," + Ns + "," + ns + "," + ll + ")"
 }
 
 object Count extends CountParser{

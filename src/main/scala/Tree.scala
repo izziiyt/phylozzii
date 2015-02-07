@@ -11,7 +11,6 @@ sealed trait Tree{
   def setPosterior(l:Double,m:EvolutionModel)
   def collectF(m:EvolutionModel):List[DenseVector[Double]]
   def collectN(m:EvolutionModel):List[DenseMatrix[Double]]
-  def collectT:List[Double]
   def branches:List[Double]
   def names:List[String]
   override def toString:String
@@ -31,11 +30,9 @@ case class Node(left:Tree,right:Tree,cont:Content) extends Tree{
     this
   }
 
-  override def toString = {
-    cont match {
-      case ContentOfRoot(_) => "(" + left + "," + right + ");"
-      case ContentOfNode(_) => "(" + left + "," + right + "):" + cont.t
-    }
+  override def toString = cont match {
+    case ContentOfRoot(_) => "(" + left + "," + right + ");"
+    case ContentOfNode(_) => "(" + left + "," + right + "):" + cont.t
   }
 
   def names = left.names ::: right.names
@@ -47,8 +44,6 @@ case class Node(left:Tree,right:Tree,cont:Content) extends Tree{
   def collectF(m:EvolutionModel) = left.collectF(m) ::: right.collectF(m) ::: List(cont.FdVec(m))
 
   def collectN(m:EvolutionModel) = left.collectN(m) ::: right.collectN(m) ::: List(cont.NsMat(m))
-
-  def collectT = left.collectT ::: right.collectT ::: List(cont.t)
 
   def collectn(m:EvolutionModel):DenseVector[Double] = (cont.alpha :* m.pi) / likelihood(m)
 
@@ -106,8 +101,6 @@ case class Leaf(species:String,cont:ContentOfLeaf) extends Tree{
   def collectF(m:EvolutionModel) = List(cont.FdVec(m))
 
   def collectN(m:EvolutionModel) = List(cont.NsMat(m))
-
-  def collectT = List(cont.t)
 }
 
 object Tree extends NHParser{

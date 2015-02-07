@@ -8,6 +8,7 @@ abstract class EvolutionModel{
   def pi:DenseVector[Double]
   def B:DenseMatrix[Double]
   def param:Parameters
+  def bList:Seq[Double]
 }
 
 case class GTR(param:Parameters = Parameters(DenseVector[Double](0.16,0.16,0.17,0.17,0.17,0.17),
@@ -41,4 +42,5 @@ case class GTR(param:Parameters = Parameters(DenseVector[Double](0.16,0.16,0.17,
   val u = Ti * eVecs
   val ui = inv(u)
   def pi = param.pi
+  def bList = for(i <- 0 to 2;j<-i+1 to 3) yield B(i,j)
 }

@@ -1,4 +1,5 @@
 import breeze.linalg.{DenseMatrix, DenseVector}
+import java.io.FileOutputStream
 import org.scalatest.FunSuite
 import scala.io.Source
 
@@ -14,27 +15,28 @@ class EM$Test extends FunSuite {
     Util.printExecutionTime(em.test(2000,"src/test/resources/test.nh","src/test/resources/test.al"),"EM")
   }*/
 
-  /*test("EMQsub"){
-
+  test("EMQsub"){
     val dir = "src/test/resources/alignments/"
     val cdir = "src/test/resources/count/"
     val alFiles = new java.io.File(dir).listFiles.map(_.getName)
-    val countFileList = new java.io.File(cdir).listFiles.map(cdir + _.getName)
-    for(i <- 1 to 10){
-      alFiles.foreach(f => Estep.exe("src/test/resources/param.txt",dir + f,
-        "src/test/resources/ce10.7way.nh",cdir + f + ".ct"))
-      Mstep.exe(countFileList,"src/test/resources/param.txt","src/test/resources/ce10.7way.nh","src/test/resources/log")
+    val ot = new FileOutputStream("src/test/resources/log/tm.log",true)
+    for(i <- 1 to 20){
+      alFiles.foreach(f => Util.printExecutionTime(Estep.exe("src/test/resources/param.txt",dir + f,
+        "src/test/resources/ce10.7way.nh",cdir + f + ".ct"),"estep",ot))
+      val countFileList = new java.io.File(cdir).listFiles.map(cdir + _.getName)
+      Util.printExecutionTime(Mstep.exe(countFileList,
+        "src/test/resources/param.txt","src/test/resources/ce10.7way.nh","src/test/resources/log"),"mstep",ot)
     }
-
     PostProc.exe("src/test/resources/log/","src/test/resources/ce10.7way.nh","src/test/resources/param.txt","target/rtree.txt")
-    }*/
-  test("maf2al"){
+  }
+
+  /*test("maf2al"){
     val s = Source.fromFile("src/test/resources/test.maf")
     val lines = s.getLines().map(l => l.map(Maf2Alignments.trans)).toArray
     val tmp = for(i <- 0 until lines(0).length)yield {Array(lines(0)(i).toChar,lines(1)(i).toChar,lines(2)(i).toChar,lines(3)(i).toChar)}
     val em = new EM
     em.test(30,"src/test/resources/ce10.7way.nh",tmp.toArray)
-  }
+  }*/
   /*test("M"){
     val em = new TestEM
     val alignments = Util.getAlignments("src/test/resources/1.al")

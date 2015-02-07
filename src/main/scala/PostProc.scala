@@ -25,7 +25,7 @@ object PostProc {
 
   def regularize(tree:Tree,param:Parameters,out:OutputStream){
     val gtr = GTR(param)
-    val summ = -(for(i <- 0 to 3) yield gtr.pi(i) * gtr.R(i,i)).sum
+    val summ = - (0 to 3).foldLeft(0.0){(x,i) => x + gtr.pi(i) * gtr.R(i,i)}
     val br = tree.branches.map(summ.*)
     tree.setBranch(br)
     val write = new PrintWriter(out)

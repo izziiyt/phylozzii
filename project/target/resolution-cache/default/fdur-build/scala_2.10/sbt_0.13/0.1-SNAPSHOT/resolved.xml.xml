@@ -4,7 +4,7 @@
 		module="fdur-build"
 		revision="0.1-SNAPSHOT"
 		status="integration"
-		publication="20141117182012"
+		publication="20150206154209"
 		e:scalaVersion="2.10" e:sbtVersion="0.13"
 	>
 		<description>

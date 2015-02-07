@@ -3,7 +3,7 @@ import java.io.{FileOutputStream, PrintWriter}
 
 object Mstep extends EM{
 
-  /*def main(args:Array[String]){
+  def main(args:Array[String]){
     /*
     args(0):a directory which contains files Count written
     args(1):a file current parameter written
@@ -23,11 +23,12 @@ object Mstep extends EM{
     val count = can.map(_._1).reduce(_+_) / can.map(_._2).sum
     val model = GTR(Parameters.fromFile(paramFile))
     val Ns = count.Ns.reduce(_+_)
-    val Td:DenseVector[Double] = (count.Fd,).zipped.map(_*_).reduce(_+_)
+    val tree = Tree.fromFile(nhFile)
+    val Td:DenseVector[Double] = (count.Fd,tree.branches).zipped.map(_*_).reduce(_+_)
     val pt = new PhylogencyTree(Tree.fromFile(nhFile),GTR(Parameters(newB(Ns,Td,model),newPi(Ns,Td,count.ns,model))))
     pt.setBranch(newT(count.Ns,count.Fd,model))
     logger(pt,count.ll,paramFile,nhFile,logDir)
-  }*/
+  }
 
   private def file2Count(fin:String):(Count,Int) = {
     val lines = scala.io.Source.fromFile(fin).getLines()
@@ -44,13 +45,13 @@ object Mstep extends EM{
     writeN.println(pt.root)
     writeN.close()
     innerLogger(ll,logDir+"/ll.log")
-    innerLogger(pt.root,logDir+"/tree.log")
-    innerLogger(pt.model.param,logDir+"/param.log")
+    innerLogger(pt.branches.mkString(sep="\t"),logDir+"/tree.log")
+    innerLogger(Util.toTSV(pt.model.pi),logDir+"/pi.log")
+    innerLogger(pt.model.bList.mkString(sep="\t"),logDir+"/b.log")
   }
 
   private def innerLogger[T](content:T,fout:String){
     val write = new PrintWriter(new FileOutputStream(fout,true))
-    write.println(">")
     write.println(content)
     write.close()
   }
