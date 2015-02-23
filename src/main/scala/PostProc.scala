@@ -15,9 +15,6 @@ object PostProc {
   }
 
   def exe(logDir:String,treeFile:String,paramFile:String,rtreeFile:String){
-    Visualize.paramViz(logDir + "param.log")
-    Visualize.branchViz(logDir + "tree.log")
-    Visualize.llViz(logDir + "ll.log")
     val tree = Tree.fromFile(treeFile)
     val param = Parameters.fromFile(paramFile)
     regularize(tree,param,new FileOutputStream(rtreeFile))
