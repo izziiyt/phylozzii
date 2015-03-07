@@ -20,9 +20,9 @@ class EM{
       llLog += log(pt.likelihood)
     }
     PostProc.regularize(pt.root,pt.model.param,System.out)
-    Visualize.paramViz(paramLog.toList)
+    /*Visualize.paramViz(paramLog.toList)
     Visualize.branchViz(branchLog.toList)
-    Visualize.llViz(llLog.toList)
+    Visualize.llViz(llLog.toList)*/
   }
 
   protected def mStep(pt:PhylogencyTree,counts:Array[Count]):PhylogencyTree = {
