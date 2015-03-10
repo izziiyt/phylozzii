@@ -7,15 +7,16 @@ object Maf2Alignments{
   }
 
   def exe(maf:String,nh:String,outFilePrefix:String,perSize:Int){
-    val mafunits = FilteredMafParser(maf)
+    val gen = MafUnitGenerator(maf)
     val names = Tree.fromFile(nh).names
     val map = (names,0 until names.length).zipped.map(_ -> _).toMap
     val buf = new ArrayBuffer[Array[Int]]
     val printer = Printer(outFilePrefix)
-    for(unit <- mafunits){
+    while(gen.hasNext){
+      val unit = gen.next
       for(i <- 0 until unit.seqs(0).length){
         val col = Array.fill(names.length)(4)
-        for(seq <- unit.seqs){col(map(seq.chr.name)) = trans(seq.seq(i))}
+        for(seq <- unit.seqs){col(map(seq.species)) = trans(seq.sequence(i))}
         if(isGoodColumn(col)) buf += col
         if(buf.size == perSize){printer(buf);buf.clear()}
       }

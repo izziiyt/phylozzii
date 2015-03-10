@@ -1,50 +1,38 @@
-import scala.util.parsing.combinator.JavaTokenParsers
-import java.io.FileReader
+import scala.io.Source
+import scala.collection.mutable.ListBuffer
 
-class FilteredMaf extends JavaTokenParsers {
-  def units: Parser[List[MafUnit]] = {rep(unit)}
-  def unit: Parser[MafUnit] =
-    aline~rep(sline) ^^ {case scre~lines => MafUnit(scre,lines)}
-  def aline: Parser[Double] =
-    "a"~"score="~>floatingPointNumber ^^ {case score => score.toDouble}
-  def sline: Parser[Sequence] =
-    "s"~>chromosome~index~sequence ^^ {case chromosome~index~sequence => Sequence(S,chromosome,index,sequence)}
-  def chromosome: Parser[Chromosome] =
-    repsep(ident,".") ^^ {case arg => Chromosome(arg(0),arg(1))}
-  def index: Parser[Index] =
-    floatingPointNumber~floatingPointNumber~"[\\+\\-\\?]".r~floatingPointNumber ^^
-      {case index~_~pm~_ => if(pm == "+") Index(index.toInt,0) else Index(index.toInt,1)}
-  def sequence: Parser[String] = "[atcgnATCGN-]*".r
-}
-
-object FilteredMafParser extends FilteredMaf {
-  def apply(file:String):List[MafUnit] = {
-    val reader = new FileReader(file)
-    val tmp = parseAll(units,reader).get
-    reader.close()
-    tmp
-  }
-}
-
-case class Chromosome(name:String,chr:String)
-case class Index(index:Int,direction:Char)
-
-case class Sequence(feature:Feature,chr:Chromosome,index:Index,seq:String){
-  def length = seq.length
+case class Sequence(species:String,chr:String,sequence:String){
+  def length = sequence.length
 }
 
 case class MafUnit(score:Double,seqs:List[Sequence])
 
-case class MafHeader(text:String)
+case class MafUnitGenerator(file:String,sep:String = """\p{javaWhitespace}+"""){
+  val s = Source.fromFile(file)
+  val lines = s.getLines()
+  private var score = toScore(lines.next.split(sep)(1))
+  private var f = true
 
-sealed trait Feature{
-  def isS = false
+  def hasNext = f
+  def next = if(hasNext) gen else null
+
+  private def gen:MafUnit = {
+    val buf = new ListBuffer[Sequence]
+    for(line <- lines;if line != ""){
+      val p = line.split(sep)
+      val names = p(1).split("\\.")
+      p(0) match{
+        case "s" => buf += Sequence(names(0),names(1),p(6))
+        case "a" =>
+          val tmpScore = score
+          score = toScore(p(1))
+          return MafUnit(tmpScore,buf.toList)
+      }
+    }
+    f = false
+    s.close()
+    MafUnit(score,buf.toList)
+  }
+
+  private def toScore(arg:String) = arg.diff("score=").toDouble
 }
-
-case object S extends Feature{
-  override def isS = true
-}
-
-case object E extends Feature
-case object I extends Feature
-
