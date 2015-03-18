@@ -13,16 +13,22 @@ class GTRTest extends FunSuite {
       (2.0,-117.0,24.0,40.0),
       (6.0,24.0,-114.0,72.0),
       (12.0,40.0,72.0,-77.0))
-
     assert(gtr.tmp == x)
   }
 
   test("eigen value decomposition"){
 
     val gtr = GTR(Parameters(DenseVector[Double](1.0,1.0,1.0,1.0,1.0,1.0),
-      DenseVector[Double](1.0,4.0,9.0,16.0)))
+    DenseVector[Double](1.0,4.0,9.0,16.0)))
     println(gtr.R * gtr.R * gtr.R)
     println("is same with")
     println(gtr.u * diag(gtr.lambda) * diag(gtr.lambda) * diag(gtr.lambda)* gtr.ui)
+  }
+
+  test("where"){
+  val x = DenseMatrix((1,2),(3,4))
+  println(x)
+  println(x(1,0))
+  println(x(0,::))
   }
 }

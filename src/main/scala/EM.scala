@@ -1,13 +1,12 @@
 import breeze.linalg.{DenseMatrix, DenseVector,sum,trace}
+import java.io.{PrintWriter, OutputStream}
 import scala.annotation.tailrec
 import scala.collection.mutable.ArrayBuffer
 import math.{log,pow,exp}
 
 class EM{
 
-  //def test(loop:Int,nhFile:String,alFile:String){
-    def test(loop:Int,nhFile:String,alignments:Array[Array[Char]]){
-    //val alignments = Util.getAlignments(alFile)
+  def test(loop:Int,nhFile:String,alignments:Array[Array[Char]],out:OutputStream=System.out){
     val paramLog = ArrayBuffer[Parameters]()
     val branchLog = ArrayBuffer[List[Double]]()
     val llLog = ArrayBuffer[Double]()
@@ -18,12 +17,11 @@ class EM{
       paramLog += pt.model.param
       branchLog += pt.branches
       llLog += log(pt.likelihood)
+      println(i)
     }
-    PostProc.regularize(pt.root,pt.model.param,System.out)
-    /*Visualize.paramViz(paramLog.toList)
-    Visualize.branchViz(branchLog.toList)
-    Visualize.llViz(llLog.toList)*/
+    PostProc.regularize(pt.root,pt.model.param,out)
   }
+
 
   protected def mStep(pt:PhylogencyTree,counts:Array[Count]):PhylogencyTree = {
     val sumCount = counts.reduce(_+_) / counts.length

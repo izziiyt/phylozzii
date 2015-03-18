@@ -1,5 +1,6 @@
 import breeze.linalg.{trace, sum}
 import java.io.{FileOutputStream, OutputStream, PrintWriter}
+import scala.collection.mutable.ArrayBuffer
 
 object PostProc {
 
@@ -27,6 +28,9 @@ object PostProc {
     tree.setBranch(br)
     val write = new PrintWriter(out)
     write.println(tree)
+    write.println(gtr.param)
+    write.println((gtr.R :/ summ))
     write.flush()
   }
+
 }

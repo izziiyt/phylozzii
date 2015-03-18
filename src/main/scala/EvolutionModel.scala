@@ -36,11 +36,25 @@ case class GTR(param:Parameters = Parameters(DenseVector[Double](0.16,0.16,0.17,
   for(i <- 0 to 3){B(i,i) = R(i,i) / pi(i)}
 
   val tmp:DenseMatrix[Double] = T * R * Ti
-  for(i <- 0 to 3;j <- i to 3){tmp(j,i) = tmp(i,j)}
+  for(i <- 0 to 2;j <- i+1 to 3){tmp(j,i) = tmp(i,j)}
   val (lambda:DenseVector[Double],eVecs:DenseMatrix[Double]) = eigSym(tmp)
 
   val u = Ti * eVecs
   val ui = inv(u)
   def pi = param.pi
   def bList = for(i <- 0 to 2;j<-i+1 to 3) yield B(i,j)
+
+}
+
+object GTR{
+  def paml(param:Parameters) = {
+    val regParam = Parameters(param.Bvec.map(_ / param.Bvec(5)),param.pi)
+    val gtr = GTR(regParam)
+    val summ = - (0 to 3).foldLeft(0.0){(x,i) => x + gtr.pi(i) * gtr.R(i,i)}
+    val regR:DenseMatrix[Double] = gtr.R / summ
+    val regUpperR = for(i <- 0 to 2;j <- i+1 to 3) yield regR(i,j)
+    val tmp = Array(param.pi(1),param.pi(2),param.pi(3),param.pi(2),param.pi(3),param.pi(3))
+    val regBvec = (regUpperR,tmp).zipped.map(_ / _)
+    new GTR(Parameters(DenseVector(regBvec.toArray),param.pi))
+  }
 }

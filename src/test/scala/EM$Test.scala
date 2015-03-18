@@ -15,7 +15,7 @@ class EM$Test extends FunSuite {
     Util.printExecutionTime(em.test(2000,"src/test/resources/test.nh","src/test/resources/test.al"),"EM")
   }*/
 
-  test("EMQsub"){
+  /*test("EMQsub"){
     val dir = "src/test/resources/alignments/"
     val cdir = "src/test/resources/count/"
     val alFiles = new java.io.File(dir).listFiles.map(_.getName)
@@ -28,7 +28,7 @@ class EM$Test extends FunSuite {
         "src/test/resources/param.txt","src/test/resources/ce10.7way.nh","src/test/resources/log"),"mstep",ot)
     }
     PostProc.exe("src/test/resources/log/","src/test/resources/ce10.7way.nh","src/test/resources/param.txt","target/rtree.txt")
-  }
+  }*/
 
   /*test("maf2al"){
     val s = Source.fromFile("src/test/resources/test.maf")
@@ -48,6 +48,14 @@ class EM$Test extends FunSuite {
     val em = new EM
     Util.printExecutionTime(em.test(10,"src/test/resources/ce10.7way.nh","src/test/resources/1.al"),"EM")
   }*/
+
+  test("Comparison with PAML"){
+    val al = Util.getAlignments("src/test/resources/brown.al")
+    val out = new FileOutputStream("target/hoge")
+    em.test(100,"src/test/resources/brown.trees",al,out)
+    out.close()
+  }
+
   class TestEM extends EM {
     def testMstep(pt:PhylogencyTree,counts:Array[Count]):PhylogencyTree = {
       val sumCount = counts.reduce(_+_) / counts.length //column-wise means
