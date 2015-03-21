@@ -1,5 +1,7 @@
 import breeze.linalg.{DenseMatrix,DenseVector,sum,trace,diag}
 import math.log
+import scala.annotation.tailrec
+import scala.collection.mutable.ListBuffer
 
 class PhylogencyTree(val root:Node,val model:EvolutionModel){
 
@@ -15,8 +17,17 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
     root.setTransition(model)
   }
 
-  def count = Count(root.left.collectF(model) ::: root.right.collectF(model),
-    root.left.collectN(model) ::: root.right.collectN(model),root.collectn(model),log(likelihood))
+  @tailrec
+  private def hoge(m:EvolutionModel,lb:Seq[DenseVector[Double]],xs:Seq[Tree]):Seq[DenseVector[Double]] = {
+    if(xs.isEmpty) return lb
+    val tmp = for(x <- xs) yield x.cont.FdVec(m)
+    val cldl = for(x <- xs) yield x match {case Node(l,_,_) => l}
+    val cldr = for(x <- xs) yield x match {case Node(_,r,_) => r}
+    hoge(m,lb++tmp,cldl++cldr)
+  }
+
+  def count = Count((root.left.collectF(model) ++ root.right.collectF(model)).toList,
+    (root.left.collectN(model) ++ root.right.collectN(model)).toList,root.collectn(model),log(likelihood))
 
   def likelihood:Double = root.likelihood(model)
 

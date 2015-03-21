@@ -30,10 +30,10 @@ object Maf2Alignments{
 
   def trans(x:Char):Int = {
     x match {
-      case 'a' | 'A' => 0
+      case 'a' | 'A' => 2
       case 'c' | 'C' => 1
-      case 'g' | 'G' => 2
-      case 't' | 'T' => 3
+      case 'g' | 'G' => 3
+      case 't' | 'T' => 0
       case _ => 4
     }
   }

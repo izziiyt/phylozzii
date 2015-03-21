@@ -40,7 +40,7 @@ abstract class Content(var t:Double){
   }
 
   //vector of Fd(i,C,theta)
-  def FdVec(m:EvolutionModel) = {
+  def FdVec(m:EvolutionModel):DenseVector[Double] = {
     def fd(i:Int) = for(x <- 0 to 3;y<- 0 to 3) yield kai(x,y,i,i,m) * posterior(x,y)
     val tmp = (0 to 3) map (i => fd(i).sum)
     new DenseVector(tmp.toArray)

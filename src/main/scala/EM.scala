@@ -12,8 +12,8 @@ class EM{
     val llLog = ArrayBuffer[Double]()
     var pt = new PhylogencyTree(nhFile,GTR())
     for(i <- 1 to loop){
-      val counts = alignments.map(eStep(pt,_))
-      pt = mStep(pt,counts)
+      val counts = alignments.map(x => Util.printExecutionTime(eStep(pt,x),"estep"))
+      pt = Util.printExecutionTime(mStep(pt,counts),"mstep")
       paramLog += pt.model.param
       branchLog += pt.branches
       llLog += log(pt.likelihood)
@@ -64,11 +64,11 @@ class EM{
     if(Util.doubleChecker(l,newL)) newL else newtonRaphson(newL,u,v)
   }
 
-  def eStep(pt:PhylogencyTree,column:Array[Char]):Count = {
+  final def eStep(pt:PhylogencyTree,column:Array[Char]):Count = {
     pt.setColumn(column)
     pt.inside()
     pt.outside()
     pt.setPosterior()
-    pt.count
+    Util.printExecutionTime(pt.count,"hoge")
   }
 }

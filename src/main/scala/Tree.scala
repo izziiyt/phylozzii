@@ -1,6 +1,8 @@
 import breeze.linalg.{DenseVector,DenseMatrix}
 import java.io.FileReader
 import scala.util.parsing.combinator.JavaTokenParsers
+import scala.collection.mutable.ListBuffer
+import scala.annotation.tailrec
 
 sealed trait Tree{
   def cont:Content
@@ -9,11 +11,13 @@ sealed trait Tree{
   def setBranch(x:List[Double]):List[Double]
   def setTransition(m:EvolutionModel)
   def setPosterior(l:Double,m:EvolutionModel)
-  def collectF(m:EvolutionModel):List[DenseVector[Double]]
-  def collectN(m:EvolutionModel):List[DenseMatrix[Double]]
+  def collectF(m:EvolutionModel):ListBuffer[DenseVector[Double]]
+  def collectN(m:EvolutionModel):ListBuffer[DenseMatrix[Double]]
   def branches:List[Double]
   def names:List[String]
   override def toString:String
+
+
 }
 
 case class Node(left:Tree,right:Tree,cont:Content) extends Tree{
@@ -41,9 +45,13 @@ case class Node(left:Tree,right:Tree,cont:Content) extends Tree{
 
   def likelihood(m:EvolutionModel):Double = cont.likelihood(m)
 
-  def collectF(m:EvolutionModel) = left.collectF(m) ::: right.collectF(m) ::: List(cont.FdVec(m))
+  def collectF(m:EvolutionModel):ListBuffer[DenseVector[Double]]
+  = left.collectF(m) ++ right.collectF(m) += cont.FdVec(m)
 
-  def collectN(m:EvolutionModel) = left.collectN(m) ::: right.collectN(m) ::: List(cont.NsMat(m))
+  def collectN(m:EvolutionModel):ListBuffer[DenseMatrix[Double]]
+  = left.collectN(m) ++ right.collectN(m) += cont.NsMat(m)
+
+
 
   def collectn(m:EvolutionModel):DenseVector[Double] = (cont.alpha :* m.pi) / likelihood(m)
 
@@ -98,9 +106,9 @@ case class Leaf(species:String,cont:ContentOfLeaf) extends Tree{
     cont.setTransProb(m)
   }
 
-  def collectF(m:EvolutionModel) = List(cont.FdVec(m))
+  def collectF(m:EvolutionModel) = ListBuffer[DenseVector[Double]](cont.FdVec(m))
 
-  def collectN(m:EvolutionModel) = List(cont.NsMat(m))
+  def collectN(m:EvolutionModel) = ListBuffer(cont.NsMat(m))
 }
 
 object Tree extends NHParser{
