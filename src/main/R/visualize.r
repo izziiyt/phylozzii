@@ -22,7 +22,7 @@ df <- melt(x,id.var="time")
 g <- ggplot(df,aes(x = time,y = value,group = variable,colour = variable))
 g <- g + geom_line(linetype = 1,size = 0.5)
 g <- g + xlab("Time")
-g <- g + ylab("Substitution Parameters")         # y座標
+g <- g + ylab("Substitution Parameters")
 g <- g + ggtitle("Convergence of Substitution Parameters") 
 print(g, vp=viewport(layout.pos.row=1, layout.pos.col=2))
 #---------------------------------------------------------------------
