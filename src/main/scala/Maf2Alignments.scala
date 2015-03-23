@@ -6,7 +6,7 @@ object Maf2Alignments{
     exe(args(0),args(1),args(2),args(3).toInt)
   }
 
-  def exe(maf:String,nh:String,outFilePrefix:String,perSize:Int){
+  protected def exe(maf:String,nh:String,outFilePrefix:String,perSize:Int){
     val gen = MafUnitGenerator(maf)
     val names = Tree.fromFile(nh).names
     val map = (names,0 until names.length).zipped.map(_ -> _).toMap
@@ -23,12 +23,12 @@ object Maf2Alignments{
     }
   }
 
-  private def isGoodColumn(col:Array[Int]) = {
+  protected def isGoodColumn(col:Array[Int]) = {
     val c = col.foldLeft(0)((x,y) => if(y==4) x+1 else x)
     c+1 < col.size
   }
 
-  def trans(x:Char):Int = {
+  protected def trans(x:Char):Int = {
     x match {
       case 'a' | 'A' => 2
       case 'c' | 'C' => 1

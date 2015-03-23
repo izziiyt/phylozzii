@@ -1,6 +1,5 @@
-import breeze.linalg.{DenseMatrix,DenseVector,sum,trace,diag}
-import math.log
-import scala.annotation.tailrec
+import breeze.linalg.DenseVector
+import scala.math._
 import scala.collection.mutable.ListBuffer
 
 class PhylogencyTree(val root:Node,val model:EvolutionModel){
@@ -17,17 +16,10 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
     root.setTransition(model)
   }
 
-  @tailrec
-  private def hoge(m:EvolutionModel,lb:Seq[DenseVector[Double]],xs:Seq[Tree]):Seq[DenseVector[Double]] = {
-    if(xs.isEmpty) return lb
-    val tmp = for(x <- xs) yield x.cont.FdVec(m)
-    val cldl = for(x <- xs) yield x match {case Node(l,_,_) => l}
-    val cldr = for(x <- xs) yield x match {case Node(_,r,_) => r}
-    hoge(m,lb++tmp,cldl++cldr)
+  def count = {
+    val cList = mkTreeList.map(_.cont.nsAndFd(model))
+    Count(cList.map(_._1),cList.map(_._2),root.collectn(model),log(likelihood))
   }
-
-  def count = Count((root.left.collectF(model) ++ root.right.collectF(model)).toList,
-    (root.left.collectN(model) ++ root.right.collectN(model)).toList,root.collectn(model),log(likelihood))
 
   def likelihood:Double = root.likelihood(model)
 
@@ -67,7 +59,20 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
     }
   }
 
-  private def innerOutside(left:Tree,right:Tree,cont:Content){
+  protected def mkTreeList = {
+    val bl = ListBuffer[Tree]()
+    def f(bl:ListBuffer[Tree],t:Tree){
+      t match {
+        case Node(l,r,_) => f(bl,l);f(bl,r)
+        case Leaf(_,_) => Unit
+      }
+      bl += t
+    }
+    f(bl,root)
+    bl.init.toList
+  }
+
+  protected def innerOutside(left:Tree,right:Tree,cont:Content){
     val fromLeft = left.cont.accumInsideBelief(model)
     val fromRight = right.cont.accumInsideBelief(model)
     val fromThis = cont.accumOutsideBelief(model)
@@ -75,7 +80,7 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
     outside(left,fromRight,fromThis)
   }
 
-  def deriveLL:(Parameters,List[Double]) = {
+  /*def deriveLL:(Parameters,List[Double]) = {
     val (lParam,lT) = deriveLL(root.left)
     val (rParam,rT) = deriveLL(root.right)
     val param = lParam + rParam
@@ -115,5 +120,5 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
   }
 
   private def deriveLWithT(cont:Content,r:DenseMatrix[Double]):Double = (sum(r) - trace(r)) / cont.t
-
+*/
 }

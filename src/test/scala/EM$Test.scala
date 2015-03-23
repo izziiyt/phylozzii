@@ -52,7 +52,7 @@ class EM$Test extends FunSuite {
   test("Comparison with PAML"){
     val al = Util.getAlignments("src/test/resources/brown.al")
     val out = new FileOutputStream("target/hoge")
-    em.test(100,"src/test/resources/brown.trees",al,out)
+    Util.printExecutionTime(em.test(100,"src/test/resources/brown.trees",al,out),"hoge")
     out.close()
   }
 

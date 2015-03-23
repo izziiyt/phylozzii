@@ -15,7 +15,7 @@ object Estep extends EM{
     os.close()
   }
 
-  def exe(paramFile:String,alFile:String,nhFile:String,fout:String){
+  protected def exe(paramFile:String,alFile:String,nhFile:String,fout:String){
     val param = Parameters.fromFile(paramFile)
     val tree = Tree.fromFile(nhFile)
     val pt = new PhylogencyTree(tree,GTR(param))

@@ -3,7 +3,7 @@ import org.scalatest.FunSuite
 import math.{abs,log}
 import scala.io.Source
 
-class PhylogencyTreeTest extends FunSuite {
+/*class PhylogencyTreeTest extends FunSuite {
   test("breeze.linalg"){
     val a = DenseMatrix((1,2),(3,4))
     assert(a == new DenseMatrix(2,2,Array(1,3,2,4)))
@@ -140,4 +140,4 @@ class PhylogencyTreeTest extends FunSuite {
       DenseVector[Double](0.25,0.45,0.25,0.25))
     assert(x + y + z == Parameters(DenseVector(3.0, 7.0, 3.0, 3.0, 3.0, 3.0),DenseVector(0.75, 0.95, 0.75, 0.75)))
   }
-}
+}*/

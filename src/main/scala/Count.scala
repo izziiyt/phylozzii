@@ -7,7 +7,7 @@ class Count(val Fd:List[DenseVector[Double]],val Ns:List[DenseMatrix[Double]],va
   def +(that:Count):Count =
     Count((Fd,that.Fd).zipped.map(_ + _),(Ns,that.Ns).zipped.map(_ + _),ns + that.ns,ll + that.ll)
 
-  //def *(arg:Double) = Count(Fd.map(_*arg),Ns.map(_*arg),T.map(_*arg),ns * arg,ll)
+  def *(arg:Double) = Count(Fd.map(_*arg),Ns.map(_*arg),ns * arg,ll)
 
   def /(arg:Double) = Count(Fd.map(_/arg),Ns.map(_/arg),ns / arg,ll / arg)
 

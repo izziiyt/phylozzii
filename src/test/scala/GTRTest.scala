@@ -25,10 +25,8 @@ class GTRTest extends FunSuite {
     println(gtr.u * diag(gtr.lambda) * diag(gtr.lambda) * diag(gtr.lambda)* gtr.ui)
   }
 
-  test("where"){
-  val x = DenseMatrix((1,2),(3,4))
-  println(x)
-  println(x(1,0))
-  println(x(0,::))
+  test("toDenseMatrix"){
+    val x = Array(1,2,3,4)
+    println(new DenseMatrix(2,2,x))
   }
 }

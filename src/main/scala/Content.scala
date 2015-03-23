@@ -34,44 +34,17 @@ abstract class Content(var t:Double){
     transProb = m.u * tmp * m.ui
   }
 
-  @deprecated
-  def manipulateTransition(m:DenseMatrix[Double]){
-    transProb = m
-  }
-
-  //vector of Fd(i,C,theta)
-  def FdVec(m:EvolutionModel):DenseVector[Double] = {
-    def fd(i:Int) = for(x <- 0 to 3;y<- 0 to 3) yield kai(x,y,i,i,m) * posterior(x,y)
-    val tmp = (0 to 3) map (i => fd(i).sum)
-    new DenseVector(tmp.toArray)
-  }
-
-  //Matrix of Ns(i,j,C,theta) i -> j
-  def NsMat(m:EvolutionModel) = {
-    def ns(i:Int,j:Int) = for(x <- 0 to 3;y <- 0 to 3) yield kai(x,y,i,j,m) * posterior(x,y)
-    val tmp = for(j <- 0 to 3;i <- 0 to 3) yield ns(i,j).sum * m.R(i,j) * t
-    new DenseMatrix(4,4,tmp.toArray)
-  }
-
-  @deprecated
-  def NsMati(a:Int,b:Int,m:EvolutionModel):DenseMatrix[Double] = {
-    val tmp = DenseMatrix.zeros[Double](4,4)
-    for(i <- 0 to 3;j <- 0 to 3;if i != j){tmp(i,j) = m.R(i,j) * t * kai(a,b,i,j,m)}
-    tmp
-  }
-
-  @deprecated
-  def FdVeci(a:Int,b:Int,m:EvolutionModel):DenseVector[Double] = {
-    val tmp = DenseVector.zeros[Double](4)
-    for(i <- 0 to 3){tmp(i) = kai(a,b,i,i,m)}
-    tmp
-  }
-
-  //beg -> end and from -> to
-  private def kai(beg:Int,end:Int,from:Int,to:Int,m:EvolutionModel) = {
-    def k(x:Double,y:Double) = if(Util.doubleChecker(exp(x),exp(y))) exp(x) else (exp(x) - exp(y)) / (x - y)
-    val tmp = for(x <- 0 to 3; y <- 0 to 3) yield m.u(beg,x) * m.ui(x,from) * m.u(to,y) * m.ui(y,end) * k(t*m.lambda(x),t*m.lambda(y))
-    tmp.sum / transProb(beg,end)
+  def nsAndFd(m:EvolutionModel) = {
+    val k1 = for(b <- 0 to 3;a <- 0 to 3;x = m.lambda(a)*t;y = m.lambda(b)*t) yield
+    {val tmp = (exp(x) - exp(y)) / (x - y); if(tmp.isNaN) exp(x) else tmp}
+    val k2 = for(b <- 0 to 3;a <- 0 to 3) yield {for(x <- 0 to 3;y <- 0 to 3) yield
+      m.u(x,a)*m.ui(b,y)*posterior(x,y)/transProb(x,y)}.sum
+    val s = new DenseMatrix(4,4,(k1,k2).zipped.map(_ * _).toArray)
+    val ns = for(j <- 0 to 3;i <- 0 to 3) yield
+      {for(a <- 0 to 3;b <- 0 to 3) yield s(a,b)*m.u(j,b)*m.ui(a,i)}.sum * m.R(i,j) * t
+    val fd = for(i <- 0 to 3) yield
+      {for(a <- 0 to 3;b <- 0 to 3) yield s(a,b)*m.u(i,b)*m.ui(a,i)}.sum
+    (new DenseVector[Double](fd.toArray),new DenseMatrix(4,4,ns.toArray))
   }
 
   def likelihood(m:EvolutionModel):Double = alpha.t * m.pi

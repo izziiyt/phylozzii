@@ -29,7 +29,7 @@ object PostProc {
     val write = new PrintWriter(out)
     write.println(tree)
     write.println(gtr.param)
-    write.println((gtr.R :/ summ))
+    write.println(gtr.R :/ summ)
     write.flush()
   }
 

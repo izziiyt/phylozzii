@@ -18,7 +18,7 @@ object Mstep extends EM{
     os.close()
   }
 
-  def exe(countFiles:Array[String],paramFile:String,nhFile:String,logDir:String){
+  protected def exe(countFiles:Array[String],paramFile:String,nhFile:String,logDir:String){
     val can = countFiles.map(file2Count)
     val count = can.map(_._1).reduce(_+_) / can.map(_._2).sum
     val model = GTR(Parameters.fromFile(paramFile))
@@ -30,14 +30,14 @@ object Mstep extends EM{
     logger(pt,count.ll,paramFile,nhFile,logDir)
   }
 
-  private def file2Count(fin:String):(Count,Int) = {
+  protected def file2Count(fin:String):(Count,Int) = {
     val lines = scala.io.Source.fromFile(fin).getLines()
     val n = lines.next().toInt
     val c = Count.fromString(lines.reduce(_+_))
     Pair(c,n)
   }
 
-  private def logger(pt:PhylogencyTree,ll:Double,paramOut:String,nhOut:String,logDir:String){
+  protected def logger(pt:PhylogencyTree,ll:Double,paramOut:String,nhOut:String,logDir:String){
     val writeP = new PrintWriter(paramOut)
     writeP.println(pt.model.param)
     writeP.close()
@@ -50,7 +50,7 @@ object Mstep extends EM{
     innerLogger(pt.model.bList.mkString(sep="\t"),logDir+"/b.log")
   }
 
-  private def innerLogger[T](content:T,fout:String){
+  protected def innerLogger[T](content:T,fout:String){
     val write = new PrintWriter(new FileOutputStream(fout,true))
     write.println(content)
     write.close()

@@ -1,35 +1,48 @@
 import breeze.linalg.{DenseMatrix, DenseVector,sum,trace}
-import java.io.{PrintWriter, OutputStream}
+import java.io.{FileOutputStream, PrintWriter, OutputStream}
 import scala.annotation.tailrec
-import scala.collection.mutable.ArrayBuffer
-import math.{log,pow,exp}
+import math.pow
 
 class EM{
 
   def test(loop:Int,nhFile:String,alignments:Array[Array[Char]],out:OutputStream=System.out){
-    val paramLog = ArrayBuffer[Parameters]()
-    val branchLog = ArrayBuffer[List[Double]]()
-    val llLog = ArrayBuffer[Double]()
     var pt = new PhylogencyTree(nhFile,GTR())
-    for(i <- 1 to loop){
-      val counts = alignments.map(x => Util.printExecutionTime(eStep(pt,x),"estep"))
-      pt = Util.printExecutionTime(mStep(pt,counts),"mstep")
-      paramLog += pt.model.param
-      branchLog += pt.branches
-      llLog += log(pt.likelihood)
-      println(i)
-    }
+    var tmpll = Double.NegativeInfinity
+    var diff = false
+    var rec = 0
+    do{
+      val counts = alignments.map(x => eStep(pt,x))
+      val tmp = mStep(pt,counts)
+      pt = tmp._1
+      diff = tmp._2 - tmpll > 0.0
+      tmpll = tmp._2
+      //logger(pt,tmp._2,"target/log")
+      rec += 1
+    }while(diff)
+    println("recursion: " + rec)
     PostProc.regularize(pt.root,pt.model.param,out)
   }
 
+  private def logger(pt:PhylogencyTree,ll:Double,logDir:String){
+    innerLogger(ll,logDir+"/ll.log")
+    innerLogger(pt.branches.mkString(sep="\t"),logDir+"/tree.log")
+    innerLogger(Util.toTSV(pt.model.pi),logDir+"/pi.log")
+    innerLogger(pt.model.bList.mkString(sep="\t"),logDir+"/b.log")
+  }
 
-  protected def mStep(pt:PhylogencyTree,counts:Array[Count]):PhylogencyTree = {
+  private def innerLogger[T](content:T,fout:String){
+    val write = new PrintWriter(new FileOutputStream(fout,true))
+    write.println(content)
+    write.close()
+  }
+
+  protected def mStep(pt:PhylogencyTree,counts:Array[Count]):(PhylogencyTree,Double) = {
     val sumCount = counts.reduce(_+_) / counts.length
     val Ns = sumCount.Ns.reduce(_+_)
     val Td:DenseVector[Double] = (sumCount.Fd,pt.branches).zipped.map(_*_).reduce(_+_)
     val tmp = new PhylogencyTree(pt,GTR(Parameters(newB(Ns,Td,pt.model),newPi(Ns,Td,sumCount.ns,pt.model))))
     tmp.setBranch(newT(sumCount.Ns,sumCount.Fd,pt.model))
-    tmp
+    (tmp,sumCount.ll)
   }
 
   protected def newPi(Ns:DenseMatrix[Double],Td:DenseVector[Double],n:DenseVector[Double],m:EvolutionModel) = {
@@ -69,6 +82,6 @@ class EM{
     pt.inside()
     pt.outside()
     pt.setPosterior()
-    Util.printExecutionTime(pt.count,"hoge")
+    pt.count
   }
 }

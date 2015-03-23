@@ -16,7 +16,7 @@ case class MafUnitGenerator(file:String,sep:String = """\p{javaWhitespace}+"""){
   def hasNext = f
   def next = if(hasNext) gen else null
 
-  private def gen:MafUnit = {
+  protected def gen:MafUnit = {
     val buf = new ListBuffer[Sequence]
     for(line <- lines;if line != ""){
       val p = line.split(sep)
@@ -34,5 +34,5 @@ case class MafUnitGenerator(file:String,sep:String = """\p{javaWhitespace}+"""){
     MafUnit(score,buf.toList)
   }
 
-  private def toScore(arg:String) = arg.diff("score=").toDouble
+  protected def toScore(arg:String) = arg.diff("score=").toDouble
 }
