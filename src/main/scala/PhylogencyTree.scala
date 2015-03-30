@@ -27,7 +27,7 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
     root.setColumn(al)
   }
 
-  def setPosterior(){root.setPosterior(likelihood,model)}
+  def setPosterior(){root.setPosterior(likelihood)}
 
   def branches = root.left.branches ::: root.right.branches
 
@@ -36,16 +36,24 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
       case Node(left,right,cont) =>
         val fromLeft = inside(left)
         val fromRight = inside(right)
-        for(i <- 0 to 3){cont.alpha(i) = fromLeft(i) * fromRight(i)}
-        cont.accumInsideBelief(model)
+        cont.isNull = left.isNull && right.isNull
+        if(cont.isNull){
+          //for(i <- 0 to 3) cont.alpha(i) = 1.0
+          DenseVector(1.0,1.0,1.0,1.0)
+        }else{
+          for(i <- 0 to 3){cont.alpha(i) = fromLeft(i) * fromRight(i)}
+          cont.accumInsideBelief(model)
+        }
       case Leaf(_,cont) =>
         if(cont.nuc > 3){
+          cont.isNull = true
           cont.alpha(0 to 3) := 1.0
+          DenseVector(1.0,1.0,1.0,1.0)
         }else{
           cont.alpha(0 to 3) := 0.0
           cont.alpha(cont.nuc.toInt) = 1.0
+          cont.accumInsideBelief(model)
         }
-        cont.accumInsideBelief(model)
     }
   }
 
@@ -53,7 +61,7 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
     tree match{
       case Node(left,right,cont) =>
         for(i <- 0 to 3) cont.beta(i) = fromBro(i) * fromPar(i)
-        innerOutside(left,right,cont)
+        if(!cont.isNull) innerOutside(left,right,cont)
       case Leaf(_,cont) =>
         for(i <- 0 to 3) cont.beta(i) = fromBro(i) * fromPar(i)
     }
@@ -75,12 +83,14 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
     bl.init.toList
   }
 
+
+
   protected def innerOutside(left:Tree,right:Tree,cont:Content){
     val fromLeft = left.cont.accumInsideBelief(model)
     val fromRight = right.cont.accumInsideBelief(model)
     val fromThis = cont.accumOutsideBelief(model)
-    outside(right,fromLeft,fromThis)
     outside(left,fromRight,fromThis)
+    outside(right,fromLeft,fromThis)
   }
 
   /*def deriveLL:(Parameters,List[Double]) = {

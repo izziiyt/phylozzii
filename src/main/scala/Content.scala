@@ -6,12 +6,14 @@ abstract class Content(var t:Double){
   val alpha = DenseVector.zeros[Double](4)
   val beta = DenseVector.zeros[Double](4)
   val posterior = DenseMatrix.zeros[Double](4,4)
+  var isNull = false
   private var transProb = DenseMatrix.zeros[Double](4,4)
 
   def format(){
     alpha(0 to 3) := 0.0
     beta(0 to 3) := 0.0
     posterior(0 to 3,0 to 3) := 0.0
+    isNull = false
   }
 
   def accumInsideBelief(m:EvolutionModel) = {
@@ -24,9 +26,14 @@ abstract class Content(var t:Double){
     DenseVector(tmp.toArray)
   }
 
-  def setPosterior(likelihood:Double,m:EvolutionModel){
+  def setPosterior(likelihood:Double){
     for(i <- 0 to 3;j <- 0 to 3)
       posterior(i,j) = alpha(j) * beta(i) * transProb(i,j) / likelihood
+  }
+
+  def setPosteriorNull(likelihood:Double,b:DenseVector[Double]){
+    for(i <- 0 to 3;j <- 0 to 3)
+      posterior(i,j) = b(i) * transProb(i,j) / likelihood
   }
 
   def setTransProb(m:EvolutionModel){
@@ -56,14 +63,14 @@ case class ContentOfLeaf(var tx:Double,var nuc:Char) extends Content(tx){
     beta(0 to 3) := 0.0
     posterior(0 to 3,0 to 3) := 0.0
     nuc = 4
+    isNull = false
   }
 }
 
 case class ContentOfRoot(var tx:Double = 0.0) extends Content(tx){
-  override def setPosterior(likelihood:Double,m:EvolutionModel){
-    for(i <- 0 to 3)
-      posterior(i,i) = alpha(i) * m.pi(i) / likelihood
-  }
+  /*def setPosterior(likelihood:Double,m:EvolutionModel){
+    for(i <- 0 to 3) posterior(i,i) = alpha(i) * m.pi(i) / likelihood
+  }*/
 }
 
 case class ContentOfNode(var tx:Double) extends Content(tx)
