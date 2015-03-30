@@ -63,8 +63,11 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
     val bl = ListBuffer[Tree]()
     def f(bl:ListBuffer[Tree],t:Tree){
       t match {
-        case Node(l,r,_) => f(bl,l);f(bl,r)
-        case Leaf(_,_) => Unit
+        case Node(l,r,_) =>
+          f(bl,l)
+          f(bl,r)
+        case Leaf(_,_) =>
+          Unit
       }
       bl += t
     }

@@ -28,7 +28,7 @@ object Maf2Alignments{
     c+1 < col.size
   }
 
-  protected def trans(x:Char):Int = {
+  def trans(x:Char):Int = {
     x match {
       case 'a' | 'A' => 2
       case 'c' | 'C' => 1

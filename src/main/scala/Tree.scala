@@ -45,7 +45,7 @@ case class Node(left:Tree,right:Tree,cont:Content) extends Tree{
   def setBranch(x:List[Double]) = {
     val y = left.setBranch(x)
     val z = right.setBranch(y)
-    if(!z.isEmpty) cont.t_=(z.head)
+    cont.t_=(z.head)
     z.tail
   }
 

@@ -1,7 +1,9 @@
-import breeze.linalg.{DenseMatrix, DenseVector}
-import java.io.FileOutputStream
+import breeze.linalg.{sum, diag, DenseMatrix, DenseVector}
+import java.io.{PrintWriter, FileOutputStream}
 import org.scalatest.FunSuite
+import scala.annotation.tailrec
 import scala.io.Source
+import scala.util.Random
 
 class EM$Test extends FunSuite {
   val em = new EM
@@ -49,6 +51,10 @@ class EM$Test extends FunSuite {
     Util.printExecutionTime(em.test(10,"src/test/resources/ce10.7way.nh","src/test/resources/1.al"),"EM")
   }*/
 
+  /*test("makeAlignments"){
+    AlGen("src/test/resources/my.tree")
+  }*/
+
   test("Comparison with PAML"){
     val al = Util.getAlignments("src/test/resources/brown.al")
     val out = new FileOutputStream("target/hoge")
@@ -73,6 +79,55 @@ class EM$Test extends FunSuite {
       println("difference is: " + r)
       Util.doubleChecker(r,0.0)
     }
+  }
+
+  object AlGen{
+    def apply(tFile:String){
+      exe(Tree.fromFile(tFile),Parameters(DenseVector(0.1,0.2,0.2,0.1,0.3,0.1),DenseVector(0.2,0.3,0.4,0.1)))
+    }
+
+    def distance(t:Double,m:EvolutionModel):DenseMatrix[Double] = {
+      val tmp:DenseMatrix[Double] = diag(m.lambda.map(x => math.exp(x * t)))
+      m.u * tmp * m.ui
+    }
+
+    def exe(tree:Tree,param:Parameters){
+      val rgen = new Random()
+      val br = tree.branches
+      val m = GTR(param)
+      val hc = distance(br(2),m)
+      val h = distance(br(0),m)
+      val c = distance(br(1),m)
+      val g = distance(br(3),m)
+      val write = new PrintWriter("src/test/resources/my.al")
+      for(i <- 0 until 10000){
+        val top = BaseGen(param.pi.toArray.toList,rgen)
+        val hcTop = BaseGen(hc(top,::).t.toArray.toList,rgen)
+        val hv = h(hcTop,::).t.toArray
+        val cv = c(hcTop,::).t.toArray
+        val gv = g(top,::).t.toArray
+        val human = BaseGen(hv.toList,rgen)
+        val chimp = BaseGen(cv.toList,rgen)
+        val gollira = BaseGen(gv.toList,rgen)
+        write.println(Array(human,chimp,gollira).mkString(" "))
+      }
+
+
+
+
+    }
+  }
+
+  object BaseGen{
+    def apply(xs:List[Double],rgen:Random) = f(xs,rgen.nextDouble())
+
+    @tailrec
+    private def f(xs:List[Double],r:Double,i:Int = 0):Int = {
+      val tmp = r - xs.head
+      if(tmp > 0.0 && !xs.tail.isEmpty) f(xs.tail,tmp,i+1)
+      else i
+    }
+
   }
 }
 

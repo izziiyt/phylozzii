@@ -16,7 +16,7 @@ class EM{
       pt = tmp._1
       diff = tmp._2 - tmpll > 0.0
       tmpll = tmp._2
-      //logger(pt,tmp._2,"target/log")
+      logger(pt,tmp._2,"target/log")
       rec += 1
     }while(diff)
     println("recursion: " + rec)
