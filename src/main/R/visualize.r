@@ -3,7 +3,7 @@ library(reshape2)
 library(grid)
 grid.newpage()
 pushViewport(viewport(layout=grid.layout(2, 2)))
-logDir <- "~/projects/fdur/src/test/resources/log/"
+logDir <- "~/projects/fdur/target/log/"
 
 ll <- read.table(paste(logDir,"ll.log",sep=""))$V1
 df <- data.frame(recursion = c(1:length(ll)), logLikelihood=ll)

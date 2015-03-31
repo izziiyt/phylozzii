@@ -10,15 +10,18 @@ class EM{
     var tmpll = Double.NegativeInfinity
     var diff = false
     var rec = 0
+    val os = new FileOutputStream("target/log/tm.log",true)
     do{
-      val counts = alignments.map(x => eStep(pt,x))
-      val tmp = mStep(pt,counts)
+      val counts = alignments.map(x => Util.printExecutionTime(eStep(pt,x),"estep",os))
+      val tmp = Util.printExecutionTime(mStep(pt,counts),"mstep",os)
       pt = tmp._1
       diff = tmp._2 - tmpll > 0.0
       tmpll = tmp._2
       logger(pt,tmp._2,"target/log")
+      println(rec)
       rec += 1
     }while(diff)
+    os.close()
     println("recursion: " + rec)
     PostProc.regularize(pt.root,pt.model.param,out)
   }
@@ -37,7 +40,7 @@ class EM{
   }
 
   protected def mStep(pt:PhylogencyTree,counts:Array[Count]):(PhylogencyTree,Double) = {
-    val sumCount = counts.reduce(_+_) / counts.length
+    val sumCount = Util.printExecutionTime(counts.reduce(_+_) / counts.length,"sumCount")
     val Ns = sumCount.Ns.reduce(_+_)
     val Td:DenseVector[Double] = (sumCount.Fd,pt.branches).zipped.map(_*_).reduce(_+_)
     val tmp = new PhylogencyTree(pt,GTR(Parameters(newB(Ns,Td,pt.model),newPi(Ns,Td,sumCount.ns,pt.model))))
