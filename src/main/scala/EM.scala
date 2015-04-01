@@ -10,14 +10,16 @@ class EM{
     var tmpll = Double.NegativeInfinity
     var diff = false
     var rec = 0
+    val os = new FileOutputStream("target/log/tm.log",true)
     do{
-      val counts = alignments.map(x => eStep(pt,x))
-      val tmp = mStep(pt,counts)
+      val counts = Util.printExecutionTime(alignments.map(x => eStep(pt,x)),"estep",os)
+      val tmp = Util.printExecutionTime(mStep(pt,counts),"mstep",os)
       pt = tmp._1
       diff = tmp._2 - tmpll > 0.0
       tmpll = tmp._2
       logger(pt,tmp._2,"target/log")
       rec += 1
+      println(rec)
     }while(diff)
     println("recursion: " + rec)
     PostProc.regularize(pt.root,pt.model.param,out)
