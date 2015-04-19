@@ -12,7 +12,7 @@ class EM{
     var rec = 0
     val os = new FileOutputStream("target/log/tm.log",true)
     do{
-      val counts = alignments.map(x => Util.printExecutionTime(eStep(pt,x),"estep",os))
+      val counts = Util.printExecutionTime(alignments.map(x => eStep(pt,x)),"estep",os)
       val tmp = Util.printExecutionTime(mStep(pt,counts),"mstep",os)
       pt = tmp._1
       diff = tmp._2 - tmpll > 0.0
@@ -40,7 +40,7 @@ class EM{
   }
 
   protected def mStep(pt:PhylogencyTree,counts:Array[Count]):(PhylogencyTree,Double) = {
-    val sumCount = Util.printExecutionTime(counts.reduce(_+_) / counts.length,"sumCount")
+    val sumCount = counts.reduce(_+_) / counts.length
     val Ns = sumCount.Ns.reduce(_+_)
     val Td:DenseVector[Double] = (sumCount.Fd,pt.branches).zipped.map(_*_).reduce(_+_)
     val tmp = new PhylogencyTree(pt,GTR(Parameters(newB(Ns,Td,pt.model),newPi(Ns,Td,sumCount.ns,pt.model))))

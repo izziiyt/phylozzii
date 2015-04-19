@@ -1,5 +1,5 @@
 import breeze.linalg.DenseVector
-import java.io.{OutputStream, PrintWriter}
+import java.io.{File, OutputStream, PrintWriter}
 import scala.io.Source
 import scala.math.{abs,max,pow}
 
@@ -29,4 +29,16 @@ object Util {
     result
   }
 
+  /*def lsfs(dir: String) : Stream[File] = {
+
+    val (ds,fs) = new File(dir).listFiles.span(_.isDirectory)
+    fs.toStream append ds.toStream.
+  }*/
+
+  def lsf(dir: String) : Seq[File] = {
+    new File(dir).listFiles.flatMap {
+      case f if f.isDirectory => lsf(f.getPath)
+      case x => List(x)
+    }
+  }
 }

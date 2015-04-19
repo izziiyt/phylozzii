@@ -2,10 +2,10 @@ import org.scalatest.FunSuite
 import scala.io.Source
 
 class TreeTest extends FunSuite {
-  val source = "src/test/resources/sample.nh"
-  val tree = Tree.fromFile(source)
+  //val source = "src/test/resources/sample.nh"
+  //val tree = Tree.fromFile(source)
 
-  test("construct"){
+  /*test("construct"){
 
     def names(tree:Tree):List[String] = {
       tree match {
@@ -41,14 +41,14 @@ class TreeTest extends FunSuite {
   test("toString"){
     val txt = Source.fromFile(source).getLines().reduce(_+_)
     assert(tree.toString == txt)
-  }
+  }*/
 
   test("branch"){
-    val tree = Tree.fromFile("src/test/resources/ce10.7way.nh")
+    val tree = Tree.fromFile("src/test/resources/hg19.100way.nh")
     println(tree.branches)
     val branches = tree.branches.map(_/2.0)
     tree.setBranch(branches)
     println(tree.branches)
-    println(tree)
+    (tree.names zip (0 until tree.names.length)).foreach{println}
   }
 }

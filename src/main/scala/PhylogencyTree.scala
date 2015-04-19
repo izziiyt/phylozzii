@@ -38,7 +38,7 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
         val fromRight = inside(right)
         cont.isNull = left.isNull && right.isNull
         if(cont.isNull){
-          //for(i <- 0 to 3) cont.alpha(i) = 1.0
+          for(i <- 0 to 3) cont.alpha(i) = 1.0
           DenseVector(1.0,1.0,1.0,1.0)
         }else{
           for(i <- 0 to 3){cont.alpha(i) = fromLeft(i) * fromRight(i)}
