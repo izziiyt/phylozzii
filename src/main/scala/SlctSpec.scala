@@ -1,32 +1,62 @@
 import java.io.{File, PrintWriter}
 import scala.io.Source
+import scala.collection.mutable.ArrayBuffer
 
 object SlctSpec {
   def main(args:Array[String]){
     val fs = Util.lsf(args(0))
-    val wi = new PrintWriter(args(1))
-    val wj = new PrintWriter(args(2))
-    val is = Source.fromFile(args(3)).getLines().map(_.toInt).toSeq
-    exe(fs,wi,wj,is)
-    wi.close()
-    wj.close()
+    val is = Source.fromFile(args(2)).getLines().map(_.toInt).toSeq
+    dist(fs,args(1),is)
+    //exe(fs,args(1),is)
+    //count(args(1),is)
   }
-  def exe(fs:Seq[File],wtid:PrintWriter,wnum:PrintWriter,potentList:Seq[Int]){
-    val m = (0 until potentList.length).map(_ -> List[Long]()).toMap
-    println(m.size)
+
+  private def exe(ifs:Seq[File],oDirName:String,potentList:Seq[Int]){
+    val tmap = (0 to potentList.length).map{x => x -> new PrintWriter(fName(oDirName,x))}.toMap
     val set = potentList.toSet
     var tid:Long = 0
-    for(f <- fs){
+    for(f <- ifs){
       val s = Source.fromFile(f)
       for(l <- s.getLines()){
         val line = l.split(" ").map(_.toInt)
-        val c = (0 to 99).count(x => line(x) < 4 && (set contains x))
-        if(m contains c){tid :: m(c)}
+        val c = (0 until line.length).count(x => line(x) < 4 && (set contains x))
+        if(tmap contains c){tmap(c).println(tid)}
         tid += 1
       }
       s.close()
     }
-    m.foreach{case (x,y) => wtid.println(x + " " + y.mkString(" "))}
-    m.foreach{case (x,y) => wnum.println(x + " " + y.length)}
+    tmap.values.foreach(_.close())
+  }
+
+  private def dist(ifs:Seq[File],odir:String,potentList:Seq[Int]){
+    val amap = new Array[Long] (101)
+    val cmap = new Array[Long] (101)
+    val set = potentList.toSet
+    for(f <- ifs){
+      val s = Source.fromFile(f)
+      for(l <- s.getLines();line = l.split(" ").map(_.toInt)){
+        val all = (0 until line.length).count(x => line(x) < 4)
+        amap(all) += 1
+        if((0 until line.length).count(x => line(x) < 4 && (set contains x)) > 0){cmap(all) += 1}
+      }
+      s.close()
+    }
+    val wra = new PrintWriter(fName(odir,100,".dist.txt"))
+    val wrc = new PrintWriter(fName(odir,16,".dist.txt"))
+    ((0 to 100) zip amap).foreach{case (x,y) => wra.println(x + "," + y)}
+    ((0 to 100) zip cmap).foreach{case (x,y) => wrc.println(x + "," + y)}
+    wra.close()
+    wrc.close()
+  }
+
+  private def fName(dir:String,i:Int,suffix:String = ".tid.txt"):String =
+    if(dir.endsWith("/")) dir + i + suffix else dir + "/" + i + suffix
+
+  private def count(dir:String,potentList:Seq[Int]){
+    val range = 0 to potentList.length
+    val tmap = range.map{x => x -> Source.fromFile(fName(dir,x)).getLines().size}.toMap
+    val wr = new PrintWriter(fName(dir,0,".num.txt"))
+    tmap.foreach(wr.println)
+    wr.close()
   }
 }
