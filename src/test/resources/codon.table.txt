@@ -1,7 +1,7 @@
 TTT F Phe	TTC F Phe	TTA L Leu	TTG L Leu	
 TCT S Ser	TCC S Ser	TCA S Ser	TCG S Ser	
-TAT Y Tyr	TAC Y Tyr	TAA * Ter	TAG * Ter	
-TGT C Cys	TGC C Cys	TGA * Ter	TGG W Trp	
+TAT Y Tyr	TAC Y Tyr	TAA Z Ter	TAG Z Ter
+TGT C Cys	TGC C Cys	TGA Z Ter	TGG W Trp
 
 CTT L Leu	CTC L Leu	CTA L Leu	CTG L Leu	
 CCT P Pro	CCC P Pro	CCA P Pro	CCG P Pro	

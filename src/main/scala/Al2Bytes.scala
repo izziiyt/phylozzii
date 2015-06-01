@@ -24,9 +24,9 @@ object Al2Bytes{
     for(f <- flist){
       val lines = Source.fromFile(f).getLines()
       for(l <- lines){
-        val tmp = l.split(" ").map{x => if(x.toInt > 3) false else true}.toArray
+        val tmp = l.split(" ").map{x => if(x.toInt > 3) false else true}
         var s = scala.collection.mutable.Set[Int]()
-        (0 until tmp.length).foreach{i => if(tmp(i)) s += i}
+        tmp.indices.foreach{i => if(tmp(i)) s += i}
         writer.println(s.mkString(" "))
       }
     }

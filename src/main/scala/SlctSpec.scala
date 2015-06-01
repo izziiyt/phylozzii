@@ -19,7 +19,7 @@ object SlctSpec {
       val s = Source.fromFile(f)
       for(l <- s.getLines()){
         val line = l.split(" ").map(_.toInt)
-        val c = (0 until line.length).count(x => line(x) < 4 && (set contains x))
+        val c = line.indices.count(x => line(x) < 4 && (set contains x))
         if(tmap contains c){tmap(c).println(tid)}
         tid += 1
       }
@@ -35,9 +35,9 @@ object SlctSpec {
     for(f <- ifs){
       val s = Source.fromFile(f)
       for(l <- s.getLines();line = l.split(" ").map(_.toInt)){
-        val all = (0 until line.length).count(x => line(x) < 4)
+        val all = line.indices.count(x => line(x) < 4)
         amap(all) += 1
-        if((0 until line.length).count(x => line(x) < 4 && (set contains x)) > 0){cmap(all) += 1}
+        if(line.indices.count(x => line(x) < 4 && (set contains x)) > 0){cmap(all) += 1}
       }
       s.close()
     }

@@ -16,12 +16,12 @@ abstract class Content(var t:Double){
     isNull = false
   }
 
-  def accumInsideBelief(m:EvolutionModel) = {
+  def accumInsideBelief(m:EvolutionModel): DenseVector[Double] = {
     val tmp = (0 to 3) map (i => (0.0 /: (0 to 3)) ((x,j) => x + alpha(j) * transProb(i,j)))
     DenseVector(tmp.toArray)
   }
 
-  def accumOutsideBelief(m:EvolutionModel) = {
+  def accumOutsideBelief(m:EvolutionModel): DenseVector[Double] = {
     val tmp = (0 to 3) map (i => (0.0 /: (0 to 3)) ((x,j) => x + beta(j) * transProb(j,i)))
     DenseVector(tmp.toArray)
   }
@@ -67,10 +67,6 @@ case class ContentOfLeaf(var tx:Double,var nuc:Char) extends Content(tx){
   }
 }
 
-case class ContentOfRoot(var tx:Double = 0.0) extends Content(tx){
-  /*def setPosterior(likelihood:Double,m:EvolutionModel){
-    for(i <- 0 to 3) posterior(i,i) = alpha(i) * m.pi(i) / likelihood
-  }*/
-}
+case class ContentOfRoot(var tx:Double = 0.0) extends Content(tx)
 
 case class ContentOfNode(var tx:Double) extends Content(tx)

@@ -9,12 +9,12 @@ object Maf2Alignments{
   protected def exe(maf:String,nh:String,outFilePrefix:String,perSize:Int){
     val gen = MafUnitGenerator(maf)
     val names = Tree.fromFile(nh).names
-    val map = (names,0 until names.length).zipped.map(_ -> _).toMap
+    val map = (names,names.indices).zipped.map(_ -> _).toMap
     val buf = new ArrayBuffer[Array[Int]]
     val printer = Printer(outFilePrefix)
     while(gen.hasNext){
       val unit = gen.next
-      for(i <- 0 until unit.seqs(0).length){
+      for(i <- 0 until unit.seqs.head.length){
         val col = Array.fill(names.length)(4)
         for(seq <- unit.seqs){col(map(seq.species)) = trans(seq.sequence(i))}
         if(isGoodColumn(col)) buf += col
@@ -25,7 +25,7 @@ object Maf2Alignments{
 
   protected def isGoodColumn(col:Array[Int]) = {
     val c = col.foldLeft(0)((x,y) => if(y==4) x+1 else x)
-    c+1 < col.size
+    c+1 < col.length
   }
 
   def trans(x:Char):Int = {

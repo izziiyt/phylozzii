@@ -6,13 +6,14 @@ version := "0.1"
 
 organization := "izzii"
 
-scalaVersion := "2.10.3"
+scalaVersion := "2.11.6"
 
 libraryDependencies  ++= Seq(
-  "org.scalatest" % "scalatest_2.10" % "2.0" % "test",
-  "com.github.wookietreiber" %% "scala-chart" % "latest.integration",
+  "org.scalatest" % "scalatest_2.11" % "2.1.3" % "test",
   "org.scalanlp" %% "breeze" % "0.8.1",
-  "org.scalanlp" %% "breeze-natives" % "0.8.1"
+  "org.scalanlp" %% "breeze-natives" % "0.8.1",
+  "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4",
+  "izzii" %% "biutil" % "0.1"
 )
 
 resolvers ++= Seq(
@@ -20,12 +21,10 @@ resolvers ++= Seq(
   "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases/"
 )
 
-unmanagedJars in Compile += file("/home/yuto/R/x86_64-pc-linux-gnu-library/3.1/jvmr/java/jvmr_2.11-2.11.2.1.jar")
-
 lazy val buildSettings = Seq(
   version := "0.1",
   organization := "izzii",
-  scalaVersion := "2.10.3"
+  scalaVersion := "2.11.6"
 )
 
 val app = (project in file("app")).

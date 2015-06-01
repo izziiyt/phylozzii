@@ -26,8 +26,11 @@ final class DNA private (val groups: Array[Long],val length:Int)
 }
 
 object DNA{
+
   private val S = Base.binLength
+
   private val K: Int = 64 / S //21
+
   private val M: Long = (1 << S) - 1 // 00..0111
 
   def fromSeq(buf: Seq[Base]): DNA = {

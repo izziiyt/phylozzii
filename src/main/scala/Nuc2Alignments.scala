@@ -10,12 +10,12 @@ object Nuc2Alignments {
     var tmp = ""
     for(line <- lines){
       line match{
-        case x if x.size > 10 => tmp += line.trim
+        case x if x.length > 10 => tmp += line.trim
         case _ => if(! tmp.isEmpty){buf += tmp; tmp = ""}
       }
     }
     buf += tmp
-    val n = buf(0).size
+    val n = buf.head.length
     val out = new PrintWriter(outPut)
     for(i <- 0 until n){
       val x = for(b <- buf) yield Maf2Alignments.trans(b(i))

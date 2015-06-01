@@ -62,18 +62,19 @@ case object Tyr extends AminoAcid{
 case object Val extends AminoAcid{
    def toWord = "V"
 }
-case object End extends AminoAcid{
-   def toWord = "*"
+case object Ter extends AminoAcid{
+   def toWord = "Z"
+}
+case object Any extends AminoAcid{
+  def toWord = "X"
 }
 
 object AminoAcid{
-  val fromInt:Array[AminoAcid] = Array(Ala,Arg,Asn,Asp,Cys,Gln,Glu,Gly,His,Ile,Leu,Lys,Met,Phe,Pro,Ser,Thr,Trp,Tyr,Val,End)
-  val toInt:AminoAcid => Int = Map(
-    Ala -> 0,Arg -> 1,Asn -> 2,Asp -> 3,Cys -> 4,
-    Gln -> 5,Glu -> 6,Gly -> 7,His -> 8,Ile -> 9,
-    Leu -> 10,Lys -> 11,Met -> 12,Phe -> 13,Pro -> 14,
-    Ser -> 15,Thr -> 16,Trp -> 17,Tyr -> 18,Val -> 19,End -> 20)
-  val fromString:String => AminoAcid = fromInt.flatMap{case x => List(x.toString -> x,x.toWord -> x)}.toMap
+  private val values = Array(Ala,Arg,Asn,Asp,Cys,Gln,Glu,Gly,His,Ile,Leu,Lys,Met,Phe,Pro,Ser,Thr,Trp,Tyr,Val,Ter,Any)
+  private val acids: Map[String,AminoAcid] = values.flatMap{case x => List(x.toString -> x,x.toWord -> x)}.toMap
+  def fromString(s: String): AminoAcid = acids.get(s) match {
+    case Some(x) => x
+    case None => Any
+  }
   val binSize = 5
-  def toWord:String = ""
 }

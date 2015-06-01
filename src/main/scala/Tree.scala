@@ -1,4 +1,4 @@
-import breeze.linalg.{DenseVector,DenseMatrix}
+import breeze.linalg.DenseVector
 import java.io.FileReader
 import scala.util.parsing.combinator.JavaTokenParsers
 

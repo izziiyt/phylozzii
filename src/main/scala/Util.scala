@@ -45,7 +45,7 @@ object Util {
   def argmax[T](args:Seq[T],f:T => Double): T = {
     var j = 0
     var m = Double.NegativeInfinity
-    for(i <- 0 until args.length;v = f(args(i));if v > m){m = v;j = i}
+    for(i <- args.indices;v = f(args(i));if v > m){m = v;j = i}
     args(j)
   }
 }

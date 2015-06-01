@@ -9,7 +9,7 @@ object Base{
   val fromInt:Int => Base = Array(A,T,C,G,N)
   val toInt:Base => Int = Map(A -> 0,T -> 1,C -> 2, G -> 3,N -> 4)
   val binLength:Int = 3
-  val fromChar:Char => Base = _ match {
+  val fromChar:Char => Base = {
     case 'a' | 'A' => A
     case 't' | 'T' => T
     case 'c' | 'C' => C
