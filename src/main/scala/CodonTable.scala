@@ -1,6 +1,9 @@
 import java.io.FileReader
 import scala.util.parsing.combinator.JavaTokenParsers
 import scala.collection._
+import alignment.AminoAcid
+import alignment.Base
+import alignment.Base._
 
 case class CodonTable(is4Fold:Map[Codon,Boolean],transcript:Map[Codon,AminoAcid])
 
@@ -28,7 +31,7 @@ class CodonParser extends JavaTokenParsers {
 
   def cdn:Parser[Codon] = """[ATUCG]{3}""".r ^^ {Codon(_)}
 
-  def aa:Parser[AminoAcid] = """.""".r ^^ {case x => AminoAcid.fromString(x)}
+  def aa:Parser[AminoAcid] = """.""".r ^^ {case x => AminoAcid.fromChar(x.head)}
 
   def blocks:Parser[Map[Codon,AminoAcid]] = rep(block) ^^ {_.map{case Block(x,y) => x -> y}.toMap}
 
