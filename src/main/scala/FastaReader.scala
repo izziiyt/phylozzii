@@ -5,6 +5,8 @@ import scala.reflect.ClassTag
 import alignment.Base
 import alignment.AminoAcid
 
+import scala.sys.process.Process
+
 trait FastaReader {
 
   type Protein = Array[AminoAcid]
@@ -45,13 +47,16 @@ class ExonFastaReader(val cdntbl: CodonTable) extends FastaReader{
     None
   }
 
-  protected def mkCandidates(dna:DNA,prt:Protein,lw:PrintWriter): Array[Int] = {
-    val dnas = Array(dna,dna.tail,dna.drop(2))
-    val cdns = dnas.map(x => toCodonsFromHead(x))
-    val scrs = cdns.map(x => swg(x.map(cdntbl.transcript),prt))
-    lw.println(scrs.map(_ / 15.0).mkString(","))
-    val cdn = cdns.zipWithIndex.maxBy(x => swg(x._1.map(cdntbl.transcript),prt))
-    fFPosition(cdn._1).map(_ + cdn._2)
+  protected def mkCandidates(dna:DNA,prt:Protein,lw:PrintWriter,threshold:Double): Array[Int] = {
+    val dnas = Array(dna, dna.tail, dna.drop(2))
+    val cdns = dnas.map(toCodonsFromHead)
+    val scrs:Array[Double] = cdns.map(x => swg(x.map(cdntbl.transcript), prt) / 15.0).sorted
+    if (scrs.max < threshold || scrs(2) - scrs(1) < threshold) Array()
+    else {
+      lw.println(scrs.mkString(","))
+      val cdn = cdns.zipWithIndex.maxBy(x => swg(x._1.map(cdntbl.transcript), prt))
+      fFPosition(cdn._1).map(_ + cdn._2)
+    }
   }
 
   protected def genPair(nuc:Iterator[String],aa:Iterator[String]):Option[(Array[DNA],Array[Protein])] = {
@@ -76,15 +81,10 @@ class ExonFastaReader(val cdntbl: CodonTable) extends FastaReader{
       var pair = genPair(nucLines, aaLines)
       while (pair.isDefined) {
         val tmp = pair.get
-        val pos = mkCandidates(tmp._1.head, tmp._2.head, lw)
+        val pos = mkCandidates(tmp._1.head, tmp._2.head, lw, 0.8)
         pos.foreach(i => w.println(tmp._1.map(_(i)).mkString(" ")))
         pair = genPair(nucLines, aaLines)
       }
-      /*for (pair <- genPair(nucSource.getLines(), aaSource.getLines())) {
-        val tmp = pair
-        val pos = mkCandidates(tmp._1.head, tmp._2.head, lw)
-        pos.foreach(i => w.println(tmp._1.map(_(i)).mkString(" ")))
-      }*/
     }
     catch{
       case LocalException => println("heyheyhey")
@@ -106,5 +106,16 @@ object FourFoldFilter {
     val ouf = args(2)
     val cdntbl = CodonTable.fromFile(args(3))
     new ExonFastaReader(cdntbl).filtered(nucf, aaf, ouf)
+    postFilter(ouf)
+  }
+
+  def postFilter(fi:String):Unit = {
+    val s = Source.fromFile(fi)
+    val o = new PrintWriter("all.al")
+    s.getLines().withFilter(_.replace(" ", "").map(Base.fromChar).toSet.size > 2).foreach(o.println)
+    o.close()
+    s.close()
+    Process("rm " + fi)
+    //Process("split all.al -l 10000")
   }
 }
