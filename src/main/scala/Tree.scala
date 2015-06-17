@@ -1,26 +1,29 @@
-import breeze.linalg.{DenseVector,DenseMatrix}
+import breeze.linalg.DenseVector
 import java.io.FileReader
 import scala.util.parsing.combinator.JavaTokenParsers
-import scala.collection.mutable.ListBuffer
-import scala.annotation.tailrec
 
 sealed trait Tree{
   def cont:Content
+  def isNull:Boolean
   def format():Tree
   def setColumn(x:Array[Char]):Array[Char]
   def setBranch(x:List[Double]):List[Double]
   def setTransition(m:EvolutionModel)
-  def setPosterior(l:Double,m:EvolutionModel)
+  def setPosterior(l:Double)
   def branches:List[Double]
   def names:List[String]
   override def toString:String
+  def setPosteriorNull(l:Double,b:DenseVector[Double])
 }
 
 case class Node(left:Tree,right:Tree,cont:Content) extends Tree{
+
   def setColumn(x:Array[Char]) = {
     val tmp = left.setColumn(x)
     right.setColumn(tmp)
   }
+
+  def isNull = cont.isNull
 
   def format() = {
     cont.format()
@@ -49,10 +52,19 @@ case class Node(left:Tree,right:Tree,cont:Content) extends Tree{
     z.tail
   }
 
-  def setPosterior(likelihood:Double,m:EvolutionModel){
-    cont.setPosterior(likelihood,m)
-    left.setPosterior(likelihood,m)
-    right.setPosterior(likelihood,m)
+  def setPosterior(likelihood:Double){
+    if(isNull) setPosteriorNull(likelihood,cont.beta)
+    else{
+      cont.setPosterior(likelihood)
+      left.setPosterior(likelihood)
+      right.setPosterior(likelihood)
+    }
+  }
+
+  def setPosteriorNull(likelihood:Double,beta:DenseVector[Double]){
+    cont.setPosteriorNull(likelihood,beta)
+    left.setPosteriorNull(likelihood,beta)
+    right.setPosteriorNull(likelihood,beta)
   }
 
   def setTransition(m:EvolutionModel){
@@ -68,6 +80,10 @@ case class Leaf(species:String,cont:ContentOfLeaf) extends Tree{
     cont.t_=(x.head)
     x.tail
   }
+
+  def setPosteriorNull(likelihood:Double,beta:DenseVector[Double]){cont.setPosteriorNull(likelihood,beta)}
+
+  def isNull = cont.isNull
 
   override def toString = species + ":" + cont.t
 
@@ -85,8 +101,8 @@ case class Leaf(species:String,cont:ContentOfLeaf) extends Tree{
     this
   }
 
-  def setPosterior(likelihood:Double,m:EvolutionModel){
-    cont.setPosterior(likelihood,m)
+  def setPosterior(likelihood:Double){
+    cont.setPosterior(likelihood)
   }
 
   def setTransition(m:EvolutionModel){

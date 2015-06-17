@@ -18,9 +18,11 @@ class EM{
       diff = tmp._2 - tmpll > 0.0
       tmpll = tmp._2
       logger(pt,tmp._2,"target/log")
+      println(rec)
       rec += 1
       println(rec)
     }while(diff)
+    os.close()
     println("recursion: " + rec)
     PostProc.regularize(pt.root,pt.model.param,out)
   }

@@ -10,7 +10,7 @@ case class MafUnit(score:Double,seqs:List[Sequence])
 case class MafUnitGenerator(file:String,sep:String = """\p{javaWhitespace}+"""){
   val s = Source.fromFile(file)
   val lines = s.getLines()
-  private var score = toScore(lines.next.split(sep)(1))
+  private var score = toScore(lines.next().split(sep)(1))
   private var f = true
 
   def hasNext = f
