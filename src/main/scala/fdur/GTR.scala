@@ -1,15 +1,6 @@
-import breeze.linalg.{DenseMatrix,DenseVector,diag,sum,eigSym,inv}
+package fdur
 
-abstract class EvolutionModel{
-  def R:DenseMatrix[Double]
-  def u:DenseMatrix[Double]
-  def ui:DenseMatrix[Double]
-  def lambda:DenseVector[Double]
-  def pi:DenseVector[Double]
-  def B:DenseMatrix[Double]
-  def param:Parameters
-  def bList:Seq[Double]
-}
+import breeze.linalg._
 
 case class GTR(param:Parameters = Parameters(DenseVector[Double](0.16,0.16,0.17,0.17,0.17,0.17),
     DenseVector[Double](0.1,0.2,0.3,0.4))) extends EvolutionModel{

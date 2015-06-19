@@ -1,10 +1,12 @@
+package util
+
 import java.io.PrintWriter
+
+import alignment.{AminoAcid, Base}
+import alignment.{Codon, CodonTable}
 import scala.collection.mutable.ArrayBuffer
 import scala.io.Source
 import scala.reflect.ClassTag
-import alignment.Base
-import alignment.AminoAcid
-
 import scala.sys.process.Process
 
 trait FastaReader {

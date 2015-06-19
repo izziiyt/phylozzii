@@ -1,4 +1,5 @@
 import org.scalatest.FunSuite
+import util.Nuc2Alignments
 
 class MafTest extends FunSuite {
   /*test("parseMaf"){

@@ -1,8 +1,10 @@
 import java.io.PrintWriter
 
 import alignment.{AminoAcid, Base}
+import fdur.CodonTable
 import org.scalatest.FunSuite
 import org.scalatest.PrivateMethodTester._
+import util.ExonFastaReader
 
 class ExonFastaReaderTest extends FunSuite {
   val cdntbl = CodonTable.fromFile("src/test/resources/codon.table.txt")

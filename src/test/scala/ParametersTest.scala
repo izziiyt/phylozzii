@@ -1,4 +1,5 @@
 import breeze.linalg.DenseVector
+import fdur.Parameters
 import org.scalatest.FunSuite
 
 class ParametersTest extends FunSuite {

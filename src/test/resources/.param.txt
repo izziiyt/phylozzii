@@ -1,1 +1,1 @@
-Parameters(DenseVector(0.16,0.16,0.17,0.17,0.17,0.17),DenseVector(0.1,0.2,0.3,0.4))
+fdur.Parameters(DenseVector(0.16,0.16,0.17,0.17,0.17,0.17),DenseVector(0.1,0.2,0.3,0.4))

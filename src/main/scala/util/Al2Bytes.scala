@@ -1,4 +1,7 @@
+package util
+
 import java.io._
+
 import scala.io.Source
 
 object Al2Bytes{

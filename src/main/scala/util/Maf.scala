@@ -1,5 +1,7 @@
-import scala.io.Source
+package util
+
 import scala.collection.mutable.ListBuffer
+import scala.io.Source
 
 case class Sequence(species:String,chr:String,sequence:String){
   def length = sequence.length

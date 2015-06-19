@@ -1,6 +1,8 @@
 import breeze.linalg.{sum, diag, DenseMatrix, DenseVector}
 import java.io.{PrintWriter, FileOutputStream}
+import fdur._
 import org.scalatest.FunSuite
+import util.Util
 import scala.annotation.tailrec
 import scala.io.Source
 import scala.util.Random
@@ -8,13 +10,13 @@ import scala.util.Random
 class EM$Test extends FunSuite {
   val em = new EM
 
-  /*test("EM"){
+  /*test("fdur.EM"){
    /*
    This test is collect when all regularized phylogency tree's branches length are integral.
    test.al: single colmn is written
    test.nh: three-species phylogency tree is written
    */
-    Util.printExecutionTime(em.test(2000,"src/test/resources/test.nh","src/test/resources/test.al"),"EM")
+    Util.printExecutionTime(em.test(2000,"src/test/resources/test.nh","src/test/resources/test.al"),"fdur.EM")
   }*/
 
   /*test("EMQsub"){
@@ -36,19 +38,19 @@ class EM$Test extends FunSuite {
     val s = Source.fromFile("src/test/resources/test.maf")
     val lines = s.getLines().map(l => l.map(Maf2Alignments.trans)).toArray
     val tmp = for(i <- 0 until lines(0).length)yield {Array(lines(0)(i).toChar,lines(1)(i).toChar,lines(2)(i).toChar,lines(3)(i).toChar)}
-    val em = new EM
+    val em = new fdur.EM
     em.test(30,"src/test/resources/ce10.7way.nh",tmp.toArray)
   }*/
   /*test("M"){
     val em = new TestEM
     val alignments = Util.getAlignments("src/test/resources/1.al")
-    val pt = new PhylogencyTree("src/test/resources/ce10.7way.nh",GTR())
+    val pt = new fdur.PhylogencyTree("src/test/resources/ce10.7way.nh",fdur.GTR())
     val counts = alignments.map(em.eStep(pt,_))
     em.testMstep(pt,counts)
   }*/
   /*test("EMnext"){
-    val em = new EM
-    Util.printExecutionTime(em.test(10,"src/test/resources/ce10.7way.nh","src/test/resources/1.al"),"EM")
+    val em = new fdur.EM
+    Util.printExecutionTime(em.test(10,"src/test/resources/ce10.7way.nh","src/test/resources/1.al"),"fdur.EM")
   }*/
 
   /*test("makeAlignments"){

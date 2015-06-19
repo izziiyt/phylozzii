@@ -1,5 +1,9 @@
-import breeze.linalg.DenseVector
+package fdur
+
 import java.io.{FileNotFoundException, FileReader}
+
+import breeze.linalg.DenseVector
+
 import scala.util.parsing.combinator.JavaTokenParsers
 
 class Parameters(val Bvec:DenseVector[Double],val pi:DenseVector[Double]){
@@ -18,7 +22,7 @@ class Parameters(val Bvec:DenseVector[Double],val pi:DenseVector[Double]){
   def e = Bvec(4)
   def f = Bvec(5)
 
-  override def toString:String = "Parameters(" + Bvec + "," + pi + ")"
+  override def toString:String = "fdur.Parameters(" + Bvec + "," + pi + ")"
 }
 
 object Parameters extends ParameterParser{
@@ -39,7 +43,7 @@ object Parameters extends ParameterParser{
 class ParameterParser extends JavaTokenParsers {
   def vector: Parser[DenseVector[Double]] =  "DenseVector("~> repsep(value,",") <~")"  ^^
     {case x => DenseVector(x.toArray)}
-  def parameters: Parser[Parameters] = "Parameters("~> repsep(vector,",") <~")" ^^
-    {case x => Parameters(x(0),x(1))}
+  def parameters: Parser[Parameters] = "fdur.Parameters("~> repsep(vector,",") <~")" ^^
+    {case x => Parameters(x.head,x(1))}
   def value: Parser[Double] = floatingPointNumber ^^ (_.toDouble)
 }

@@ -1,5 +1,7 @@
-import breeze.linalg.{DenseMatrix, DenseVector, diag}
-import scala.math.exp
+package fdur
+
+import breeze.linalg.{diag, DenseMatrix, DenseVector}
+import scala.math._
 
 abstract class Content(var t:Double){
 
@@ -56,17 +58,3 @@ abstract class Content(var t:Double){
 
   def likelihood(m:EvolutionModel):Double = alpha.t * m.pi
 }
-
-case class ContentOfLeaf(var tx:Double,var nuc:Char) extends Content(tx){
-  override def format(){
-    alpha(0 to 3) := 0.0
-    beta(0 to 3) := 0.0
-    posterior(0 to 3,0 to 3) := 0.0
-    nuc = 4
-    isNull = false
-  }
-}
-
-case class ContentOfRoot(var tx:Double = 0.0) extends Content(tx)
-
-case class ContentOfNode(var tx:Double) extends Content(tx)

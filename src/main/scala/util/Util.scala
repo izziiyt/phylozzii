@@ -1,17 +1,21 @@
-import breeze.linalg.DenseVector
+package util
+
 import java.io.{File, OutputStream, PrintWriter}
+
+import alignment.Base
+import breeze.linalg.DenseVector
+
 import scala.io.Source
 import scala.math.abs
-import alignment.Base
 
 object Util {
 
   val EPSILON = 0.00001
   //.al file name to col alignments.
-  def getAlignments(al:String):Array[Array[Char]] = {
+  def getAlignments(al:String):Array[Array[Base]] = {
     val source = Source.fromFile(al)
     val lines = source.getLines()
-    val cols = lines.map(l => l.toCharArray.map(x => Base.toInt(Base.fromChar(x)).toChar)).toArray
+    val cols = lines.map(l => l.toCharArray.map(Base.fromChar)).toArray
     source.close()
     cols
   }

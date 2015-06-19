@@ -1,4 +1,7 @@
+package util
+
 import java.io.PrintWriter
+
 import scala.collection.mutable.ArrayBuffer
 import scala.io.Source
 

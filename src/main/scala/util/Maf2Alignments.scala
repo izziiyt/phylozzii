@@ -1,5 +1,9 @@
+package util
+
 import java.io.PrintWriter
+
 import scala.collection.mutable.ArrayBuffer
+import fdur.{FdurTree, Tree}
 
 object Maf2Alignments{
   def main(args:Array[String]){
@@ -8,7 +12,7 @@ object Maf2Alignments{
 
   protected def exe(maf:String,nh:String,outFilePrefix:String,perSize:Int){
     val gen = MafUnitGenerator(maf)
-    val names = Tree.fromFile(nh).names
+    val names = FdurTree.fromFile(nh).names
     val map = (names,names.indices).zipped.map(_ -> _).toMap
     val buf = new ArrayBuffer[Array[Int]]
     val printer = Printer(outFilePrefix)

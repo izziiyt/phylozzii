@@ -1,4 +1,5 @@
 import breeze.linalg.{sum, DenseMatrix,DenseVector,eigSym}
+import fdur.{GTR, PhylogencyTree}
 import org.scalatest.FunSuite
 import math.{abs,log}
 import scala.io.Source
@@ -58,7 +59,7 @@ class PhylogencyTreeTest extends FunSuite {
 
   def numerical(colmn:Array[Char])  = {
     val source = "src/test/resources/ce10.7way.nh"
-    val pt = new PhylogencyTree(Tree(source),GTR())
+    val pt = new fdur.PhylogencyTree(Tree(source),fdur.GTR())
     pt.setColumn(colmn)
     pt.setBranch(List(0.5,0.4,0.3,0.2,0.3,0.4,0.2,0.4,0.6,0.1,0.5,0.7))
     pt.inside()
@@ -67,7 +68,7 @@ class PhylogencyTreeTest extends FunSuite {
     pt.deriveLL
   }
 
-  def prepare(pt:PhylogencyTree,colmn:Array[Char]):Double = {
+  def prepare(pt:fdur.PhylogencyTree,colmn:Array[Char]):Double = {
     pt.setColumn(colmn)
     pt.inside()
     log(pt.likelihood)
@@ -75,13 +76,13 @@ class PhylogencyTreeTest extends FunSuite {
 
   def analyticalPi(branch:Array[Char]):Double = {
     val h = 0.001
-    val PlusModel = GTR(Parameters(DenseVector[Double](1.0/12.0,2.0/12.0,3.0/12.0,1.0/12.0,2.0/12.0,3.0/12.0),
+    val PlusModel = fdur.GTR(fdur.Parameters(DenseVector[Double](1.0/12.0,2.0/12.0,3.0/12.0,1.0/12.0,2.0/12.0,3.0/12.0),
       DenseVector[Double](0.1,0.2+h/2,0.3,0.4)))
-    val MinsModel = GTR(Parameters(DenseVector[Double](1.0/12.0,2.0/12.0,3.0/12.0,1.0/12.0,2.0/12.0,3.0/12.0),
+    val MinsModel = fdur.GTR(fdur.Parameters(DenseVector[Double](1.0/12.0,2.0/12.0,3.0/12.0,1.0/12.0,2.0/12.0,3.0/12.0),
       DenseVector[Double](0.1,0.2-h/2,0.3,0.4)))
     val source = "src/test/resources/ce10.7way.nh"
-    val Pluspt = new PhylogencyTree(Tree(source),PlusModel)
-    val Minspt = new PhylogencyTree(Tree(source),MinsModel)
+    val Pluspt = new fdur.PhylogencyTree(Tree(source),PlusModel)
+    val Minspt = new fdur.PhylogencyTree(Tree(source),MinsModel)
     Pluspt.setBranch(List(0.5,0.4,0.3,0.2,0.3,0.4,0.2,0.4,0.6,0.1,0.5,0.7))
     Minspt.setBranch(List(0.5,0.4,0.3,0.2,0.3,0.4,0.2,0.4,0.6,0.1,0.5,0.7))
     (prepare(Pluspt,branch) - prepare(Minspt,branch)) / h
@@ -89,13 +90,13 @@ class PhylogencyTreeTest extends FunSuite {
 
   def analyticalB(branch:Array[Char]):Double = {
     val h = 0.001
-    val PlusModel = GTR(Parameters(DenseVector[Double](1.0/12.0+h/2,2.0/12.0,3.0/12.0,1.0/12.0,2.0/12.0,3.0/12.0),
+    val PlusModel = fdur.GTR(fdur.Parameters(DenseVector[Double](1.0/12.0+h/2,2.0/12.0,3.0/12.0,1.0/12.0,2.0/12.0,3.0/12.0),
       DenseVector[Double](0.1,0.2,0.3,0.4)))
-    val MinsModel = GTR(Parameters(DenseVector[Double](1.0/12.0-h/2,2.0/12.0,3.0/12.0,1.0/12.0,2.0/12.0,3.0/12.0),
+    val MinsModel = fdur.GTR(fdur.Parameters(DenseVector[Double](1.0/12.0-h/2,2.0/12.0,3.0/12.0,1.0/12.0,2.0/12.0,3.0/12.0),
       DenseVector[Double](0.1,0.2,0.3,0.4)))
     val source = "src/test/resources/ce10.7way.nh"
-    val Pluspt = new PhylogencyTree(Tree(source),PlusModel)
-    val Minspt = new PhylogencyTree(Tree(source),MinsModel)
+    val Pluspt = new fdur.PhylogencyTree(Tree(source),PlusModel)
+    val Minspt = new fdur.PhylogencyTree(Tree(source),MinsModel)
     Pluspt.setBranch(List(0.5,0.4,0.3,0.2,0.3,0.4,0.2,0.4,0.6,0.1,0.5,0.7))
     Minspt.setBranch(List(0.5,0.4,0.3,0.2,0.3,0.4,0.2,0.4,0.6,0.1,0.5,0.7))
     (prepare(Pluspt,branch) - prepare(Minspt,branch)) / h
@@ -104,8 +105,8 @@ class PhylogencyTreeTest extends FunSuite {
   def analyticalT(branch:Array[Char]):Double = {
     val h = 0.001
     val source = "src/test/resources/ce10.7way.nh"
-    val Pluspt = new PhylogencyTree(Tree(source),GTR())
-    val Minspt = new PhylogencyTree(Tree(source),GTR())
+    val Pluspt = new fdur.PhylogencyTree(Tree(source),fdur.GTR())
+    val Minspt = new fdur.PhylogencyTree(Tree(source),fdur.GTR())
     Pluspt.setBranch(List(0.5,0.4,0.3+h/2,0.2,0.3,0.4,0.2,0.4,0.6,0.1,0.5,0.7))
     Minspt.setBranch(List(0.5,0.4,0.3-h/2,0.2,0.3,0.4,0.2,0.4,0.6,0.1,0.5,0.7))
     (prepare(Pluspt,branch) - prepare(Minspt,branch)) / h
@@ -113,7 +114,7 @@ class PhylogencyTreeTest extends FunSuite {
 
   test("inside&outside"){
     val source = "src/test/resources/sample.nh"
-    val pt = new PhylogencyTree(Tree(source),GTR(Parameters(DenseVector[Double](1.0/6.0,1.0/6.0,1.0/6.0,1.0/6.0,1.0/6.0,1.0/6.0),
+    val pt = new fdur.PhylogencyTree(Tree(source),fdur.GTR(fdur.Parameters(DenseVector[Double](1.0/6.0,1.0/6.0,1.0/6.0,1.0/6.0,1.0/6.0,1.0/6.0),
       DenseVector[Double](1.0,2.0,3.0,4.0))))
     val tmp = DenseMatrix(
       (1.0,2.0,3.0,4.0),
@@ -142,12 +143,12 @@ class PhylogencyTreeTest extends FunSuite {
   }
 
   test("derivation"){
-    val x = Parameters(DenseVector[Double](1,5,1,1,1,1),
+    val x = fdur.Parameters(DenseVector[Double](1,5,1,1,1,1),
       DenseVector[Double](0.25,0.25,0.25,0.25))
-    val y = Parameters(DenseVector[Double](1,1,1,1,1,1),
+    val y = fdur.Parameters(DenseVector[Double](1,1,1,1,1,1),
       DenseVector[Double](0.25,0.25,0.25,0.25))
-    val z = Parameters(DenseVector[Double](1,1,1,1,1,1),
+    val z = fdur.Parameters(DenseVector[Double](1,1,1,1,1,1),
       DenseVector[Double](0.25,0.45,0.25,0.25))
-    assert(x + y + z == Parameters(DenseVector(3.0, 7.0, 3.0, 3.0, 3.0, 3.0),DenseVector(0.75, 0.95, 0.75, 0.75)))
+    assert(x + y + z == fdur.Parameters(DenseVector(3.0, 7.0, 3.0, 3.0, 3.0, 3.0),DenseVector(0.75, 0.95, 0.75, 0.75)))
   }*/
 }

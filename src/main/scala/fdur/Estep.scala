@@ -1,4 +1,7 @@
+package fdur
+
 import java.io.{FileOutputStream, PrintWriter}
+import util._
 
 object Estep extends EM{
 
@@ -7,7 +10,7 @@ object Estep extends EM{
     args(0):a file current parameter written
     args(1):a file alignments written
     args(2):a file structure and branch length of phylogency tree written
-    args(3):a file Count and size of the Count written
+    args(3):a file fdur.Count and size of the fdur.Count written
     args(4):a file consumed time written.The file must be different in each jobs.
     */
     val os = new FileOutputStream(args(4),true)
@@ -17,7 +20,7 @@ object Estep extends EM{
 
   protected def exe(paramFile:String,alFile:String,nhFile:String,fout:String){
     val param = Parameters.fromFile(paramFile)
-    val tree = Tree.fromFile(nhFile)
+    val tree = FdurTree.fromFile(nhFile)
     val pt = new PhylogencyTree(tree,GTR(param))
     val al = Util.getAlignments(alFile)
     val counts = al.map(eStep(pt,_))

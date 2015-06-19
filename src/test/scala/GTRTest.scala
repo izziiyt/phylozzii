@@ -1,4 +1,5 @@
 import breeze.linalg.{DenseMatrix, diag, DenseVector}
+import fdur.{GTR, Parameters}
 import org.scalatest.FunSuite
 
 class GTRTest extends FunSuite {

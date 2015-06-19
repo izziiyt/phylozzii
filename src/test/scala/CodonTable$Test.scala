@@ -1,3 +1,4 @@
+import fdur.{Codon, CodonTable}
 import org.scalatest.FunSuite
 import alignment.Base._
 import io.Source

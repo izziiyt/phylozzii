@@ -1,11 +1,16 @@
-import breeze.linalg.{DenseMatrix, DenseVector,sum,trace}
-import java.io.{FileOutputStream, PrintWriter, OutputStream}
-import scala.annotation.tailrec
-import math.pow
+package fdur
 
+import java.io.{FileOutputStream, OutputStream, PrintWriter}
+import alignment.Base
+import breeze.linalg.{DenseMatrix, DenseVector, sum, trace}
+import util.PostProc
+
+import scala.annotation.tailrec
+import scala.math.pow
+import util._
 class EM{
 
-  def test(loop:Int,nhFile:String,alignments:Array[Array[Char]],out:OutputStream=System.out){
+  def test(loop:Int,nhFile:String,alignments:Array[Array[Base]],out:OutputStream=System.out){
     var pt = new PhylogencyTree(nhFile,GTR())
     var tmpll = Double.NegativeInfinity
     var diff = false
@@ -81,7 +86,7 @@ class EM{
     if(Util.doubleChecker(l,newL)) newL else newtonRaphson(newL,u,v)
   }
 
-  final def eStep(pt:PhylogencyTree,column:Array[Char]):Count = {
+  final def eStep(pt:PhylogencyTree,column:Array[Base]):Count = {
     pt.setColumn(column)
     pt.inside()
     pt.outside()

@@ -1,6 +1,8 @@
-import breeze.linalg.{trace, sum}
+package util
+
 import java.io.{FileOutputStream, OutputStream, PrintWriter}
-import scala.collection.mutable.ArrayBuffer
+
+import fdur.{FdurTree, GTR, Parameters, Tree}
 
 object PostProc {
 
@@ -16,12 +18,12 @@ object PostProc {
   }
 
   def exe(logDir:String,treeFile:String,paramFile:String,rtreeFile:String){
-    val tree = Tree.fromFile(treeFile)
+    val tree = FdurTree.fromFile(treeFile)
     val param = Parameters.fromFile(paramFile)
     regularize(tree,param,new FileOutputStream(rtreeFile))
   }
 
-  def regularize(tree:Tree,param:Parameters,out:OutputStream){
+  def regularize(tree:FdurTree,param:Parameters,out:OutputStream){
     val gtr = GTR(param)
     val summ = - (0 to 3).foldLeft(0.0){(x,i) => x + gtr.pi(i) * gtr.R(i,i)}
     val br = tree.branches.map(summ.*)
