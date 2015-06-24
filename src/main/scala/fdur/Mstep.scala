@@ -12,7 +12,7 @@ object Mstep extends EM{
     args(0):a directory which contains files fdur.Count written
     args(1):a file current parameter written
     args(2):a file current structure and branch length of phylogency tree written
-    args(3):a file fdur.Count and size of the fdur.Count written
+    args(3):a directory which contains log information
     args(4):a file consumed time written
     */
     val tmp = if(args(0).endsWith("/")) "" else "/"

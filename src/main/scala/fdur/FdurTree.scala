@@ -4,7 +4,7 @@ import java.io.FileReader
 import alignment.Base
 import breeze.linalg.DenseVector
 
-trait FdurTree extends Tree[Content]{
+trait FdurTree extends Tree{
   def setPosteriorNull(l:Double,b:DenseVector[Double])
   def setTransition(x:EvolutionModel):Unit
   def setPosterior(l:Double)
@@ -13,6 +13,7 @@ trait FdurTree extends Tree[Content]{
   def branches:List[Double]
   def setBranch(x:List[Double]):List[Double]
   def isNull:Boolean
+  def cont:Content
 
 }
 

@@ -5,7 +5,7 @@ import scala.collection.mutable.ListBuffer
 import scala.math._
 import alignment.Base
 
-class PhylogencyTree(val root:Node,val model:EvolutionModel){
+class PhylogencyTree(val root:FdurNode,val model:EvolutionModel){
 
   root.setTransition(model)
 
@@ -34,7 +34,7 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
 
   def inside(tree:FdurTree = root):DenseVector[Double] = {
     tree match{
-      case Node(left,right,cont) =>
+      case FdurNode(left,right,cont) =>
         val fromLeft = inside(left)
         val fromRight = inside(right)
         cont.isNull = left.isNull && right.isNull
@@ -45,7 +45,7 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
           for(i <- 0 to 3){cont.alpha(i) = fromLeft(i) * fromRight(i)}
           cont.accumInsideBelief(model)
         }
-      case Leaf(_,cont) =>
+      case FdurLeaf(_,cont) =>
         if(cont.nuc != Base.N){
           cont.isNull = true
           cont.alpha(0 to 3) := 1.0
@@ -60,10 +60,10 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
 
   def outside(tree:FdurTree = root,fromBro:DenseVector[Double] = model.pi,fromPar:DenseVector[Double] = DenseVector(1,1,1,1)){
     tree match{
-      case Node(left,right,cont) =>
+      case FdurNode(left,right,cont) =>
         for(i <- 0 to 3) cont.beta(i) = fromBro(i) * fromPar(i)
         if(!cont.isNull) innerOutside(left,right,cont)
-      case Leaf(_,cont) =>
+      case FdurLeaf(_,cont) =>
         for(i <- 0 to 3) cont.beta(i) = fromBro(i) * fromPar(i)
     }
   }
@@ -72,10 +72,10 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
     val bl = ListBuffer[FdurTree]()
     def f(bl:ListBuffer[FdurTree],t:FdurTree){
       t match {
-        case Node(l,r,_) =>
+        case FdurNode(l,r,_) =>
           f(bl,l)
           f(bl,r)
-        case Leaf(_,_) =>
+        case FdurLeaf(_,_) =>
           Unit
       }
       bl += t
@@ -109,13 +109,13 @@ class PhylogencyTree(val root:Node,val model:EvolutionModel){
     val ts = (rs,post).zipped.map((r,p) => deriveLWithT(tree.cont,r) * p).reduceLeft(_ + _)
 
     tree match{
-      case Node(left,right,cont) =>
+      case FdurNode(left,right,cont) =>
         val (lParam,lT) = deriveLL(left)
         val (rParam,rT) = deriveLL(right)
         val param = lParam + rParam + fdur.Parameters(bs,ps)
         val tlist:List[Double] = lT ::: rT ::: List(ts)
         Pair(param,tlist)
-      case Leaf(_,_) =>
+      case FdurLeaf(_,_) =>
         Pair(fdur.Parameters(bs,ps),List(ts))
     }
   }

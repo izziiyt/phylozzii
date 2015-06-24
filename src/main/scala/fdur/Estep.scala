@@ -10,7 +10,7 @@ object Estep extends EM{
     args(0):a file current parameter written
     args(1):a file alignments written
     args(2):a file structure and branch length of phylogency tree written
-    args(3):a file fdur.Count and size of the fdur.Count written
+    args(3):a file fdur.Count and size of it written
     args(4):a file consumed time written.The file must be different in each jobs.
     */
     val os = new FileOutputStream(args(4),true)

@@ -3,8 +3,7 @@ package fdur
 import scala.util.parsing.combinator.JavaTokenParsers
 import alignment.Base
 
-trait Tree[T]{
-  def cont:T
+trait Tree{
   def setColumn(x:Array[Base]):Array[Base]
   override def toString:String
 }
