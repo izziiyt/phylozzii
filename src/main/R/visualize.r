@@ -1,10 +1,11 @@
 library(ggplot2)
 library(reshape2)
 library(grid)
+argv <- commandArgs(TRUE)
 grid.newpage()
 pushViewport(viewport(layout=grid.layout(2, 2)))
-logDir <- "~/projects/fdur/target/log/"
-
+#logDir <- argv[1]
+logDir <- "log/"
 ll <- read.table(paste(logDir,"ll.log",sep=""))$V1
 df <- data.frame(recursion = c(1:length(ll)), logLikelihood=ll)
 g <- ggplot(df,aes(x = recursion,y = logLikelihood))
@@ -39,10 +40,10 @@ g <- g + ggtitle("Base Frequency")
 print(g, vp=viewport(layout.pos.row=2, layout.pos.col=1))
 #---------------------------------------------------------------------
 #---------------------------time--------------------------------------
-x <- read.table(paste(logDir,"tm.log",sep=""),header = FALSE)
-colnames(x) <- c("job","msec")
-g <- ggplot(x,aes(x = msec,fill = job))
-g <- g + geom_histogram(alpha=0.5)
-g <- g + ggtitle("Consumption time")
-print(g, vp=viewport(layout.pos.row=2, layout.pos.col=2)) 
+#x <- read.table(paste(logDir,"tm.log",sep=""),header = FALSE)
+#colnames(x) <- c("job","msec")
+#g <- ggplot(x,aes(x = msec,fill = job))
+#g <- g + geom_histogram(alpha=0.5)
+#g <- g + ggtitle("Consumption time")
+#print(g, vp=viewport(layout.pos.row=2, layout.pos.col=2)) 
 #---------------------------------------------------------------------

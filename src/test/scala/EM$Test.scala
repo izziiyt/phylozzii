@@ -6,7 +6,7 @@ import util.Util
 import scala.annotation.tailrec
 import scala.io.Source
 import scala.util.Random
-
+/*
 class EM$Test extends FunSuite {
   val em = new EM
 
@@ -58,12 +58,7 @@ class EM$Test extends FunSuite {
   }*/
 
   test("Comparison with PAML"){
-<<<<<<< HEAD
     // al = Util.getAlignments("src/test/resources/brown.al")
-=======
-    //val al = Util.getAlignments("src/test/resources/241.al")
-    //val al = Util.getAlignments("src/test/resources/brown.al")
->>>>>>> dev
     val al = Util.getAlignments("/home/yuto/128492.al")
     val out = new FileOutputStream("target/hoge")
     Util.printExecutionTime(em.test(100,"src/test/resources/hg19.100way.nh",al,out),"hoge")
@@ -139,3 +134,4 @@ class EM$Test extends FunSuite {
   }
 }
 
+*/

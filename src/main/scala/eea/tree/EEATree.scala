@@ -1,9 +1,9 @@
-package eea
+package eea.tree
 
 import java.io.FileReader
 import alignment.Base
-import breeze.linalg.{DenseMatrix, DenseVector,diag}
-import fdur._
+import breeze.linalg.{DenseMatrix, DenseVector, diag}
+import fdur.{Tree,EvolutionModel,NHParser}
 
 trait EEATree extends Tree {
 
@@ -11,23 +11,29 @@ trait EEATree extends Tree {
 
   def setTarget(n:String):Unit
 
-  def inside:DenseVector[Double]
+  def setColumn(l:List[Base]):List[Base]
 
-  protected def outside:DenseVector[Double]
+  def names:List[String]
 
-  def calcOutside(fromPar:DenseVector[Double],fromSib:DenseVector[Double]):Unit
+  def column:List[Base]
 
-  def calcOutsideD(fromPar:DenseVector[Double],fromSib:DenseVector[Double],fromParD:DenseVector[Double],fromSibD:DenseVector[Double]):Unit = Unit
+  protected[tree] def inside:DenseVector[Double]
 
-  def insideD:DenseVector[Double]
+  protected[tree] def outside:DenseVector[Double]
 
-  def outsideD:DenseVector[Double]
+  protected[tree] def calcOutside(fromPar:DenseVector[Double],fromSib:DenseVector[Double]):Unit
 
-  protected def m:EvolutionModel
+  protected[tree] def calcOutsideD(fromPar:DenseVector[Double],fromSib:DenseVector[Double],fromParD:DenseVector[Double],fromSibD:DenseVector[Double]):Unit = Unit
 
-  def transProb:DenseMatrix[Double] // cell of i-th row and j-th column is transition probability(base i -> base j)
+  protected[tree] def insideD:DenseVector[Double]
 
-  def transProbD:DenseMatrix[Double]
+  protected[tree] def outsideD:DenseVector[Double]
+
+  protected[tree] def m:EvolutionModel
+
+  protected[tree] var transProb:DenseMatrix[Double] // cell of i-th row and j-th column is transition probability(base i -> base j)
+
+  protected[tree] var transProbD:DenseMatrix[Double]
 
 }
 
@@ -36,6 +42,10 @@ trait HavingChildren extends EEATree {
   def left:EEATree
 
   def right:EEATree
+
+  def names:List[String] = left.names ++ right.names
+
+  def column:List[Base] = left.column ++ right.column
 
   lazy val inside:DenseVector[Double] = {
     val l = left.transProb * left.inside
@@ -51,7 +61,7 @@ trait HavingChildren extends EEATree {
     l :* rd + ld :* r
   }
 
-  def calcOutside(fromPar:DenseVector[Double],fromSib:DenseVector[Double]):Unit = {
+  protected[tree] def calcOutside(fromPar:DenseVector[Double],fromSib:DenseVector[Double]):Unit = {
     left.calcOutside(transProb.t * outside,right.transProb * right.inside)
     right.calcOutside(transProb.t * outside,left.transProb * left.inside)
   }
@@ -66,7 +76,7 @@ trait HavingChildren extends EEATree {
     right.setTarget(n)
   }
 
-  def setColumn(column:Array[Base]) = {
+  def setColumn(column:List[Base]):List[Base] = {
     val tmp = left.setColumn(column)
     right.setColumn(tmp)
   }
@@ -75,25 +85,27 @@ trait HavingChildren extends EEATree {
 
 abstract class HavingParent(val br:Double) extends EEATree {
 
-  val transProb = m.u * diag(m.lambda.map { x => math.exp(x * br) }) * m.ui
-  val transProbD = transProb
-  for (i <- 0 to 3; j <- 0 to 3; if i != j) {
-    transProbD(i, j) = 0.0
-  }
+  protected[tree] var outside:DenseVector[Double] = null
 
-  var outside:DenseVector[Double] = null
-
-  var outsideD:DenseVector[Double] = null
+  protected[tree] var outsideD:DenseVector[Double] = null
 
 }
 
 case class EEALeaf(name:String,b:Double) extends HavingParent(b) {
 
-  var base:Base = Base.N
+  protected var base:Base = Base.N
 
-  protected var m:EvolutionModel = null
+  def names:List[String] = List(name)
 
-  var insideD:DenseVector[Double] = null
+  def column:List[Base] = List(base)
+
+  protected[tree] var m:EvolutionModel = null
+
+  protected[tree] var insideD:DenseVector[Double] = null
+
+  protected[tree] var transProb:DenseMatrix[Double] = null
+
+  protected[tree] var transProbD:DenseMatrix[Double] = null
 
   def setTarget(n:String):Unit = {
     insideD =
@@ -103,32 +115,37 @@ case class EEALeaf(name:String,b:Double) extends HavingParent(b) {
 
   def setModel(e:EvolutionModel):Unit = {
     m = e
+    transProb = m.u * diag(m.lambda.map { x => math.exp(x * br) }) * m.ui
+    transProbD = transProb
+    for (i <- 0 to 3; j <- 0 to 3; if i != j) {
+      transProbD(i, j) = 0.0
+    }
   }
 
-  def setColumn(column:Array[Base]) = {
+  def setColumn(column:List[Base]):List[Base] = {
     base = column.head
-    if(!column.isEmpty) column.tail else Array(Base.N)
+    if(column.nonEmpty) column.tail else List(Base.N)
   }
 
   lazy val inside:DenseVector[Double] =
     DenseVector((0 to 3).map{x => if(x == base.toInt) 1.0 else 0.0}.toArray)
 
-  def insideD(n:String):DenseVector[Double] =
+  protected[tree] def insideD(n:String):DenseVector[Double] =
     if(n == name) inside else DenseVector.zeros[Double](4)
 
-  def calcOutside(fromPar:DenseVector[Double],fromSib:DenseVector[Double]):Unit = {
+  protected[tree] def calcOutside(fromPar:DenseVector[Double],fromSib:DenseVector[Double]):Unit = {
     outside = fromPar :* fromSib
   }
 
-  override def calcOutsideD(fromPar:DenseVector[Double],fromSib:DenseVector[Double],fromParD:DenseVector[Double],fromSibD:DenseVector[Double]): Unit ={
-    outsideD = fromPar :* fromSibD + fromParD :* fromSib
+  override protected[tree] def calcOutsideD(fromPar:DenseVector[Double],fromSibD:DenseVector[Double],fromParD:DenseVector[Double],fromSib:DenseVector[Double]): Unit ={
+    outsideD = (fromPar :* fromSibD) + (fromParD :* fromSib)
   }
 
 }
 
 case class EEARoot(left:EEATree,right:EEATree) extends HavingChildren {
 
-  protected var m:EvolutionModel = null
+  protected[tree] var m:EvolutionModel = null
 
   protected var hasModel = false
 
@@ -136,12 +153,13 @@ case class EEARoot(left:EEATree,right:EEATree) extends HavingChildren {
 
   protected var hasColumn = false
 
-  var transProb = DenseMatrix.zeros[Double](4,4)
+  protected[tree] var transProb = DenseMatrix.zeros[Double](4,4)
 
-  var transProbD = DenseMatrix.zeros[Double](4,4)
+  protected[tree] var transProbD = DenseMatrix.zeros[Double](4,4)
 
   override def setModel(e:EvolutionModel):Unit = {
     hasModel = true
+    m = e
     super.setModel(e)
   }
 
@@ -150,7 +168,7 @@ case class EEARoot(left:EEATree,right:EEATree) extends HavingChildren {
     super.setTarget(n)
   }
 
-  override def setColumn(column:Array[Base]) = {
+  override def setColumn(column:List[Base]):List[Base] = {
     hasColumn = true
     super.setColumn(column)
   }
@@ -174,15 +192,29 @@ case class EEARoot(left:EEATree,right:EEATree) extends HavingChildren {
 
 case class EEANode(left:EEATree,right:EEATree,override val br:Double) extends HavingParent(br) with HavingChildren{
 
-  protected var m:EvolutionModel = null
+  protected[tree] var m:EvolutionModel = null
 
-  override def calcOutside(fromPar:DenseVector[Double],fromSib:DenseVector[Double]):Unit = {
+  protected[tree] var transProb:DenseMatrix[Double] = null
+
+  protected[tree] var transProbD:DenseMatrix[Double] = null
+
+  override def setModel(e:EvolutionModel): Unit ={
+    m = e
+    transProb = m.u * diag(m.lambda.map { x => math.exp(x * br) }) * m.ui
+    transProbD = transProb
+    for (i <- 0 to 3; j <- 0 to 3; if i != j) {
+      transProbD(i, j) = 0.0
+    }
+    super.setModel(e)
+  }
+
+  override protected[tree] def calcOutside(fromPar:DenseVector[Double],fromSib:DenseVector[Double]):Unit = {
     outside = fromPar :* fromSib
     super[HavingChildren].calcOutside(fromPar,fromSib)
   }
 
-  override def calcOutsideD(fromPar:DenseVector[Double],fromSib:DenseVector[Double],fromParD:DenseVector[Double],fromSibD:DenseVector[Double]):Unit = {
-    outsideD = fromPar :* fromSibD + fromParD :* fromSib
+  override protected[tree] def calcOutsideD(fromPar:DenseVector[Double],fromSibD:DenseVector[Double],fromParD:DenseVector[Double],fromSib:DenseVector[Double]):Unit = {
+    outsideD = (fromPar :* fromSibD) + (fromParD :* fromSib)
     val fromThis = transProb.t * outside
     val fromThisD = transProbD.t * outsideD
     left.calcOutsideD(fromThis,right.transProbD * right.insideD,fromThisD,right.transProb * right.inside)

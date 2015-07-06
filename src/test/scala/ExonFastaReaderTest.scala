@@ -1,13 +1,12 @@
 import java.io.PrintWriter
 
 import alignment.{AminoAcid, Base}
-import fdur.CodonTable
 import org.scalatest.FunSuite
 import org.scalatest.PrivateMethodTester._
 import util.ExonFastaReader
 
 class ExonFastaReaderTest extends FunSuite {
-  val cdntbl = CodonTable.fromFile("src/test/resources/codon.table.txt")
+  val cdntbl = alignment.CodonTable.fromFile("src/test/resources/codon.table.txt")
   test("mkCandidate2"){
     val nuc1 = "ATGAGTGAGAGCATCAACTTCTCTCACAACCTAGGCCA".map(Base.fromChar).toArray
     val prt1 = "MSESINFSHNLGQ".map(AminoAcid.fromChar).toArray

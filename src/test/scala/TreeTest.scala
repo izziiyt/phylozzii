@@ -1,5 +1,4 @@
 import org.scalatest.FunSuite
-import scala.io.Source
 
 class TreeTest extends FunSuite {
   //val source = "src/test/resources/sample.nh"
@@ -43,12 +42,12 @@ class TreeTest extends FunSuite {
     assert(tree.toString == txt)
   }*/
 
-  test("branch"){
+  /*test("branch"){
     val tree = Tree.fromFile("src/test/resources/hg19.100way.nh")
     println(tree.branches)
     val branches = tree.branches.map(_/2.0)
     tree.setBranch(branches)
     println(tree.branches)
     (tree.names zip (0 until tree.names.length)).foreach{println}
-  }
+  }*/
 }

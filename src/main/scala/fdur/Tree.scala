@@ -4,7 +4,6 @@ import scala.util.parsing.combinator.JavaTokenParsers
 import alignment.Base
 
 trait Tree{
-  def setColumn(x:Array[Base]):Array[Base]
   override def toString:String
 }
 /*

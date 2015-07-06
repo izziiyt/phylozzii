@@ -18,16 +18,17 @@ class GTRTest extends FunSuite {
   }
 
   test("eigen value decomposition"){
-
-    val gtr = GTR(Parameters(DenseVector[Double](1.0,1.0,1.0,1.0,1.0,1.0),
-    DenseVector[Double](1.0,4.0,9.0,16.0)))
+    val gtr = GTR(Parameters(DenseVector(1.0,1.0,1.0,1.0,1.0,1.0),DenseVector(1.0,4.0,9.0,16.0)))
     println(gtr.R * gtr.R * gtr.R)
     println("is same with")
     println(gtr.u * diag(gtr.lambda) * diag(gtr.lambda) * diag(gtr.lambda)* gtr.ui)
   }
 
   test("toDenseMatrix"){
-    val x = Array(1,2,3,4)
-    println(new DenseMatrix(2,2,x))
+    val x = new DenseMatrix(2,2,Array(1,2,3,4))
+    assert(x(0,0) == 1)
+    assert(x(0,1) == 3)
+    assert(x(1,0) == 2)
+    assert(x(1,1) == 4)
   }
 }
