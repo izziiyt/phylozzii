@@ -1,23 +1,20 @@
 package util
 
 import java.io.{FileOutputStream, OutputStream, PrintWriter}
-
 import fdur.{FdurTree, GTR, Parameters, Tree}
 
 object PostProc {
 
   def main(args:Array[String]){
     /*
-    args(0):an input directory which contains log files
-    args(1):an input file current structure and branch length of phylogency tree written
-    args(2):an input file current parameters written
-    args(3):an output file regularized branch lenght of phylogency tree will be writtten
+    args(0):an input file current structure and branch length of phylogency tree written
+    args(1):an input file current parameters written
+    args(2):an output file regularized branch lenght of phylogency tree will be writtten
     */
-    val tmp = if(args(0).endsWith("/")) "" else "/"
-    exe(args(0)+tmp,args(1),args(2),args(3))
+    exe(args(0),args(1),args(2))
   }
 
-  def exe(logDir:String,treeFile:String,paramFile:String,rtreeFile:String){
+  def exe(treeFile:String,paramFile:String,rtreeFile:String){
     val tree = FdurTree.fromFile(treeFile)
     val param = Parameters.fromFile(paramFile)
     regularize(tree,param,new FileOutputStream(rtreeFile))

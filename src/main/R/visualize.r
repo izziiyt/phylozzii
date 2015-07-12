@@ -29,7 +29,7 @@ print(g, vp=viewport(layout.pos.row=1, layout.pos.col=2))
 #---------------------------------------------------------------------
 #-----------------------------pi--------------------------------------
 x <- read.table(paste(logDir,"pi.log",sep=""),header = FALSE)
-colnames(x) <- c("A","C","G","T")
+colnames(x) <- c("A","T","C","G")
 x <- cbind(1:nrow(x), x)
 colnames(x)[1] <- "Time"
 df <- melt(x,id.var="Time")

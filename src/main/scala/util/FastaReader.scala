@@ -4,6 +4,7 @@ import java.io.PrintWriter
 
 import alignment.{AminoAcid, Base}
 import alignment.{Codon, CodonTable}
+import fdur.FdurTree
 import scala.collection.mutable.ArrayBuffer
 import scala.io.Source
 import scala.reflect.ClassTag
@@ -17,8 +18,6 @@ trait FastaReader {
 
   protected def cdntbl:CodonTable
 
-  object LocalException extends Throwable
-
   protected def fFPosition(xs: Array[Codon]): Array[Int] =
     xs.indices.collect{case i if cdntbl.is4Fold(xs(i)) => i*3 + 2}.toArray
 
@@ -29,7 +28,9 @@ trait FastaReader {
 class ExonFastaReader(val cdntbl: CodonTable) extends FastaReader{
 
   val swg = alignment.SWG.default
+
   val scorelog = "score.log.txt"
+
   case class Group[T](header:String,body:Array[T])
 
   protected def genGroup[T:ClassTag](s: Iterator[String],F: String => T): Option[Group[T]] = {
@@ -44,7 +45,7 @@ class ExonFastaReader(val cdntbl: CodonTable) extends FastaReader{
           case _ => buf += F(ll)
         }
         return Some(Group(header,buf.toArray))
-      case _ => throw LocalException
+      case _ => throw new Exception
     }
     None
   }
@@ -72,7 +73,7 @@ class ExonFastaReader(val cdntbl: CodonTable) extends FastaReader{
     None
   }
 
-  def filtered(nucf: String,aaf: String,ouf: String): Unit = {
+  def filtered(nucf: String,aaf: String,ouf: String, indices:Set[Int]): Unit = {
     val nucSource = Source.fromFile(nucf)
     val aaSource = Source.fromFile(aaf)
     val nucLines = nucSource.getLines()
@@ -82,14 +83,18 @@ class ExonFastaReader(val cdntbl: CodonTable) extends FastaReader{
     try {
       var pair = genPair(nucLines, aaLines)
       while (pair.isDefined) {
-        val tmp = pair.get
-        val pos = mkCandidates(tmp._1.head, tmp._2.head, lw, 0.8)
-        pos.foreach(i => w.println(tmp._1.map(_(i)).mkString(" ")))
+        //filtered by selected species
+        val tmp = pair.get.zipped.toList.zipWithIndex.withFilter{case (_,i) => indices.contains(i)}.map(_._1)
+        val n = tmp.head._1.length
+        //4d sites of selected species
+        val poss:Seq[Set[Int]] = tmp.map{case (ds,ps) => mkCandidates(ds, ps, lw, 0.8).toSet}
+        //catch intersection of selected species's 4d sites
+        poss.foldLeft((0 until n).toSet)(_ & _).foreach(i => w.println(tmp.map(_._1(i)).mkString(" ")))
         pair = genPair(nucLines, aaLines)
       }
     }
     catch{
-      case LocalException => println("heyheyhey")
+      case _: Throwable => sys.error("In filtered")
     }
     finally {
       aaSource.close()
@@ -100,24 +105,56 @@ class ExonFastaReader(val cdntbl: CodonTable) extends FastaReader{
   }
 }
 
-object FourFoldFilter {
+object FdFilter {
 
   def main(args:Array[String]): Unit = {
+    /* *
+    * args(0): *knownNuc.fa
+    * args(1): *knownAA.fa
+    * args(2): "species" for selecting "4d sites". "4d sites" are defined as intersection of "4d sites" of "species".
+    * args(3): *.nh
+    * args(4): target file
+    * */
     val nucf = args(0)
     val aaf = args(1)
-    val ouf = args(2)
+    val indices = file2Indices(args(2),args(3))
+    val ouf = args(4)
     val cdntbl = CodonTable.fromFile(args(3))
-    new ExonFastaReader(cdntbl).filtered(nucf, aaf, ouf)
+    new ExonFastaReader(cdntbl).filtered(nucf, aaf, ouf, indices)
     postFilter(ouf)
   }
 
-  def postFilter(fi:String):Unit = {
+  private def file2Indices(fi:String,nh:String): Set[Int] = {
+    val sps = Source.fromFile(fi)
+    val nhs = Source.fromFile(nh)
+    try{
+      val all = FdurTree.fromFile(nh).names
+      val sel = sps.getLines().toSet
+      all.zipWithIndex.withFilter{case (n,i) => sel.contains(n)}.map(_._2).toSet
+    }
+    catch{
+      case _: Throwable => sys.error("In file2Indices")
+    }
+    finally{
+      sps.close()
+      nhs.close()
+    }
+  }
+
+  private def postFilter(fi:String):Unit = {
     val s = Source.fromFile(fi)
-    val o = new PrintWriter("all.al")
-    s.getLines().withFilter(_.replace(" ", "").map(Base.fromChar).toSet.size > 2).foreach(o.println)
-    o.close()
-    s.close()
-    Process("rm " + fi)
-    //Process("split all.al -l 10000")
+    val o = new PrintWriter("tmp.al")
+    try {
+      s.getLines().withFilter(_.replace(" ", "").map(Base.fromChar).toSet.size > 2).foreach(o.println)
+    }
+    catch {
+      case _: Throwable => sys.error("In postFilter routine")
+    }
+    finally {
+      o.close()
+      s.close()
+      Process("cp tmp.al " + fi)
+      Process("rm tmp.al")
+    }
   }
 }
