@@ -14,6 +14,7 @@ class Parameters(val Bvec:DenseVector[Double],val pi:DenseVector[Double]){
   def / (that:Double) = Parameters(this.Bvec / that,this.pi / that)
   def :* (that:Parameters) = Parameters(this.Bvec :* that.Bvec,this.pi :* that.pi)
   def * (that:Double) = Parameters(this.Bvec * that,this.pi * that)
+  def == (that:Parameters) = util.doubleChecker(this.Bvec,that.Bvec) && util.doubleChecker(this.pi,that.pi)
 
   def a = Bvec(0)
   def b = Bvec(1)
@@ -22,7 +23,7 @@ class Parameters(val Bvec:DenseVector[Double],val pi:DenseVector[Double]){
   def e = Bvec(4)
   def f = Bvec(5)
 
-  override def toString:String = "fdur.Parameters(" + Bvec + "," + pi + ")"
+  override def toString:String = "Parameters(" + Bvec + "," + pi + ")"
 }
 
 object Parameters extends ParameterParser{
@@ -43,7 +44,7 @@ object Parameters extends ParameterParser{
 class ParameterParser extends JavaTokenParsers {
   def vector: Parser[DenseVector[Double]] =  "DenseVector("~> repsep(value,",") <~")"  ^^
     {case x => DenseVector(x.toArray)}
-  def parameters: Parser[Parameters] = "fdur.Parameters("~> repsep(vector,",") <~")" ^^
+  def parameters: Parser[Parameters] = "Parameters("~> repsep(vector,",") <~")" ^^
     {case x => Parameters(x.head,x(1))}
   def value: Parser[Double] = floatingPointNumber ^^ (_.toDouble)
 }

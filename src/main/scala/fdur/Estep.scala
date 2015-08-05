@@ -12,6 +12,7 @@ object Estep extends EM{
     args(2):a file structure and branch length of phylogency tree written
     args(3):a file fdur.Count and size of it written
     args(4):a file consumed time written.The file must be different in each jobs.
+    args(5):option
     */
     val os = new FileOutputStream(args(4),true)
     Util.printExecutionTime(exe(args(0),args(1),args(2),args(3)),"estep",os)

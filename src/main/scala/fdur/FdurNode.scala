@@ -6,11 +6,11 @@ import alignment.Base
 case class FdurNode(left:FdurTree,right:FdurTree,cont:Content) extends FdurTree{
 
   def setColumn(x:Array[Base]):Array[Base] = {
-    val tmp = left.setColumn(x)
-    right.setColumn(tmp)
+    val tmp1 = left.setColumn(x)
+    val tmp2 = right.setColumn(tmp1)
+    cont.isNull = left.isNull && right.isNull
+    tmp2
   }
-
-  def isNull = cont.isNull
 
   def format() = {
     cont.format()

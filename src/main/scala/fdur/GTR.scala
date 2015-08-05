@@ -15,6 +15,7 @@ case class GTR(param:Parameters = Parameters(DenseVector[Double](0.16,0.16,0.17,
       (param.b,param.d,0.0,param.f),
       (param.c,param.e,param.f,0.0))
 
+  //the (i,j) element is mutation rate i to j
   val R =
     DenseMatrix(
       (0.0,param.a * param.pi(1),param.b * param.pi(2),param.c * param.pi(3)),
@@ -29,6 +30,9 @@ case class GTR(param:Parameters = Parameters(DenseVector[Double](0.16,0.16,0.17,
   val tmp:DenseMatrix[Double] = T * R * Ti
   for(i <- 0 to 2;j <- i+1 to 3){tmp(j,i) = tmp(i,j)}
   val (lambda:DenseVector[Double],eVecs:DenseMatrix[Double]) = eigSym(tmp)
+
+
+  //R == u * diag(lambda) * ui
 
   val u = Ti * eVecs
   val ui = inv(u)

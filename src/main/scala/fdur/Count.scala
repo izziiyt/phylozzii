@@ -13,7 +13,7 @@ class Count(val Fd:List[DenseVector[Double]],val Ns:List[DenseMatrix[Double]],va
 
   def /(arg:Double) = Count(Fd.map(_/arg),Ns.map(_/arg),ns / arg,ll / arg)
 
-  override def toString = "fdur.Count(" + Fd + "," + Ns + "," + ns + "," + ll + ")"
+  override def toString = "Count(" + Fd + "," + Ns + "," + ns + "," + ll + ")"
 }
 
 object Count extends CountParser{
@@ -45,7 +45,7 @@ class CountParser extends JavaTokenParsers {
 
   def dlist: Parser[List[Double]] = "List(" ~> repsep(value,",") <~ ")"
 
-  def count: Parser[Count] = "fdur.Count("~> vlist~","~mlist~","~vector~","~value <~")" ^^
+  def count: Parser[Count] = "Count("~> vlist~","~mlist~","~vector~","~value <~")" ^^
     {case a~","~b~","~c~","~d => Count(a,b,c,d)}
 
   def value: Parser[Double] = floatingPointNumber ^^ (_.toDouble)

@@ -3,10 +3,14 @@ import java.io.PrintWriter
 import alignment.{AminoAcid, Base}
 import org.scalatest.FunSuite
 import org.scalatest.PrivateMethodTester._
-import util.ExonFastaReader
+import util.{ExonFastaReader, FdFilter}
 
-class ExonFastaReaderTest extends FunSuite {
+//ExonFastaReaderTest
+class EFRTest extends FunSuite {
+  println("hoge")
   val cdntbl = alignment.CodonTable.fromFile("src/test/resources/codon.table.txt")
+  println("hoge")
+
   test("mkCandidate2"){
     val nuc1 = "ATGAGTGAGAGCATCAACTTCTCTCACAACCTAGGCCA".map(Base.fromChar).toArray
     val prt1 = "MSESINFSHNLGQ".map(AminoAcid.fromChar).toArray
@@ -24,8 +28,10 @@ class ExonFastaReaderTest extends FunSuite {
   test("filtered"){
     val nucInf = "src/test/resources/sample.nuc"
     val aaInf = "src/test/resources/sample.aa"
+    val indices = FdFilter.file2Indices("src/test/resources/sample.species.txt","src/test/resources/hg19.100way.nh")
+    println(indices)
     val reader = new ExonFastaReader(cdntbl)
-    reader.filtered(nucInf,aaInf,"target/filtered.al")
+    reader.filtered(nucInf,aaInf,"target/filtered.al",indices)
   }
   /*test("practical"){
     val nuc = "atg"

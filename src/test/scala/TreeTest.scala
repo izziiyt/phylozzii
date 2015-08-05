@@ -8,16 +8,23 @@ class TreeTest extends FunSuite {
   val r =  "src/test/resources/hg19.100way.nhr"
   test("4-fold degenerate"){
     val ntree = FdurTree.fromFile(nr)
+    println(ntree.names)
     val rtree = FdurTree.fromFile(r)
-    println(ntree.branches.length)
-    println(rtree.branches.length)
     val a = (rtree.branches zip ntree.branches).map{case (x,y) => x / y}
-    println(a.length)
     val c = new PrintWriter("src/test/resources/result.txt")
     //c.println(ntree.setBranch(a))
     ntree.setBranch(a)
     c.println(ntree)
     c.close()
+  }
+
+  //test("60-way"){
+  //  val tree = FdurTree.fromFile("src/test/resources/mm10.60way.commonNames.nh")
+  //  tree.names.foreach(println)
+  //}
+  test("100-way"){
+    val tree = FdurTree.fromFile("src/test/resources/hg19.100way.nh")
+    tree.names.foreach(println)
   }
   //val source = "src/test/resources/sample.nh"
   //val tree = Tree.fromFile(source)

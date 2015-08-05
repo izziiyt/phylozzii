@@ -8,6 +8,7 @@ import util.PostProc
 import scala.annotation.tailrec
 import scala.math.pow
 import util._
+
 class EM{
 
   def test(loop:Int,nhFile:String,alignments:Array[Array[Base]],out:OutputStream=System.out){
@@ -23,9 +24,7 @@ class EM{
       diff = tmp._2 - tmpll > 0.0
       tmpll = tmp._2
       logger(pt,tmp._2,"target/log")
-      println(rec)
       rec += 1
-      println(rec)
     }while(diff)
     os.close()
     println("recursion: " + rec)

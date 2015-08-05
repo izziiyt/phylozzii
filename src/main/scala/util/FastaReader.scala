@@ -83,18 +83,20 @@ class ExonFastaReader(val cdntbl: CodonTable) extends FastaReader{
     try {
       var pair = genPair(nucLines, aaLines)
       while (pair.isDefined) {
+        //not filtered species
+        val all = pair.get.zipped.toList
         //filtered by selected species
-        val tmp = pair.get.zipped.toList.zipWithIndex.withFilter{case (_,i) => indices.contains(i)}.map(_._1)
-        val n = tmp.head._1.length
+        val sel = pair.get.zipped.toList.zipWithIndex.withFilter{case (_,i) => indices.contains(i)}.map(_._1)
+        val n = all.head._1.length
         //4d sites of selected species
-        val poss:Seq[Set[Int]] = tmp.map{case (ds,ps) => mkCandidates(ds, ps, lw, 0.8).toSet}
+        val poss:Seq[Set[Int]] = sel.map{case (ds,ps) => mkCandidates(ds, ps, lw, 0.8).toSet}
         //catch intersection of selected species's 4d sites
-        poss.foldLeft((0 until n).toSet)(_ & _).foreach(i => w.println(tmp.map(_._1(i)).mkString(" ")))
+        poss.foldLeft((0 until n).toSet)(_ & _).foreach(i => w.println(all.map(_._1(i)).mkString(" ")))
         pair = genPair(nucLines, aaLines)
       }
     }
     catch{
-      case _: Throwable => sys.error("In filtered")
+      case e: Throwable => println(e)
     }
     finally {
       aaSource.close()
@@ -113,20 +115,20 @@ object FdFilter {
     * args(1): *knownAA.fa
     * args(2): "species" for selecting "4d sites". "4d sites" are defined as intersection of "4d sites" of "species".
     * args(3): *.nh
-    * args(4): target file
+    * args(4): codon.table.txt
+    * args(5): target file
     * */
     val nucf = args(0)
     val aaf = args(1)
     val indices = file2Indices(args(2),args(3))
-    val ouf = args(4)
-    val cdntbl = CodonTable.fromFile(args(3))
+    val ouf = args(5)
+    val cdntbl = CodonTable.fromFile(args(4))
     new ExonFastaReader(cdntbl).filtered(nucf, aaf, ouf, indices)
     postFilter(ouf)
   }
 
-  private def file2Indices(fi:String,nh:String): Set[Int] = {
+  def file2Indices(fi:String,nh:String): Set[Int] = {
     val sps = Source.fromFile(fi)
-    val nhs = Source.fromFile(nh)
     try{
       val all = FdurTree.fromFile(nh).names
       val sel = sps.getLines().toSet
@@ -137,7 +139,6 @@ object FdFilter {
     }
     finally{
       sps.close()
-      nhs.close()
     }
   }
 

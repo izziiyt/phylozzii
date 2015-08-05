@@ -1,10 +1,10 @@
-/*package eea
+package eea
 
 import breeze.linalg.DenseMatrix
 import fdur._
 import scala.collection.AbstractIterator
 import scala.math._
-
+/*
 object TargetEEA {
   def singleEdgeEEA(em: EvolutionModel,t:Double):DenseMatrix[Double] = {
     val tmp = for(a <- 0 to 3;b <- 0 to 3) yield (0.0 /: (0 to 3)){

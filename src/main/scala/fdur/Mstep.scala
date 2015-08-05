@@ -5,7 +5,11 @@ import java.io.{FileOutputStream, PrintWriter}
 import breeze.linalg.DenseVector
 import util._
 
-object Mstep extends EM{
+object Mstep extends EM {
+
+  private var bpupdate = true
+
+  private var branchupdate = true
 
   def main(args:Array[String]){
     /*
@@ -15,6 +19,7 @@ object Mstep extends EM{
     args(3):a directory which contains log information
     args(4):a file consumed time written
     */
+    bpupdate = if(args.length >= 6 && args(5).split('=')(1) == "false" ) false else true
     val tmp = if(args(0).endsWith("/")) "" else "/"
     val countFileList = new java.io.File(args(0)).listFiles.filter(_.getName.endsWith(".ct")).map(args(0) + tmp + _.getName)
     val os = new FileOutputStream(args(4),true)
@@ -29,7 +34,11 @@ object Mstep extends EM{
     val Ns = count.Ns.reduce(_+_)
     val tree = FdurTree.fromFile(nhFile)
     val Td:DenseVector[Double] = (count.Fd,tree.branches).zipped.map(_*_).reduce(_+_)
-    val pt = new PhylogencyTree(FdurTree.fromFile(nhFile),GTR(Parameters(newB(Ns,Td,model),newPi(Ns,Td,count.ns,model))))
+    val pt =
+      if(bpupdate)
+        new PhylogencyTree(FdurTree.fromFile(nhFile),GTR(Parameters(newB(Ns,Td,model),newPi(Ns,Td,count.ns,model))))
+      else
+        new PhylogencyTree(FdurTree.fromFile(nhFile),GTR(Parameters(newB(Ns,Td,model),model.pi)))
     pt.setBranch(newT(count.Ns,count.Fd,model))
     logger(pt,count.ll,paramFile,nhFile,logDir)
   }

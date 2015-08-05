@@ -37,20 +37,18 @@ class PhylogencyTree(val root:FdurNode,val model:EvolutionModel){
       case FdurNode(left,right,cont) =>
         val fromLeft = inside(left)
         val fromRight = inside(right)
-        cont.isNull = left.isNull && right.isNull
-        if(cont.isNull){
-          for(i <- 0 to 3) cont.alpha(i) = 1.0
-          DenseVector(1.0,1.0,1.0,1.0)
-        }else{
+        if(tree.isNull){
+          cont.alpha
+        }
+        else{
           for(i <- 0 to 3){cont.alpha(i) = fromLeft(i) * fromRight(i)}
           cont.accumInsideBelief(model)
         }
       case FdurLeaf(_,cont) =>
-        if(cont.nuc != Base.N){
-          cont.isNull = true
-          cont.alpha(0 to 3) := 1.0
-          DenseVector(1.0,1.0,1.0,1.0)
-        }else{
+        if(tree.isNull){
+          cont.alpha
+        }
+        else{
           cont.alpha(0 to 3) := 0.0
           cont.alpha(cont.nuc.toInt) = 1.0
           cont.accumInsideBelief(model)
@@ -58,13 +56,13 @@ class PhylogencyTree(val root:FdurNode,val model:EvolutionModel){
     }
   }
 
-  def outside(tree:FdurTree = root,fromBro:DenseVector[Double] = model.pi,fromPar:DenseVector[Double] = DenseVector(1,1,1,1)){
+  def outside(tree:FdurTree = root,fromBro:DenseVector[Double] = model.pi,fromPar:DenseVector[Double] = DenseVector.ones[Double](4)){
+    for(i <- 0 to 3) tree.cont.beta(i) = fromBro(i) * fromPar(i)
     tree match{
       case FdurNode(left,right,cont) =>
-        for(i <- 0 to 3) cont.beta(i) = fromBro(i) * fromPar(i)
-        if(!cont.isNull) innerOutside(left,right,cont)
-      case FdurLeaf(_,cont) =>
-        for(i <- 0 to 3) cont.beta(i) = fromBro(i) * fromPar(i)
+        //if(!tree.isNull)
+        innerOutside(left,right,cont)
+      case _ =>
     }
   }
 
@@ -76,7 +74,6 @@ class PhylogencyTree(val root:FdurNode,val model:EvolutionModel){
           f(bl,l)
           f(bl,r)
         case FdurLeaf(_,_) =>
-          Unit
       }
       bl += t
     }
@@ -84,53 +81,12 @@ class PhylogencyTree(val root:FdurNode,val model:EvolutionModel){
     bl.init.toList
   }
 
-  protected def innerOutside(left:FdurTree,right:FdurTree,cont:Content){
+  protected def innerOutside(left:FdurTree,right:FdurTree,cont:Content) {
     val fromLeft = left.cont.accumInsideBelief(model)
     val fromRight = right.cont.accumInsideBelief(model)
     val fromThis = cont.accumOutsideBelief(model)
-    outside(left,fromRight,fromThis)
-    outside(right,fromLeft,fromThis)
+    outside(left, fromRight, fromThis)
+    outside(right, fromLeft, fromThis)
   }
 
-  /*def deriveLL:(fdur.Parameters,List[Double]) = {
-    val (lParam,lT) = deriveLL(root.left)
-    val (rParam,rT) = deriveLL(root.right)
-    val param = lParam + rParam
-    val t = lT ::: rT
-    val tmp = DenseVector((0 to 3).map(i => root.cont.posterior(i,i) / model.pi(i)).toArray)
-    Pair(fdur.Parameters(param.Bvec,param.pi + tmp),t)
-  }
-
-  private def deriveLL(tree:Tree):(fdur.Parameters,List[Double]) = {
-    val rs = for(i <- 0 to 3;j <- 0 to 3) yield deriveLWithLogR(i,j,tree.cont)
-    val post = for(i <- 0 to 3;j <- 0 to 3) yield tree.cont.posterior(i,j)
-    val ps = (rs,post).zipped.map((r,p) => deriveLWithPi(tree.cont,r) * p).reduceLeft(_ + _)
-    val bs = (rs,post).zipped.map((r,p) => deriveLWithB(tree.cont,r) * p).reduceLeft(_ + _)
-    val ts = (rs,post).zipped.map((r,p) => deriveLWithT(tree.cont,r) * p).reduceLeft(_ + _)
-
-    tree match{
-      case FdurNode(left,right,cont) =>
-        val (lParam,lT) = deriveLL(left)
-        val (rParam,rT) = deriveLL(right)
-        val param = lParam + rParam + fdur.Parameters(bs,ps)
-        val tlist:List[Double] = lT ::: rT ::: List(ts)
-        Pair(param,tlist)
-      case FdurLeaf(_,_) =>
-        Pair(fdur.Parameters(bs,ps),List(ts))
-    }
-  }
-
-  private def deriveLWithLogR(a:Int,b:Int,cont:fdur.Content):DenseMatrix[Double] =
-    cont.NsMati(a,b,model) - (diag(cont.FdVeci(a,b,model)) * model.R * cont.t)
-
-  private def deriveLWithPi(cont:fdur.Content,r:DenseMatrix[Double]):DenseVector[Double] =
-    DenseVector((0 to 3).map(i => sum(for(j <- 0 to 3;if j != i) yield r(j,i)) / model.pi(i)).toArray)
-
-  private def deriveLWithB(cont:fdur.Content,r:DenseMatrix[Double]):DenseVector[Double] = {
-    val tmp = (r + r.t) :/ model.B
-    DenseVector((for(i <- 0 to 2;j <- i+1 to 3) yield tmp(i,j)).toArray)
-  }
-
-  private def deriveLWithT(cont:fdur.Content,r:DenseMatrix[Double]):Double = (sum(r) - trace(r)) / cont.t
-*/
 }

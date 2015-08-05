@@ -28,6 +28,6 @@ trait NHParser[Tree] extends JavaTokenParsers {
 
   def value:Parser[Double] = floatingPointNumber ^^ (_.toDouble)
 
-  def name:Parser[String] = ident
+  def name:Parser[String] = "[a-zA-Z0-9_.'-]+".r
 }
 

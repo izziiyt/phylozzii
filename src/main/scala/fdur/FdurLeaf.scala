@@ -1,7 +1,7 @@
 package fdur
 
-import breeze.linalg.DenseVector
 import alignment.Base
+import breeze.linalg.DenseVector
 
 case class FdurLeaf(species:String,cont:ContentOfLeaf) extends FdurTree{
 
@@ -12,8 +12,6 @@ case class FdurLeaf(species:String,cont:ContentOfLeaf) extends FdurTree{
 
   def setPosteriorNull(likelihood:Double,beta:DenseVector[Double]){cont.setPosteriorNull(likelihood,beta)}
 
-  def isNull = cont.isNull
-
   override def toString = species + ":" + cont.t
 
   def branches = List(cont.t)
@@ -22,6 +20,7 @@ case class FdurLeaf(species:String,cont:ContentOfLeaf) extends FdurTree{
 
   def setColumn(x:Array[Base]):Array[Base] = {
     cont.nuc_=(x.head)
+    cont.isNull = if(cont.nuc.isN) true else false
     x.tail
   }
 

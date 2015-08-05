@@ -1,5 +1,5 @@
 import org.scalatest.FunSuite
-import util.Nuc2Alignments
+import util.Nuc2Al
 
 class MafTest extends FunSuite {
   /*test("parseMaf"){
@@ -11,7 +11,7 @@ class MafTest extends FunSuite {
   }*/
 
   test("nuc to alignments"){
-    Nuc2Alignments("src/test/resources/brown.nuc","src/test/resources/brown.al")
+    Nuc2Al("src/test/resources/brown.nuc","src/test/resources/brown.al")
   }
   test("Set"){
     assert(Array(1,2,3,3,2,1,1,4).toSet.size == 4)

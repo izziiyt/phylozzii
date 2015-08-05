@@ -19,8 +19,14 @@ package object util {
 
   def toTSV(arg:DenseVector[Double]):String = arg.foldLeft(""){(x,i) => x + "\t" + i}.toString.tail
 
-  def doubleChecker(x:Double,y:Double):Boolean = abs(x - y) < 1.0E-14
+  def doubleChecker(x:Double,y:Double,th:Double = 1.0E-14):Boolean = abs(x - y) < th
   //def doubleChecker(x:Double,y:Double,sig:Double=EPSILON):Boolean = abs(x - y) < sig * abs(max(x,y))
+
+  def doubleChecker(x:DenseVector[Double],y:DenseVector[Double]):Boolean =
+    (x.toArray,y.toArray).zipped.forall{(i,j) => doubleChecker(i,j)}
+
+  def doubleChecker(x:List[Double],y:List[Double]):Boolean =
+    (x.toArray,y.toArray).zipped.forall{(i,j) => doubleChecker(i,j)}
 
   def printExecutionTime[T](proc: => T,txt:String,os:OutputStream=System.out) = {
     val start = System.currentTimeMillis

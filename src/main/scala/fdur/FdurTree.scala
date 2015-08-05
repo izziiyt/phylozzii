@@ -12,7 +12,7 @@ trait FdurTree extends Tree{
   def format():this.type
   def branches:List[Double]
   def setBranch(x:List[Double]):List[Double]
-  def isNull:Boolean
+  def isNull = cont.isNull
   def cont:Content
   def setColumn(x:Array[Base]):Array[Base]
 }
