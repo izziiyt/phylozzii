@@ -131,17 +131,17 @@ class PhyloTest extends FunSuite {
       (2.0,1.0,4.0,3.0),
       (3.0,4.0,1.0,2.0),
       (4.0,3.0,2.0,1.0))
-    def hoge(tree:FdurTree){
+    def test.nh(tree:FdurTree){
       tree match {
         case FdurNode(left,right,cont) =>
           cont.manipulateTransition(tmp)
-          hoge(right)
-          hoge(left)
+          test.nh(right)
+          test.nh(left)
         case FdurLeaf(_,cont) =>
           cont.manipulateTransition(tmp)
       }
     }
-    hoge(pt.root)
+    test.nh(pt.root)
     pt.root.setColumn(Array[Base](Base.C,Base.G,Base.A))
     pt.inside(pt.root)
     pt.outside(pt.root)

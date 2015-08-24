@@ -7,9 +7,9 @@ import util.{ExonFastaReader, FdFilter}
 
 //ExonFastaReaderTest
 class EFRTest extends FunSuite {
-  println("hoge")
+  println("test.nh")
   val cdntbl = alignment.CodonTable.fromFile("src/test/resources/codon.table.txt")
-  println("hoge")
+  println("test.nh")
 
   test("mkCandidate2"){
     val nuc1 = "ATGAGTGAGAGCATCAACTTCTCTCACAACCTAGGCCA".map(Base.fromChar).toArray

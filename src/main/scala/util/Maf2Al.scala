@@ -26,10 +26,12 @@ object Maf2Al{
       for(i <- unit.seqs.head.indices){
         val col = Array.fill[Base](names.length)(Base.N)
         for(seq <- unit.seqs){col(map(seq.species)) = Base.fromChar(seq.sequence(i))}
-        if(isGoodColumn(col)) buf += col
+        //if(isGoodColumn(col)) buf += col
+        buf += col
         if(buf.size == perSize){printer(buf);buf.clear()}
       }
     }
+    if(buf.nonEmpty) printer(buf)
   }
 
   protected def isGoodColumn(col:Array[Base]) = {
@@ -42,7 +44,7 @@ object Maf2Al{
     private var count = 0
     def apply(buf:ArrayBuffer[Array[Base]]){
       val out = new PrintWriter(slashedOd + count + ".al")
-      buf.foreach(b => out.println(b.mkString(" ")))
+      buf.foreach(b => out.println(b.mkString("")))
       out.close()
       count += 1
     }

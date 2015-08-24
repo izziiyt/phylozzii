@@ -7,7 +7,7 @@ class MafTest extends FunSuite {
   }*/
 
  /* test("maf to alignments"){
-    Maf2Alignments.exe("src/test/resources/sample.maf","src/test/resources/hg19.100way.nh","/home/yuto/resource/hoge",10000)
+    Maf2Alignments.exe("src/test/resources/sample.maf","src/test/resources/hg19.100way.nh","/home/yuto/resource/test.nh",10000)
   }*/
 
   test("nuc to alignments"){

@@ -13,25 +13,29 @@ case class MafUnit(score:Double,seqs:Array[Sequence])
 case class MafUnitIterator private (file:String,sep:String = """\p{javaWhitespace}+""") extends Iterator[MafUnit] {
   val s = Source.fromFile(file)
   val lines = s.getLines()
-  private var score = toScore(lines.next().split(sep)(1))
-  private var f = true
-  def hasNext = f
+  private var score = 0.0
+  //private var f = true
+  var hasNext = true
 
   def next():MafUnit = {
     val buf = new ArrayBuffer[Sequence]
-    for(line <- lines;if line != ""){
+    for(line <- lines;if line != "" && !line.startsWith("#")){
+      println(line)
       val p = line.split(sep)
       val names = p(1).split("\\.")
       p(0) match{
-        case "s" => buf += Sequence(names(0),names(1),p(6))
+        case "s" =>
+          if(names.length > 1){}
+          else {buf += Sequence(names(0),"",p(6))}
         case "a" =>
           val tmpScore = score
           score = toScore(p(1))
-          return MafUnit(tmpScore,buf.toArray)
-        case _ => Unit
+          if(buf.nonEmpty) return MafUnit(tmpScore,buf.toArray)
+        case _ =>
+          Unit
       }
     }
-    f = false
+    hasNext = false
     s.close()
     MafUnit(score,buf.toArray)
   }
