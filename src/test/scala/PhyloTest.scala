@@ -58,7 +58,7 @@ class PhyloTest extends FunSuite {
       val b = analyticalB(col,div)
       val c = analyticalT(col,div)
       (param.pi.toArray,pi).zipped.foreach((x,y) => assert(!x.isNaN && !y.isNaN))
-      (param.pi.toArray,pi).zipped.foreach{(x,y) => assert(util.doubleChecker(x,y,math.exp(-5)))}
+      (param.pi.toArray,pi).zipped.foreach{(x,y) => println(x - y);assert(util.doubleChecker(x,y,math.exp(-5)))}
       (param.Bvec.toArray,b).zipped.foreach((x,y) => assert(!x.isNaN && !y.isNaN))
       (param.Bvec.toArray,b).zipped.foreach((x,y) => assert(util.doubleChecker(x,y,math.exp(-5))))
       (branch,c).zipped.foreach((x,y) => assert(!x.isNaN && !y.isNaN))
@@ -70,8 +70,8 @@ class PhyloTest extends FunSuite {
   def numerical(colmn:Array[Base]) =
   {
     val pt = new PhyloTreeTest(tree, defMod)
-    pt.setColumn(colmn)
     pt.setBranch(defBr)
+    pt.setColumn(colmn)
     pt.inside()
     pt.outside()
     pt.setPosterior()

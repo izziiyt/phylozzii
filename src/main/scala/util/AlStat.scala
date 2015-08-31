@@ -8,7 +8,7 @@ import scala.io.Source
 
 object AlStat {
   def main(args:Array[String]){
-    val fs = Util.lsf(args(0))
+    val fs = util.lsf(args(0))
     val w = new PrintWriter(args(1))
     exe(fs,w)
   }

@@ -10,23 +10,15 @@ case class FdurLeaf(species:String,cont:ContentOfLeaf) extends FdurTree{
     x.tail
   }
 
-  def setPosteriorNull(likelihood:Double,beta:DenseVector[Double]){cont.setPosteriorNull(likelihood,beta)}
-
   override def toString = species + ":" + cont.t
 
   def branches = List(cont.t)
 
   def names = List(species)
 
-  def setColumn(x:Array[Base]):Array[Base] = {
-    cont.nuc_=(x.head)
-    cont.isNull = if(cont.nuc.isN) true else false
+  def formatWithColumn(x:Array[Base]): Array[Base]={
+    cont.format(x.head)
     x.tail
-  }
-
-  def format() = {
-    cont.format()
-    this
   }
 
   def setPosterior(likelihood:Double){

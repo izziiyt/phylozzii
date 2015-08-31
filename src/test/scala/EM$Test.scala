@@ -2,7 +2,6 @@ import breeze.linalg.{sum, diag, DenseMatrix, DenseVector}
 import java.io.{PrintWriter, FileOutputStream}
 import fdur._
 import org.scalatest.FunSuite
-import util.Util
 import scala.annotation.tailrec
 import scala.io.Source
 import scala.util.Random

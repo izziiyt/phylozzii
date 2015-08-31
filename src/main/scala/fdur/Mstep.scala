@@ -23,7 +23,7 @@ object Mstep extends EM {
     val tmp = if(args(0).endsWith("/")) "" else "/"
     val countFileList = new java.io.File(args(0)).listFiles.filter(_.getName.endsWith(".ct")).map(args(0) + tmp + _.getName)
     val os = new FileOutputStream(args(4),true)
-    Util.printExecutionTime(exe(countFileList,args(1),args(2),args(3)),"mstep",os)
+    util.printExecutionTime(exe(countFileList,args(1),args(2),args(3)),"mstep",os)
     os.close()
   }
 
@@ -59,7 +59,7 @@ object Mstep extends EM {
     writeN.close()
     innerLogger(ll,logDir+"/ll.log")
     innerLogger(pt.branches.mkString(sep="\t"),logDir+"/tree.log")
-    innerLogger(Util.toTSV(pt.model.pi),logDir+"/pi.log")
+    innerLogger(util.toTSV(pt.model.pi),logDir+"/pi.log")
     innerLogger(pt.model.bList.mkString(sep="\t"),logDir+"/b.log")
   }
 

@@ -15,7 +15,7 @@ object Estep extends EM{
     args(5):option
     */
     val os = new FileOutputStream(args(4),true)
-    Util.printExecutionTime(exe(args(0),args(1),args(2),args(3)),"estep",os)
+    util.printExecutionTime(exe(args(0),args(1),args(2),args(3)),"estep",os)
     os.close()
   }
 
@@ -23,7 +23,7 @@ object Estep extends EM{
     val param = Parameters.fromFile(paramFile)
     val tree = FdurTree.fromFile(nhFile)
     val pt = new PhylogencyTree(tree,GTR(param))
-    val al = Util.getAlignments(alFile)
+    val al = util.getAlignments(alFile)
     val counts = al.map(eStep(pt,_))
     val sumCount = counts.reduce(_+_)
     val writer = new PrintWriter(fout)

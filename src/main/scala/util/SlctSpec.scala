@@ -6,7 +6,7 @@ import scala.io.Source
 
 object SlctSpec {
   def main(args:Array[String]){
-    val fs = Util.lsf(args(0))
+    val fs = util.lsf(args(0))
     val is = Source.fromFile(args(2)).getLines().map(_.toInt).toSeq
     dist(fs,args(1),is)
     //exe(fs,args(1),is)

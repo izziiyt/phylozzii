@@ -21,7 +21,7 @@ object Al2Bytes{
   }
 
   def exe(dir:String,out:String){
-    val flist = Util.lsf(dir)
+    val flist = util.lsf(dir)
     flist.foreach(println)
     val writer = new PrintWriter(out)
     for(f <- flist){

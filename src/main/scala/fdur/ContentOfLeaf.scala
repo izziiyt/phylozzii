@@ -3,11 +3,18 @@ package fdur
 import alignment.Base
 
 case class ContentOfLeaf(var tx:Double,var nuc:Base) extends Content(tx){
-  override def format(){
-    alpha(0 to 3) := 0.0
+  def format(x:Base){
     beta(0 to 3) := 0.0
     posterior(0 to 3,0 to 3) := 0.0
-    nuc = Base.N
-   // isNull = false
+    nuc = x
+    if(x.isN){
+      alpha(0 to 3) := 1.0
+      isNull = true
+    }
+    else{
+      alpha(0 to 3) := 0.0
+      alpha(x.toInt) = 1.0
+      isNull = false
+    }
   }
 }

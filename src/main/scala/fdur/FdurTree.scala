@@ -5,16 +5,14 @@ import alignment.Base
 import breeze.linalg.DenseVector
 
 trait FdurTree extends Tree{
-  def setPosteriorNull(l:Double,b:DenseVector[Double])
   def setTransition(x:EvolutionModel):Unit
   def setPosterior(l:Double)
   def names:List[String]
-  def format():this.type
   def branches:List[Double]
   def setBranch(x:List[Double]):List[Double]
   def isNull = cont.isNull
   def cont:Content
-  def setColumn(x:Array[Base]):Array[Base]
+  def formatWithColumn(x:Array[Base]):Array[Base]
 }
 
 object FdurTree extends NHParser4Fdur{

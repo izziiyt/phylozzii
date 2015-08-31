@@ -5,18 +5,12 @@ import alignment.Base
 
 case class FdurNode(left:FdurTree,right:FdurTree,cont:Content) extends FdurTree{
 
-  def setColumn(x:Array[Base]):Array[Base] = {
-    val tmp1 = left.setColumn(x)
-    val tmp2 = right.setColumn(tmp1)
+  def formatWithColumn(x:Array[Base]): Array[Base] ={
+    val tmp1 = left.formatWithColumn(x)
+    val tmp2 = right.formatWithColumn(tmp1)
     cont.isNull = left.isNull && right.isNull
-    tmp2
-  }
-
-  def format() = {
     cont.format()
-    right.format()
-    left.format()
-    this
+    tmp2
   }
 
   override def toString = cont match {
@@ -40,18 +34,9 @@ case class FdurNode(left:FdurTree,right:FdurTree,cont:Content) extends FdurTree{
   }
 
   def setPosterior(likelihood:Double){
-    if(isNull) setPosteriorNull(likelihood,cont.beta)
-    else{
-      cont.setPosterior(likelihood)
-      left.setPosterior(likelihood)
-      right.setPosterior(likelihood)
-    }
-  }
-
-  def setPosteriorNull(likelihood:Double,beta:DenseVector[Double]){
-    cont.setPosteriorNull(likelihood,beta)
-    left.setPosteriorNull(likelihood,beta)
-    right.setPosteriorNull(likelihood,beta)
+    cont.setPosterior(likelihood)
+    left.setPosterior(likelihood)
+    right.setPosterior(likelihood)
   }
 
   def setTransition(m:EvolutionModel){

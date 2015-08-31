@@ -1,7 +1,7 @@
 package fdur
 
 import breeze.linalg.{diag, DenseMatrix, DenseVector}
-import scala.math._
+import breeze.numerics.exp
 
 abstract class Content(var t:Double){
 
@@ -16,7 +16,6 @@ abstract class Content(var t:Double){
     alpha(0 to 3) := 1.0
     beta(0 to 3) := 0.0
     posterior(0 to 3,0 to 3) := 0.0
-    isNull = false
   }
 
   def accumInsideBelief(m:EvolutionModel): DenseVector[Double] = {
@@ -40,8 +39,7 @@ abstract class Content(var t:Double){
   }
 
   def setTransProb(m:EvolutionModel){
-    val tmp:DenseMatrix[Double] = diag(m.lambda.map(x => math.exp(x * t)))
-    transProb = m.u * tmp.*(m.ui)
+    transProb = m.u * diag(exp(m.lambda * t)).*(m.ui)
   }
 
   def nsAndFd(m:EvolutionModel) = {

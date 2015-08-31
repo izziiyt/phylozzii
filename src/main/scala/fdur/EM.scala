@@ -16,10 +16,11 @@ class EM{
     var tmpll = Double.NegativeInfinity
     var diff = false
     var rec = 0
-    val os = new FileOutputStream("target/log/tm.log",true)
+    val os = new FileOutputStream("target/log/tm.log", true)
     do{
-      val counts = Util.printExecutionTime(alignments.map(x => eStep(pt,x)),"estep",os)
-      val tmp = Util.printExecutionTime(mStep(pt,counts),"mstep",os)
+      println("-----------------------------------------------------------------------")
+      val counts = util.printExecutionTime(alignments.map{x => eStep(pt,x)},"estep",os)
+      val tmp = util.printExecutionTime(mStep(pt,counts),"mstep",os)
       pt = tmp._1
       diff = tmp._2 - tmpll > 0.0
       tmpll = tmp._2
@@ -34,7 +35,7 @@ class EM{
   private def logger(pt:PhylogencyTree,ll:Double,logDir:String){
     innerLogger(ll,logDir+"/ll.log")
     innerLogger(pt.branches.mkString(sep="\t"),logDir+"/tree.log")
-    innerLogger(Util.toTSV(pt.model.pi),logDir+"/pi.log")
+    innerLogger(util.toTSV(pt.model.pi),logDir+"/pi.log")
     innerLogger(pt.model.bList.mkString(sep="\t"),logDir+"/b.log")
   }
 
@@ -82,7 +83,9 @@ class EM{
     val boy = (u,v).zipped.foldLeft(0.0){case (x,(i,j)) => x + i / (j + l)} - 1.0
     val mom = (u,v).zipped.foldLeft(0.0){case (x,(i,j)) => x + i / pow(j + l,2.0)}
     val newL = l + boy / mom
-    if(Util.doubleChecker(l,newL)) newL else newtonRaphson(newL,u,v)
+    if(newL.isNaN) sys.error("overfitting error")
+    else if(util.doubleChecker(l,newL)) newL
+    else newtonRaphson(newL,u,v)
   }
 
   final def eStep(pt:PhylogencyTree,column:Array[Base]):Count = {

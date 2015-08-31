@@ -11,11 +11,12 @@ class PhylogencyTree(val root:FdurNode,val model:EvolutionModel){
 
   def this(nhFile:String,m:EvolutionModel) = this(FdurTree.fromFile(nhFile),m)
 
-  def this(that:PhylogencyTree,m:EvolutionModel) = this(that.root.format(),m)
+  def this(that:PhylogencyTree,m:EvolutionModel) = this(that.root,m)
 
   def setBranch(x:List[Double]){
-    val tmp = root.left.setBranch(x)
-    root.right.setBranch(tmp)
+    val tmp1 = root.left.setBranch(x)
+    val tmp2 = root.right.setBranch(tmp1)
+    if(tmp2.nonEmpty) sys.error("bad branches")
     root.setTransition(model)
   }
 
@@ -26,9 +27,11 @@ class PhylogencyTree(val root:FdurNode,val model:EvolutionModel){
 
   def likelihood:Double = root.likelihood(model)
 
-  def setColumn(al:Array[Base]) = root.setColumn(al)
+  def setColumn(al:Array[Base]) = {val tmp = root.formatWithColumn(al);if(tmp.nonEmpty) sys.error("bad column")}
 
   def setPosterior(){root.setPosterior(likelihood)}
+
+  def contents = mkTreeList.map(_.cont)
 
   def branches = root.left.branches ::: root.right.branches
 
@@ -37,16 +40,17 @@ class PhylogencyTree(val root:FdurNode,val model:EvolutionModel){
       case FdurNode(left,right,cont) =>
         val fromLeft = inside(left)
         val fromRight = inside(right)
-        if(tree.isNull){
+        /*if(tree.isNull){
           cont.alpha
-        }
-        else{
-          for(i <- 0 to 3){cont.alpha(i) = fromLeft(i) * fromRight(i)}
-          cont.accumInsideBelief(model)
-        }
+        }*/
+        //else{
+        for(i <- 0 to 3){cont.alpha(i) = fromLeft(i) * fromRight(i)}
+        cont.accumInsideBelief(model)
+      //}
       case FdurLeaf(_,cont) =>
-        if(tree.isNull){
-          cont.alpha
+        if(cont.nuc.isN){
+          cont.alpha(0 to 3) := 1.0
+          cont.accumInsideBelief(model)
         }
         else{
           cont.alpha(0 to 3) := 0.0
@@ -59,10 +63,8 @@ class PhylogencyTree(val root:FdurNode,val model:EvolutionModel){
   def outside(tree:FdurTree = root,fromBro:DenseVector[Double] = model.pi,fromPar:DenseVector[Double] = DenseVector.ones[Double](4)){
     for(i <- 0 to 3) tree.cont.beta(i) = fromBro(i) * fromPar(i)
     tree match{
-      case FdurNode(left,right,cont) =>
-        //if(!tree.isNull)
-        innerOutside(left,right,cont)
-      case _ =>
+      case FdurNode(left,right,cont) => innerOutside(left,right,cont)
+      case _ => Unit
     }
   }
 
