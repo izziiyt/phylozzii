@@ -5,28 +5,22 @@ import alignment.Base
 import breeze.numerics.exp
 import scala.annotation.tailrec
 
-
 trait Tree extends PrimitiveTree{
   type NsFd = (MD,VD)
   def alpha: Array[VD]
   def beta: Array[VD]
   def post: Array[MD]
   def trans: MD
-  def model:Model
+  def model: Model
   lazy val insideProp: Array[VD] = {
     require(alpha.nonEmpty)
-    def f(a:VD) = (0 to 3).map{i => (0.0 /: (0 to 3)) ((x,j) => x + a(j) * trans(i,j))}.toArray
-    alpha.map(a => DenseVector(f(a)))
+    def f(a:VD) = Array.tabulate(4){trans(_,::) * a}
+    alpha map {a => DenseVector(f(a))}
   }
-  lazy val outsideProp: Array[VD] = {
-    require(beta.nonEmpty)
-    def f(b:VD) = (0 to 3).map{i => (0.0 /: (0 to 3)) ((x,j) => x + b(j) * trans(j,i))}.toArray
-    beta.map(b => DenseVector(f(b)))
-  }
-  def toList:List[Tree]
-  def diffWithPi:Array[VD]
-  def diffWithB:Array[MD]
-  def diffWithT:List[Array[Double]]
+  def toList: List[Tree]
+  def diffWithPi: Array[VD]
+  def diffWithB: Array[MD]
+  def diffWithT: List[Array[Double]]
 }
 
 object Tree extends TreeUtilTrait {
@@ -43,7 +37,7 @@ object Tree extends TreeUtilTrait {
     }
   }
 
-  protected def inside(tr: ModelChild, model: Model, columns: List[Array[Base]]): (Child, List[Array[Base]]) = {
+  protected def inside(tr: ModelChild, model: Model, columns: List[Array[Base]]): (Child, List[Array[Base]]) =
     tr match {
       case ModelLeaf(name,t) =>
         (Leaf.inside(name,t,columns.head,model),columns.tail)
@@ -51,7 +45,6 @@ object Tree extends TreeUtilTrait {
         val tmp = innerIn(ch,columns,Nil,model)
         (Node.inside(tmp._1,t,model,tmp._1.map(_.insideProp)),tmp._2)
     }
-  }
 
   def inside(tr: ModelRoot, model: Model, columns: List[Array[Base]]): Root = {
     val (newCh,newCols) = innerIn(tr.children,columns,Nil,model)
@@ -92,7 +85,7 @@ object Tree extends TreeUtilTrait {
 
   protected def outsideProp(beta:Array[VD],trans:MD): Array[VD] = {
     require(beta.nonEmpty)
-    def f(b:VD) = (0 to 3).map{i => (0.0 /: (0 to 3)) ((x,j) => x + b(j) * trans(j,i))}.toArray
+    def f(b:VD) = Array.tabulate(4){trans(::,_).t * b}
     beta.map(b => DenseVector(f(b)))
   }
 
@@ -112,73 +105,52 @@ object Tree extends TreeUtilTrait {
 
 }
 
- trait Child extends Tree with PrimitiveChild{
+trait Child extends Tree with PrimitiveChild{
   def model:Model
 
-  protected def f: Array[Array[MD]] = {
+  lazy val f: Array[Array[MD]] = {
     def l(start:Int,end:Int,from:Int,to:Int,u:Int,v:Int):Double = {
       def k(x:Double,y:Double):Double = {val tmp = (exp(x) - exp(y)) / (x - y); if(tmp.isNaN) exp(x) else tmp}
       model.u(start, u) * model.ui(u, from) * model.u(to, v) * model.ui(v, end) *
-        k(t * model.lambda(u), t * model.lambda(v)) * model.R(from, to) * t
+        k(t * model.lambda(u), t * model.lambda(v))
     }
-
     Array.tabulate(4){ start =>
       Array.tabulate(4){ end =>
         val tmp = for (to <- 0 to 3; from <- 0 to 3) yield {
           (0 to 3).foldLeft(0.0){(n,u) => n +
-            (0 to 3).foldLeft(0.0){(m,v) => m + l(start, end, from, to, u, v)}
-          }
+            (0 to 3).foldLeft(0.0){(m,v) => m + l(start, end, from, to, u, v)}}
         }
-        new DenseMatrix[Double](4, 4, tmp.toArray) / trans(start, end)
+        val tmp1 = new DenseMatrix[Double](4, 4, tmp.toArray) / trans(start, end)
+        println(tmp1)
+        tmp1
       }
     }
   }
 
-  def Fd(from:Int,to:Int,i:Int):Double = f(from)(to)(i,i)
+  def Fd(from:Int,to:Int):DenseVector[Double] = diag(f(from)(to))
 
-  def Ns(from:Int,to:Int,i:Int,j:Int):Double = t * model.R(i,j) * f(from)(to)(i,j)
+  def Ns(from:Int,to:Int):DenseMatrix[Double] = model.R :* f(from)(to) * t
 
-  def postFd:Array[VD] = post.map { p =>
-    DenseVector(
-      (0 to 3).map { i =>
-      val tmp = for (a <- 0 to 3; b <- 0 to 3) yield Fd(a, b, i) * p(a, b)
-      tmp.sum
-    }.toArray)
-  }
+  def postFd:Array[VD] = post.map { p => {for(a <- 0 to 3;b <- 0 to 3) yield Fd(a,b) * p(a,b)}.reduceLeft(_ + _)}
 
-  def postNs:Array[MD] = post.map { p =>
-    new DenseMatrix[Double](4,4,
-      {for(j <- 0 to 3;i <- 0 to 3) yield {
-        val tmp = for (a <- 0 to 3; b <- 0 to 3) yield Ns(a, b, i, j) * p(a, b)
-        tmp.sum
-      }}.toArray)
-  }
+  def postNs:Array[MD] = post.map { p => {for (a <- 0 to 3; b <- 0 to 3) yield Ns(a, b) * p(a, b)}.reduceLeft(_ + _)}
 
-  def r:Array[MD] =
-    (postNs, postFd).zipped.map { (n, f) =>
-      val tmp = for (j <- 0 to 3; i <- 0 to 3) yield n(i, j) - t * model.R(i, j) * f(j)
-      new DenseMatrix[Double](4, 4, tmp.toArray)
-    }
+  lazy val r:Array[MD] = (postNs, postFd).zipped.map { (ns, fd) => ns - (diag(fd) * model.R.*(t))}
 
-  def ldt:Array[Double] = r.map(x => (sum(x) - trace(x)) / t)
+  def ldt:Array[Double] = r map {x => (sum(x) - trace(x)) / t}
 
-  def ldb:Array[MD] = r.map { x =>
-    new DenseMatrix[Double](4, 4, {
-      for (j <- 0 to 3; i <- 0 to 3) yield (x(i, j) + x(j, i)) / model.B(i, j)
-    }.toArray)
-  }
+  def ldb:Array[MD] = r map { x => (x + x.t) :/ model.B}
 
-  def ldp:Array[VD] =
-    r.map(x => DenseVector({for(i <- 0 to 3) yield (sum(x(::,i)) - x(i,i)) / model.pi(i)}.toArray))
+  def ldp:Array[VD] = r.map{x => DenseVector(Array.tabulate(4){i => (sum(x(::,i)) - x(i,i)) / model.pi(i)})}
 
-  def nsAndfd:NsFd = (postNs.reduceLeft(_ + _),postFd.reduceLeft(_ + _))
+  def nsAndfd:NsFd = (postNs.reduceLeft(_ + _), postFd.reduceLeft(_ + _))
 
   def suffStat:List[NsFd]
 
   def toList:List[Tree]
 }
 
- trait Parent extends Tree with PrimitiveParent {
+trait Parent extends Tree with PrimitiveParent {
   override def children:List[Child]
   def toList:List[Tree] = this :: children.foldLeft(Nil:List[Tree])((n,x) => x.toList ::: n)
   def diffWithPi = children.map(_.diffWithPi).reduceLeft((n,x) => (n,x).zipped.map(_ + _))
@@ -186,29 +158,28 @@ object Tree extends TreeUtilTrait {
   def diffWithB = children.map(_.diffWithB).reduceLeft((n,x) => (n,x).zipped.map(_ + _))
 }
 
- case class Leaf(name:String, t:Double, trans:MD, alpha:Array[VD], beta:Array[VD],
-                       post:Array[MD], model:Model) extends Child with PrimitiveLeaf{
+case class Leaf(name:String, t:Double, trans:MD, alpha:Array[VD], beta:Array[VD],
+                post:Array[MD], model:Model) extends Child with PrimitiveLeaf{
   def suffStat:List[NsFd] = nsAndfd :: Nil
   def toList:List[Tree] = this :: Nil
-  override val f = super.f
   def diffWithPi = ldp
   def diffWithT = ldt :: Nil
   def diffWithB = ldb
 }
 
- case class Node(children:List[Child], t:Double, trans:MD, alpha:Array[VD],
+case class Node(children:List[Child], t:Double, trans:MD, alpha:Array[VD],
                 beta:Array[VD], post:Array[MD], model:Model) extends Child with Parent with PrimitiveNode{
-  def suffStat:List[NsFd] =
-    nsAndfd :: children.foldLeft(Nil:List[NsFd]){(ns,x) => x.suffStat ::: ns}
-  override val f = super.f
+  def suffStat:List[NsFd] = nsAndfd :: children.foldLeft(Nil:List[NsFd]){(ns,x) => x.suffStat ::: ns}
   override def diffWithT = ldt :: super.diffWithT
+  override def diffWithB = (super.diffWithB, ldb).zipped.map(_ + _)
+  override def diffWithPi = (super.diffWithPi, ldp).zipped.map(_ + _)
 }
 
- case class Root(children:List[Child], trans:MD, alpha:Array[VD],
+case class Root(children:List[Child], trans:MD, alpha:Array[VD],
                 beta:Array[VD], post:Array[MD], model:Model) extends PrimitiveRoot with Parent{
 
-  override def diffWithPi = (super.diffWithPi,nsArray).zipped.map(_ + _)
-
+  override def diffWithPi = (super.diffWithPi, nsArray.map(x => x :/ model.pi)).zipped.map(_ + _)
+  override def diffWithB = super.diffWithB
   override def diffWithT = super.diffWithT.reverse
 
   lazy val likelihood: Array[Double] = {
@@ -219,13 +190,13 @@ object Tree extends TreeUtilTrait {
   lazy val loglikelihood: Array[Double] = likelihood.map(math.log)
 
   def suffStat:(VD,List[MD],List[VD]) = {
-    val tmp = children.foldLeft(Nil:List[NsFd]){(ns,x) => x.suffStat ::: ns}.reverse.unzip
-    (ns,tmp._1,tmp._2)
+    val (x,y) = children.foldLeft(Nil:List[NsFd]){(ns,x) => x.suffStat ::: ns}.reverse.unzip
+    (ns,x,y)
   }
 
   protected def ns: VD = nsArray.reduce(_ + _)
 
-  protected def nsArray: Array[VD] = (alpha,likelihood).zipped.map((a,l) => (a :* model.pi) / l)
+  protected def nsArray: Array[VD] = post.map(diag(_))
 
   override def toList = super.toList.reverse
 }
@@ -260,7 +231,6 @@ object Root extends TreeUtilTrait{
     val trans = mkTrans(0.0,m)
     new Root(ch,trans,alpha,null,null,m)
   }
-
 }
 
 trait TreeUtilTrait {
@@ -270,8 +240,8 @@ trait TreeUtilTrait {
     (mkAlpha(fromSib),fromPar).zipped.map(_ :* _)
   def mkTrans(ti:Double,mi:Model):MD =
     mi.u * diag(exp(mi.lambda * ti)).*(mi.ui)
-  def mkPost(alpha:Array[VD],beta:Array[VD], trans:MD,likelihood:Array[Double]) = {
-    def f(a: VD, b: VD, l:Double) = {
+  def mkPost(alpha:Array[VD],beta:Array[VD], trans:MD,likelihood:Array[Double]): Array[MD] = {
+    def f(a: VD, b: VD, l:Double): MD = {
       val p = DenseMatrix.zeros[Double](4, 4)
       for (i <- 0 to 3; j <- 0 to 3) p(i, j) = a(j) * b(i) * trans(i, j) / l
       p

@@ -63,7 +63,6 @@ class PhyloTest extends FunSuite {
       (param.Bvec.toArray,b).zipped.foreach((x,y) => assert(util.doubleChecker(x,y,math.exp(-5))))
       (branch,c).zipped.foreach((x,y) => assert(!x.isNaN && !y.isNaN))
       (branch,c).zipped.foreach((x,y) => assert(util.doubleChecker(x,y,math.exp(-5))))
-
     }
   }
 

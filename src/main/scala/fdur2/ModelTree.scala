@@ -16,7 +16,6 @@ object ModelTree extends NHParser{
 
 trait ModelChild extends PrimitiveChild{
   def changeBranches(branches:List[Double]):(ModelChild,List[Double])
-
 }
 
 case class ModelRoot(children:List[ModelChild]) extends PrimitiveRoot {

@@ -1,6 +1,7 @@
 import breeze.linalg.{DenseMatrix, DenseVector}
 
 import scala.annotation.tailrec
+import scala.math._
 import scala.util.Random
 
 package object fdur2 {
@@ -29,4 +30,11 @@ package object fdur2 {
 
 
   }
+
+  def doubleEqual(x:Double,y:Double,th:Double = 1.0E-14):Boolean = abs(x - y) < th
+
+  def doubleEqual(x:DenseVector[Double],y:DenseVector[Double]):Boolean = doubleEqual(x.toArray,y.toArray)
+
+  def doubleEqual(x:Seq[Double],y:Seq[Double]):Boolean = (x,y).zipped.forall{(i,j) => doubleEqual(i,j)}
+
 }

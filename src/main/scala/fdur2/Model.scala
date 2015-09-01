@@ -55,7 +55,6 @@ sealed class Model(param:Parameters) extends ModelTrait{
   val (lambda: VD, eVecs: MD) = eigSym(tmp)
 
   //R == u * diag(lambda) * ui
-
   val u: MD = Ti * eVecs
 
   val ui: MD = inv(u)

@@ -19,7 +19,10 @@ package object util {
 
   def toTSV(arg:DenseVector[Double]):String = arg.foldLeft(""){(x,i) => x + "\t" + i}.toString.tail
 
-  def doubleChecker(x:Double,y:Double,th:Double = 1.0E-14):Boolean = abs(x - y) < th
+  def doubleChecker(x:Double,y:Double,th:Double = 1.0E-14):Boolean = {
+    val tmp = abs(x - y)
+    tmp < th * x
+  }
 
   def doubleChecker(x:DenseVector[Double],y:DenseVector[Double]):Boolean = doubleChecker(x.toArray,y.toArray)
 
