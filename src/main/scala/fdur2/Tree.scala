@@ -98,7 +98,7 @@ object Tree extends TreeUtilTrait {
 
   def suffStat(tr:ModelRoot,model:Model,columns:List[Array[Base]]): (VD, List[MD], List[VD], Double, Int) = {
     val root = inout(tr,model,columns)
-    val sufs = root.suffStat
+    val sufs = root.suffStats
     val lgl = root.loglikelihood.sum
     (sufs._1,sufs._2,sufs._3,lgl, columns.head.length)
   }
@@ -120,9 +120,7 @@ trait Child extends Tree with PrimitiveChild{
           (0 to 3).foldLeft(0.0){(n,u) => n +
             (0 to 3).foldLeft(0.0){(m,v) => m + l(start, end, from, to, u, v)}}
         }
-        val tmp1 = new DenseMatrix[Double](4, 4, tmp.toArray) / trans(start, end)
-        println(tmp1)
-        tmp1
+        new DenseMatrix[Double](4, 4, tmp.toArray) / trans(start, end)
       }
     }
   }
@@ -156,6 +154,7 @@ trait Parent extends Tree with PrimitiveParent {
   def diffWithPi = children.map(_.diffWithPi).reduceLeft((n,x) => (n,x).zipped.map(_ + _))
   def diffWithT = children.foldLeft(Nil:List[Array[Double]])((n,x) => x.diffWithT ::: n)
   def diffWithB = children.map(_.diffWithB).reduceLeft((n,x) => (n,x).zipped.map(_ + _))
+  def suffStat:List[NsFd] = children.foldLeft(Nil:List[NsFd]){(ns,x) => x.suffStat ::: ns}
 }
 
 case class Leaf(name:String, t:Double, trans:MD, alpha:Array[VD], beta:Array[VD],
@@ -169,7 +168,7 @@ case class Leaf(name:String, t:Double, trans:MD, alpha:Array[VD], beta:Array[VD]
 
 case class Node(children:List[Child], t:Double, trans:MD, alpha:Array[VD],
                 beta:Array[VD], post:Array[MD], model:Model) extends Child with Parent with PrimitiveNode{
-  def suffStat:List[NsFd] = nsAndfd :: children.foldLeft(Nil:List[NsFd]){(ns,x) => x.suffStat ::: ns}
+  override def suffStat:List[NsFd] = nsAndfd :: super.suffStat
   override def diffWithT = ldt :: super.diffWithT
   override def diffWithB = (super.diffWithB, ldb).zipped.map(_ + _)
   override def diffWithPi = (super.diffWithPi, ldp).zipped.map(_ + _)
@@ -181,7 +180,6 @@ case class Root(children:List[Child], trans:MD, alpha:Array[VD],
   override def diffWithPi = (super.diffWithPi, nsArray.map(x => x :/ model.pi)).zipped.map(_ + _)
   override def diffWithB = super.diffWithB
   override def diffWithT = super.diffWithT.reverse
-
   lazy val likelihood: Array[Double] = {
     require(alpha.nonEmpty)
     alpha.map(model.pi.t * _)
@@ -189,10 +187,12 @@ case class Root(children:List[Child], trans:MD, alpha:Array[VD],
 
   lazy val loglikelihood: Array[Double] = likelihood.map(math.log)
 
-  def suffStat:(VD,List[MD],List[VD]) = {
-    val (x,y) = children.foldLeft(Nil:List[NsFd]){(ns,x) => x.suffStat ::: ns}.reverse.unzip
+  def suffStats:(VD,List[MD],List[VD]) = {
+    val (x,y) = suffStat.reverse.unzip
     (ns,x,y)
   }
+
+  //protected override def suffStat = super.suffStat
 
   protected def ns: VD = nsArray.reduce(_ + _)
 

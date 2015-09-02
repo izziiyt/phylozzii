@@ -1,3 +1,5 @@
+import java.io.{PrintWriter, OutputStream}
+
 import breeze.linalg.{DenseMatrix, DenseVector}
 
 import scala.annotation.tailrec
@@ -10,17 +12,6 @@ package object fdur2 {
   type VD = DenseVector[Double]
   type MD = DenseMatrix[Double]
 
-  def div[T](seqs:List[Array[T]],size:Int):Array[List[Array[T]]] = {
-    @tailrec
-    def f(xs:List[Array[T]],ys:List[List[Array[T]]],index:Int):Array[List[Array[T]]] = {
-      if (xs.isEmpty) ys.reverse.toArray
-      else {
-        val (target, reserve) = xs.map{x => x.splitAt(index)}.unzip
-        f(reserve, target :: ys, index)
-      }
-    }
-    f(seqs,Nil,size)
-  }
 
   def randMaf(tr:PrimitiveTree,param:Parameters,num:Int,pernum:Int) = {
     require(num > pernum && num % pernum == 0)
@@ -29,6 +20,15 @@ package object fdur2 {
     val rootBase = Base.fromInt(gen.nextInt(4))
 
 
+  }
+
+  def printExeTime[T](proc: => T,txt:String,os:OutputStream=System.out) = {
+    val start = System.currentTimeMillis
+    val result = proc
+    val writer = new PrintWriter(os)
+    writer.println(txt + "\t" + (System.currentTimeMillis - start))
+    writer.flush()
+    result
   }
 
   def doubleEqual(x:Double,y:Double,th:Double = 1.0E-14):Boolean = abs(x - y) < th

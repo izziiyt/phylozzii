@@ -60,15 +60,16 @@ sealed class Model(param:Parameters) extends ModelTrait{
   val ui: MD = inv(u)
 
   def mstep(ns: VD, Ns: List[MD], Fd: List[VD], branches: List[Double]): (List[Double], Parameters) = {
-    val Td: VD = (Fd, branches).zipped.map(_ * _).reduce(_ + _)
-    val NS = Ns.reduce(_ + _)
-    (newT(Ns, Fd), Parameters(newB(NS, Td), newPi(NS, Td, ns)))
+    val Td: VD = (Fd, branches).zipped.foldLeft(DenseVector.zeros[Double](4))((n,x) => n + (x._1 * x._2))
+    //val Td: VD = (Fd, branches).zipped.map(_ * _).reduce(_ + _)
+    val Ns0: MD = Ns.reduce(_ + _)
+    (newT(Ns, Fd), Parameters(newB(Ns0, Td), newPi(Ns0, Td, ns)))
   }
 
   protected def newPi(Ns:DenseMatrix[Double],Td:DenseVector[Double],ns:DenseVector[Double]) = {
-    val u = (0 to 3) map (i => ns(i) + sum(Ns(::,i)) - Ns(i,i))
-    val v = (0 to 3) map (i => (0 to 3).foldLeft(0.0)((x,j) => if(i != j) x + B(j,i) * Td(j) else x))
-    calcNewParameter(u.toList,v.toList)
+    val u = List.tabulate(4)(i => ns(i) + sum(Ns(::,i)) - Ns(i,i))
+    val v = List.tabulate(4)(i => (0 to 3).foldLeft(0.0)((x,j) => if(i != j) x + B(j,i) * Td(j) else x))
+    calcNewParameter(u,v)
   }
 
   protected def newB(Ns:DenseMatrix[Double],Td:DenseVector[Double]) = {
@@ -78,8 +79,8 @@ sealed class Model(param:Parameters) extends ModelTrait{
   }
 
   protected def newT(Ns:List[DenseMatrix[Double]],Fd:List[DenseVector[Double]]):List[Double] = {
-    val Ns0:List[Double] = Ns.map(x => sum(x) - trace(x))
-    (Ns0,Fd).zipped.map((ns0,fd) => - ns0 / (0 to 3).foldLeft(0.0)((x,i) => x + R(i,i) * fd(i)))
+    val Ns0 = Ns.map(x => sum(x) - trace(x))
+    (Ns0,Fd).zipped.map((ns0,fd) => - ns0 / (0.0  /: (0 to 3))((x,i) => x + R(i,i) * fd(i)))
   }
 
   protected def calcNewParameter(u:List[Double],v:List[Double]):DenseVector[Double] = {
@@ -90,13 +91,13 @@ sealed class Model(param:Parameters) extends ModelTrait{
   }
 
   @tailrec
-  private def newtonRaphson(l:Double,u:List[Double],v:List[Double]):Double = {
+  private def newtonRaphson(l:Double,u:List[Double],v:List[Double],loop:Int = 0):Double = {
     val boy = (u,v).zipped.foldLeft(0.0){case (x,(i,j)) => x + i / (j + l)} - 1.0
     val mom = (u,v).zipped.foldLeft(0.0){case (x,(i,j)) => x + i / pow(j + l,2.0)}
     val newL = l + boy / mom
     if(newL.isNaN) sys.error("overfitting error")
-    else if(util.doubleChecker(l,newL)) newL
-    else newtonRaphson(newL,u,v)
+    else if(doubleEqual(l,newL,1.0E-10) || loop > 9) newL
+    else newtonRaphson(newL,u,v,loop + 1)
   }
 }
 

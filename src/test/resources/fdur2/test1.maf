@@ -1,0 +1,5 @@
+##maf version=1 scoring=zero
+a score=0.000000
+s alpha 0   8   +   8   CAGCACTT
+s beta  0   8   +   8   CAGGAGTT
+s gamma 0   8   +   8   CTGGTCGG

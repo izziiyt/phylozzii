@@ -34,7 +34,7 @@ class EM$Test extends FunSuite {
   }*/
 
   /*test("maf2al"){
-    val s = Source.fromFile("src/test/resources/test.maf")
+    val s = Source.fromFile("src/test/resources/test1.maf")
     val lines = s.getLines().map(l => l.map(Maf2Alignments.trans)).toArray
     val tmp = for(i <- 0 until lines(0).length)yield {Array(lines(0)(i).toChar,lines(1)(i).toChar,lines(2)(i).toChar,lines(3)(i).toChar)}
     val em = new fdur.EM

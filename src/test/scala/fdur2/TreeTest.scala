@@ -8,7 +8,7 @@ import alignment.Base
 import scala.util.Random
 
 class TreeTest extends FunSuite {
-  /*test("PrimitiveTree") {
+  test("PrimitiveTree") {
     {
       val t = ModelTree.fromString("((((a:1.0,b:2.0):3.0,c:4.0):5.0,d:6.0):7.0,e:8.0);")
       assert(t.toString == "((((a:1.0,b:2.0):3.0,c:4.0):5.0,d:6.0):7.0,e:8.0);")
@@ -36,7 +36,7 @@ class TreeTest extends FunSuite {
       val s = t.changeBranches(List(2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0))
       assert(s.branches == List(2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0))
     }
-  }*/
+  }
   test("Tree") {
     {
       val tree = ModelTree.fromString("((a:1.0,b:2.0):3.0,c:4.0);")
@@ -89,7 +89,7 @@ class TreeTest extends FunSuite {
         val root1 = Tree.inout(tree1, Model(param), cols)
         val root2 = Tree.inout(tree2, Model(param), cols)
         val diffCal = (root1.loglikelihood, root2.loglikelihood).zipped.map((x, y) => (x - y) / (2.0 * h))
-        (root.diffWithT(j), diffCal).zipped.foreach((x,y) => println("branches length : " + x + " " + y))
+        //(root.diffWithT(j), diffCal).zipped.foreach((x,y) => println("branches length : " + x + " " + y))
         (root.diffWithT(j), diffCal).zipped.foreach((x,y) => assert(doubleEqual(x, y, 1.0E-5)))
       }
       for (j <- 0 to 3) {
@@ -101,7 +101,7 @@ class TreeTest extends FunSuite {
         val root2 = Tree.inout(templateTree, Model(param2), cols)
         val diffCal = (root1.loglikelihood, root2.loglikelihood).zipped.map((x, y) => (x - y) / (2.0 * h))
         (root.diffWithPi, diffCal).zipped.foreach((x,y) => assert(doubleEqual(x(j), y, 1.0E-4)))
-        (root.diffWithPi, diffCal).zipped.foreach((x,y) => println("pi : " + x(j) + " " + y))
+        //(root.diffWithPi, diffCal).zipped.foreach((x,y) => println("pi : " + x(j) + " " + y))
       }
       var j = 0
       for (s <- 0 to 2;t <- s+1 to 3) {
@@ -113,7 +113,7 @@ class TreeTest extends FunSuite {
         val root2 = Tree.inout(templateTree, Model(param2), cols)
         val diffCal = (root1.loglikelihood, root2.loglikelihood).zipped.map((x, y) => (x - y) / (2.0 * h))
         (root.diffWithB, diffCal).zipped.foreach((x,y) => assert(doubleEqual(x(s,t), y, 1.0E-4)))
-        (root.diffWithB, diffCal).zipped.foreach((x,y) => println("rate : " + x(s,t) + " " + y))
+        //(root.diffWithB, diffCal).zipped.foreach((x,y) => println("rate : " + x(s,t) + " " + y))
         j += 1
       }
     }
