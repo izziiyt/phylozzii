@@ -146,9 +146,12 @@ trait Child extends Tree with PrimitiveChild{
   def suffStat:List[NsFd]
 
   def toList:List[Tree]
+
+  def leafList:List[Leaf]
 }
 
 trait Parent extends Tree with PrimitiveParent {
+  def leafList:List[Leaf] = children.foldLeft(Nil:List[Leaf])((n,x) => x.leafList ::: n)
   override def children:List[Child]
   def toList:List[Tree] = this :: children.foldLeft(Nil:List[Tree])((n,x) => x.toList ::: n)
   def diffWithPi = children.map(_.diffWithPi).reduceLeft((n,x) => (n,x).zipped.map(_ + _))
@@ -164,6 +167,7 @@ case class Leaf(name:String, t:Double, trans:MD, alpha:Array[VD], beta:Array[VD]
   def diffWithPi = ldp
   def diffWithT = ldt :: Nil
   def diffWithB = ldb
+  def leafList = this :: Nil
 }
 
 case class Node(children:List[Child], t:Double, trans:MD, alpha:Array[VD],
@@ -185,14 +189,14 @@ case class Root(children:List[Child], trans:MD, alpha:Array[VD],
     alpha.map(model.pi.t * _)
   }
 
+  override def leafList = super.leafList.reverse
+
   lazy val loglikelihood: Array[Double] = likelihood.map(math.log)
 
   def suffStats:(VD,List[MD],List[VD]) = {
     val (x,y) = suffStat.reverse.unzip
     (ns,x,y)
   }
-
-  //protected override def suffStat = super.suffStat
 
   protected def ns: VD = nsArray.reduce(_ + _)
 
@@ -209,7 +213,8 @@ object Leaf extends TreeUtilTrait{
   }
 
   protected def mkAlpha(column:Array[Base]) = column.map{
-    case Base.N => DenseVector.ones[Double](4)
+    case Base.N =>
+      DenseVector.ones[Double](4)
     case x =>
       val tmp = DenseVector.zeros[Double](4)
       tmp(x.toInt) = 1.0

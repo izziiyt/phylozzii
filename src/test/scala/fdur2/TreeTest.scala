@@ -36,6 +36,13 @@ class TreeTest extends FunSuite {
       val s = t.changeBranches(List(2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0))
       assert(s.branches == List(2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0))
     }
+    {
+      val t = ModelTree.fromFile("src/test/resources/fdur2/fdur.nh")
+      val br = t.branches
+      val newt = t.changeBranches(br)
+      val newbr = newt.branches
+      (br,newbr).zipped.foreach((x,y) => assert(x == y))
+    }
   }
   test("Tree") {
     {
@@ -79,9 +86,9 @@ class TreeTest extends FunSuite {
     val pi = Array(0.22, 0.28, 0.23, 0.27)
     val b = Array(0.15, 0.25, 0.1, 0.13, 0.07, 0.3)
     val param = Parameters(DenseVector(b), DenseVector(pi))
-    val cols = List(Array[Base](Base.A), Array[Base](Base.C), Array[Base](Base.G))
+    val cols = List(Array[Base](Base.A), Array[Base](Base.N), Array[Base](Base.G))
     val root = Tree.inout(templateTree, Model(param), cols)
-    for (_ <- 0 until 100) {
+    for (_ <- 0 until 10) {
       val h = gen.nextDouble() / 1000.0
       for (j <- 0 to 3) {
         val tree1 = templateTree.changeBranches(templateBranch.map { case (x, i) => if (i == j) x + h else x })

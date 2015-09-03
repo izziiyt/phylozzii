@@ -5,7 +5,7 @@ argv <- commandArgs(TRUE)
 grid.newpage()
 pushViewport(viewport(layout=grid.layout(2, 2)))
 #logDir <- argv[1]
-logDir <- "log/"
+logDir <- "/home/yuto/projects/fdur/target/log/"
 ll <- read.table(paste(logDir,"ll.log",sep=""))$V1
 df <- data.frame(recursion = c(1:length(ll)), logLikelihood=ll)
 g <- ggplot(df,aes(x = recursion,y = logLikelihood))
@@ -29,7 +29,7 @@ print(g, vp=viewport(layout.pos.row=1, layout.pos.col=2))
 #---------------------------------------------------------------------
 #-----------------------------pi--------------------------------------
 x <- read.table(paste(logDir,"pi.log",sep=""),header = FALSE)
-colnames(x) <- c("A","T","C","G")
+colnames(x) <- c("A","C","G","T")
 x <- cbind(1:nrow(x), x)
 colnames(x)[1] <- "Time"
 df <- melt(x,id.var="Time")
@@ -39,6 +39,16 @@ g <- g + ylab("Base Frequency")
 g <- g + ggtitle("Base Frequency")
 print(g, vp=viewport(layout.pos.row=2, layout.pos.col=1))
 #---------------------------------------------------------------------
+x <- read.table(paste(logDir,"br.log",sep=""),header = FALSE)
+#colnames(x) <- c("A","C","G","T")
+x <- cbind(1:nrow(x), x)
+colnames(x)[1] <- "Time"
+df <- melt(x,id.var="Time")
+g <- ggplot(df,aes(x = Time,y = value,group = variable,colour = variable))
+g <- g + geom_line(linetype = 1,size = 0.5)
+g <- g + ylab("Base Frequency")
+g <- g + ggtitle("Base Frequency")
+print(g, vp=viewport(layout.pos.row=2, layout.pos.col=1))
 #---------------------------time--------------------------------------
 #x <- read.table(paste(logDir,"tm.log",sep=""),header = FALSE)
 #colnames(x) <- c("job","msec")

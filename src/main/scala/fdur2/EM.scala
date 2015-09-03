@@ -9,7 +9,8 @@ object EM {
 
   def mstep(suffs: Array[(VD, List[MD], List[VD], Double, Int)],model:Model, branches:List[Double]):
   (Double, List[Double], Parameters) = {
-    val (rootns, ns, fd, lgl, n):(VD, List[MD], List[VD], Double, Int) = suffs.reduce{
+    val (rootns, ns, fd, lgl, n):(VD, List[MD], List[VD], Double, Int) = suffs.reduce
+    {
       (m, x) =>
         val ns = m._1 + x._1
         val Ns = (m._2, x._2).zipped.map(_ + _)

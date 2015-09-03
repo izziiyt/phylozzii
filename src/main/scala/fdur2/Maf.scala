@@ -8,7 +8,9 @@ import alignment.Base
 object Maf {
   def readMaf(mf:String,per:Int):Array[List[Array[Base]]] = {
     val it = MafUnitIterator.fromMSA(mf)
-    val bases = it.reduceLeft{(n,u) => n + u}.seqs
+    val totalunit = it.reduceLeft{(n,u) => n + u}
+    val bases = totalunit.seqs
+    println(totalunit.lengthes)
     val tmp = div(bases,per)
     tmp
   }
@@ -27,15 +29,14 @@ object Maf {
 
 }
 
-class MafUnit(val seqs:List[Array[Base]]){
+class MafUnit(val seqs:List[Array[Base]],val lengthes:List[Int]){
   require(seqs.forall(_.length == seqs.head.length))
-  def +(that:MafUnit) = new MafUnit((seqs,that.seqs).zipped.map(_ ++ _))
+  def +(that:MafUnit) = new MafUnit((seqs,that.seqs).zipped.map(_ ++ _),(lengthes,that.lengthes).zipped.map(_ + _))
 }
 
 
 object MafUnit {
-  def apply(seq:List[String]) = new MafUnit(seq.map(xs => xs.toCharArray.map(x => Base.fromChar(x))))
-  def Nil = new MafUnit(List[Array[Base]]())
+  def apply(seq:List[String],lengthes:List[Int]) = new MafUnit(seq.map(xs => xs.toCharArray.map(x => Base.fromChar(x))),lengthes)
 }
 
 class MafUnitIterator private (file:String,sep:String = """\p{javaWhitespace}+""") extends Iterator[MafUnit] {
@@ -56,15 +57,16 @@ class MafUnitIterator private (file:String,sep:String = """\p{javaWhitespace}+""
   def nexti():Option[MafUnit] = {
     if(s.isEmpty) return None
     val buf = new ListBuffer[String]
+    val buf2 = new ListBuffer[Int]
     for(line <- lines;if line != "" && !line.startsWith("#")){
       val p = line.split(sep)
       p(0) match{
-        case "s" => buf += p(6)
-        case "a" => if(buf.nonEmpty) return Some(MafUnit(buf.toList))
+        case "s" => buf += p(6); buf2 += p(5).toInt
+        case "a" => if(buf.nonEmpty) return Some(MafUnit(buf.toList,buf2.toList))
         case _ => Unit
       }
     }
-    if(buf.nonEmpty) Some(MafUnit(buf.toList))
+    if(buf.nonEmpty && buf2.nonEmpty) Some(MafUnit(buf.toList,buf2.toList))
     else{
       s.close()
       None

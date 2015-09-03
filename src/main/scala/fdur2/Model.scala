@@ -2,7 +2,6 @@ package fdur2
 
 import breeze.linalg._
 import breeze.numerics.pow
-
 import scala.annotation.tailrec
 
 sealed trait ModelTrait {
@@ -22,6 +21,8 @@ sealed trait ModelTrait {
 }
 
 sealed class Model(param:Parameters) extends ModelTrait{
+
+  val ijList = (0 to 3).flatMap(i => (0 to 3).withFilter(j => j != i).map(j => (i,j)))
 
   protected val T: MD = diag(pow(param.pi, 0.5))
 
@@ -79,7 +80,7 @@ sealed class Model(param:Parameters) extends ModelTrait{
   }
 
   protected def newT(Ns:List[DenseMatrix[Double]],Fd:List[DenseVector[Double]]):List[Double] = {
-    val Ns0 = Ns.map(x => sum(x) - trace(x))
+    val Ns0 = Ns.map{x => sum(x) - trace(x)}
     (Ns0,Fd).zipped.map((ns0,fd) => - ns0 / (0.0  /: (0 to 3))((x,i) => x + R(i,i) * fd(i)))
   }
 

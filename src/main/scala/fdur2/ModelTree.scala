@@ -16,9 +16,12 @@ object ModelTree extends NHParser{
 
 trait ModelChild extends PrimitiveChild{
   def changeBranches(branches:List[Double]):(ModelChild,List[Double])
+  def leafList:List[ModelLeaf]
+
 }
 
 case class ModelRoot(children:List[ModelChild]) extends PrimitiveRoot {
+  def leafList:List[ModelLeaf] = children.foldLeft(Nil:List[ModelLeaf])((n,x) => x.leafList ::: n).reverse
   def changeBranches(branches: List[Double]):ModelRoot = {
     @tailrec
     def innerChangeBranches(ch: List[ModelChild], br: List[Double], result: List[ModelChild]):
@@ -49,9 +52,11 @@ case class ModelNode(children:List[ModelChild],t:Double) extends ModelChild with
     val (newch,newbr) = innerChangeBranches(children, branches, Nil)
     (ModelNode(newch.reverse, newbr.head), newbr.tail)
   }
+  def leafList:List[ModelLeaf] = children.foldLeft(Nil:List[ModelLeaf])((n,x) => x.leafList ::: n)
 }
 
 case class ModelLeaf(name:String,t:Double) extends ModelChild with PrimitiveLeaf {
+  def leafList = this :: Nil
   def changeBranches(branches:List[Double]) = (ModelLeaf(name,branches.head),branches.tail)
 }
 
