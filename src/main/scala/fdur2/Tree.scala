@@ -205,7 +205,7 @@ case class Root(children:List[Child], trans:MD, alpha:Array[VD],
   override def toList = super.toList.reverse
 }
 
-object Leaf extends TreeUtilTrait{
+object ｀Leaf extends TreeUtilTrait{
   def inside(name:String,t:Double,column:Array[Base],m:Model):Leaf = {
     val alpha = mkAlpha(column)
     val trans = mkTrans(t,m)
