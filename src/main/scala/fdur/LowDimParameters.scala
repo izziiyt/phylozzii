@@ -1,4 +1,4 @@
-package fdur2
+package fdur
 
 case class LowDimParameters(pix:Array[Double],bx:Array[Double]) {
   require(pix.length == 4)

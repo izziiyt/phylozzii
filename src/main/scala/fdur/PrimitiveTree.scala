@@ -1,4 +1,4 @@
-package fdur2
+package fdur
 
 trait PrimitiveTree{
   def t:Double

@@ -1,9 +1,9 @@
-package eea.tree
+/*package eea.tree
 
 import java.io.FileReader
 import alignment.Base
 import breeze.linalg.{sum, DenseMatrix, DenseVector, diag}
-import fdur.{EvolutionModel,NHParser}
+import fdur.NHParser
 
 import scala.math._
 
@@ -301,4 +301,4 @@ class NHParser4 extends NHParser[Tree] {
   def leaf:Parser[Leaf] = name~":"~value ^^
     {case name~":"~value => Leaf(name,value.toDouble)}
 
-}
+}*/

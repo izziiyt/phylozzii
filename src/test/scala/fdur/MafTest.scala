@@ -1,4 +1,4 @@
-package fdur2
+package fdur
 
 import org.scalatest.FunSuite
 import alignment.Base.{A,C,G,T,N}

@@ -1,93 +1,40 @@
-/*import java.io.PrintWriter
+import java.io.{PrintWriter, OutputStream}
 
-import fdur.Estep._
-import util.Util
-import alignment.Base
+import breeze.linalg.{DenseMatrix, DenseVector}
+
+import scala.annotation.tailrec
+import scala.math._
+import scala.util.Random
+
 package object fdur {
-  def main(args: Array[String]): Unit = {
-    args.head match {
-      case "estep" => estep(args.tail)
-      //case "mstep" => mstep(args.tail)
-      //case "em" => em(args.tail)
-      case _ => sys.error("\"estep\", \"mstep\" and \"em\" are acceptable program names. " + args.head + " is not listed.")
-    }
-  }
+  import alignment.Base
 
-  protected def estep(args: Array[String]): Unit = {
-    val opts = args.map(Flag(_)).withFilter(_.isDefined).map(_.get)
-
-    var param: Option[Parameters] = None
-    var tree: Option[FdurNode] = None
-    var al: Option[Array[Array[Base]]] = None
-    var flag = false
-    var writer:Option[PrintWriter] = None
-
-    for(op <- opts) op match {
-      case Flag.BaseFrequencyFix(b) => flag = b
-      case Flag.InNewick(n) => tree = Some(FdurTree.fromFile(n))
-      case Flag.Al(n) => al = Some(Util.getAlignments(n))
-      case Flag.OutPut(n) => writer = Some(new PrintWriter(n))
-      case Flag.Param(n) => param = Some(Parameters.fromFile(n))
-    }
-
-    val pt = new PhylogencyTree(tree.get,GTR(param.get))
-    val counts = al.get.map(eStep(pt,_))
-    val sumCount = counts.reduce(_+_)
-    writer.get.println(counts.length)
-    writer.get.println(sumCount)
-    writer.get.close()
-  }
+  type VD = DenseVector[Double]
+  type MD = DenseMatrix[Double]
 
 
-  sealed trait Flag {
-    def apply(s: String): Flag
-  }
-
-  sealed object Flag {
-
-    case class InNewick(name: String) extends Flag
-
-    case class Maf(name: String) extends Flag
-
-    case class Al(name:String) extends Flag
-
-    case class OutNewick(name: String) extends Flag
-
-    case class BaseFrequencyFix(bool: Boolean) extends Flag
-
-    case class Param(name:String) extends Flag
-
-    case class OutPut(name:String) extends Flag
-
-    def apply(arg: String): Option[Flag] = {
-      val kv = arg split '='
-      if (kv.length == 2) kv(0) match {
-        case "-inh" =>
-          Some(Flag.InNewick(kv(1)))
-        case "-maf" =>
-          Some(Flag.Maf(kv(1)))
-        case "-onh" =>
-          Some(OutNewick(kv(1)))
-        case "-o" =>
-          Some(OutPut(kv(1)))
-        case "-al" =>
-          Some(Al(kv(1)))
-        case "-bf" =>
-          kv(1) match {
-          case "true" | "t" => Some(BaseFrequencyFix(true))
-          case "false" | "f" => Some(BaseFrequencyFix(false))
-          case _ => None
-        }
-        case "-p" =>
-          Some(Param(kv(1)))
-        case _ =>
-          sys.error(kv + " isn't a proper parameter.")
-      }
-      else sys.error(kv + " isn't a proper parameter.")
-    }
+  def randMaf(tr:PrimitiveTree,param:Parameters,num:Int,pernum:Int) = {
+    require(num > pernum && num % pernum == 0)
+    val m = Model(param)
+    val gen = new Random(0)
+    val rootBase = Base.fromInt(gen.nextInt(4))
 
 
   }
+
+  def printExeTime[T](proc: => T,txt:String,os:OutputStream=System.out) = {
+    val start = System.currentTimeMillis
+    val result = proc
+    val writer = new PrintWriter(os)
+    writer.println(txt + "\t" + (System.currentTimeMillis - start))
+    writer.flush()
+    result
+  }
+
+  def doubleEqual(x:Double,y:Double,th:Double = 1.0E-14):Boolean = abs(x - y) < th
+
+  def doubleEqual(x:DenseVector[Double],y:DenseVector[Double]):Boolean = doubleEqual(x.toArray,y.toArray)
+
+  def doubleEqual(x:Seq[Double],y:Seq[Double]):Boolean = (x,y).zipped.forall{(i,j) => doubleEqual(i,j)}
 
 }
-*/

@@ -1,7 +1,7 @@
-package util
+/*package util
 
 import java.io.{FileOutputStream, OutputStream, PrintWriter}
-import fdur.{FdurTree, GTR, Parameters, Tree}
+import fdur.{FdurTree, Parameters, Tree}
 
 object PostProc {
 
@@ -33,3 +33,4 @@ object PostProc {
   }
 
 }
+*/

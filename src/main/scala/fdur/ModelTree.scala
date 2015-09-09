@@ -1,4 +1,4 @@
-package fdur2
+package fdur
 
 import java.io.FileReader
 import scala.annotation.tailrec

@@ -1,4 +1,4 @@
-package fdur2
+package fdur
 
 import org.apache.spark.SparkContext
 import org.apache.spark.mllib.evaluation.BinaryClassificationMetrics

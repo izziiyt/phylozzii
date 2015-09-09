@@ -1,4 +1,4 @@
-package fdur2
+package fdur
 
 import scala.annotation.tailrec
 import scala.collection.mutable.ListBuffer

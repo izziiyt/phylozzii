@@ -1,4 +1,4 @@
-package util
+/*package util
 
 import java.io.PrintWriter
 import alignment.Base
@@ -50,3 +50,4 @@ object Maf2Al{
     }
   }
 }
+*/

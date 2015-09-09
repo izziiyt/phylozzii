@@ -2,7 +2,7 @@ package eea.tree
 
 import alignment.Base._
 import breeze.linalg.{DenseMatrix, DenseVector}
-import fdur.{Parameters, EvolutionModel,GTR}
+import fdur.Parameters
 import org.scalatest.FunSuite
 
 class TreeTest extends FunSuite {

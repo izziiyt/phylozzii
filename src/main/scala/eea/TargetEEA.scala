@@ -1,4 +1,4 @@
-package eea
+/*package eea
 
 import breeze.linalg.DenseMatrix
 import fdur._
@@ -35,4 +35,4 @@ trait FileModuleStream[T] extends AbstractIterator[T] with Iterator[T] {
     result
   }
   def hasNext = nextValue.isDefined
-}*/
+}*/*/

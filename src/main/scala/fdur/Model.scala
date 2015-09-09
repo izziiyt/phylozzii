@@ -1,4 +1,4 @@
-package fdur2
+package fdur
 
 import breeze.linalg._
 import breeze.linalg.eigSym.EigSym
