@@ -14,8 +14,9 @@ trait Tree extends PrimitiveTree{
   def model: Model
   lazy val insideProp: Array[VD] = {
     require(alpha.nonEmpty)
-    def f(a:VD) = Array.tabulate(4){trans(_,::) * a}
-    alpha map {a => DenseVector(f(a))}
+    //def f(a:VD) = Array.tabulate(4){trans(_,::) * a}
+    //alpha map {a => DenseVector(f(a))}
+    alpha.map(a => trans.t * a)
   }
   def toList: List[Tree]
   def diffWithPi: Array[VD]
@@ -85,8 +86,9 @@ object Tree extends TreeUtilTrait {
 
   protected def outsideProp(beta:Array[VD],trans:MD): Array[VD] = {
     require(beta.nonEmpty)
-    def f(b:VD) = Array.tabulate(4){trans(::,_).t * b}
-    beta.map(b => DenseVector(f(b)))
+    //def f(b:VD) = Array.tabulate(4){trans(_,::) * b}
+    //beta.map(b => DenseVector(f(b)))
+    beta.map(b => trans * b)
   }
 
   def inout(tr: ModelRoot, model: Model, columns: List[Array[Base]]): Root = {
@@ -111,35 +113,35 @@ trait Child extends Tree with PrimitiveChild{
   lazy val f: Array[Array[MD]] = {
     def l(start:Int,end:Int,from:Int,to:Int,u:Int,v:Int):Double = {
       def k(x:Double,y:Double):Double = {val tmp = (exp(x) - exp(y)) / (x - y); if(tmp.isNaN) exp(x) else tmp}
-      model.u(start, u) * model.ui(u, from) * model.u(to, v) * model.ui(v, end) *
+      model.u(end, u) * model.ui(u, to) * model.u(from, v) * model.ui(v, start) *
         k(t * model.lambda(u), t * model.lambda(v))
     }
-    Array.tabulate(4){ start =>
-      Array.tabulate(4){ end =>
-        val tmp = for (to <- 0 to 3; from <- 0 to 3) yield {
+    Array.tabulate(4){ end =>
+      Array.tabulate(4){ start =>
+        val tmp = for (from <- 0 to 3; to <- 0 to 3) yield {
           (0 to 3).foldLeft(0.0){(n,u) => n +
             (0 to 3).foldLeft(0.0){(m,v) => m + l(start, end, from, to, u, v)}}
         }
-        new DenseMatrix[Double](4, 4, tmp.toArray) / trans(start, end)
+        new DenseMatrix[Double](4, 4, tmp.toArray) / trans(end, start)
       }
     }
   }
 
-  def Fd(from:Int,to:Int):DenseVector[Double] = diag(f(from)(to))
+  def Fd(to:Int,from:Int):DenseVector[Double] = diag(f(to)(from))
 
-  def Ns(from:Int,to:Int):DenseMatrix[Double] = model.R :* f(from)(to) * t
+  def Ns(to:Int,from:Int):DenseMatrix[Double] = model.R :* f(to)(from) * t
 
   def postFd:Array[VD] = post.map { p => {for(a <- 0 to 3;b <- 0 to 3) yield Fd(a,b) * p(a,b)}.reduceLeft(_ + _)}
 
   def postNs:Array[MD] = post.map { p => {for (a <- 0 to 3; b <- 0 to 3) yield Ns(a, b) * p(a, b)}.reduceLeft(_ + _)}
 
-  lazy val r:Array[MD] = (postNs, postFd).zipped.map { (ns, fd) => ns - (diag(fd) * model.R.*(t))}
+  lazy val r:Array[MD] = (postNs, postFd).zipped.map { (ns, fd) => ns - (model.R * diag(fd) * t)}
 
   def ldt:Array[Double] = r map {x => (sum(x) - trace(x)) / t}
 
   def ldb:Array[MD] = r map { x => (x + x.t) :/ model.B}
 
-  def ldp:Array[VD] = r.map{x => DenseVector(Array.tabulate(4){i => (sum(x(::,i)) - x(i,i)) / model.pi(i)})}
+  def ldp:Array[VD] = r.map{x => DenseVector(Array.tabulate(4){i => (sum(x(i,::).t) - x(i,i)) / model.pi(i)})}
 
   def nsAndfd:NsFd = (postNs.reduceLeft(_ + _), postFd.reduceLeft(_ + _))
 
@@ -184,6 +186,7 @@ case class Root(children:List[Child], trans:MD, alpha:Array[VD],
   override def diffWithPi = (super.diffWithPi, nsArray.map(x => x :/ model.pi)).zipped.map(_ + _)
   override def diffWithB = super.diffWithB
   override def diffWithT = super.diffWithT.reverse
+
   lazy val likelihood: Array[Double] = {
     require(alpha.nonEmpty)
     alpha.map(model.pi.t * _)
@@ -205,7 +208,7 @@ case class Root(children:List[Child], trans:MD, alpha:Array[VD],
   override def toList = super.toList.reverse
 }
 
-object ｀Leaf extends TreeUtilTrait{
+object Leaf extends TreeUtilTrait{
   def inside(name:String,t:Double,column:Array[Base],m:Model):Leaf = {
     val alpha = mkAlpha(column)
     val trans = mkTrans(t,m)
@@ -248,8 +251,10 @@ trait TreeUtilTrait {
   def mkPost(alpha:Array[VD],beta:Array[VD], trans:MD,likelihood:Array[Double]): Array[MD] = {
     def f(a: VD, b: VD, l:Double): MD = {
       val p = DenseMatrix.zeros[Double](4, 4)
-      for (i <- 0 to 3; j <- 0 to 3) p(i, j) = a(j) * b(i) * trans(i, j) / l
+      for (i <- 0 to 3; j <- 0 to 3) p(i, j) = a(i) * b(j) * trans(i, j) / l
       p
+      //val tmp = for (from <- 0 to 3; to <- 0 to 3) yield a(to) * b(from) * trans(to, from) / l
+      //new DenseMatrix[Double](4,4,tmp.toArray)
     }
     (alpha,beta,likelihood).zipped.map((a,b,l) => f(a,b,l))
   }

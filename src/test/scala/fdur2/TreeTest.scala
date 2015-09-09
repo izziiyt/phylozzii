@@ -51,7 +51,7 @@ class TreeTest extends FunSuite {
       val cols = List(Array[Base](Base.A), Array[Base](Base.C), Array[Base](Base.G))
       val root = Tree.inout(tree, Model(param), cols)
       val l = root.toList
-      l.foreach{z => for(i <- 0 to 3) assert(doubleEqual(sum(z.trans(i,::).t),1.0))}
+      l.foreach{z => for(i <- 0 to 3) assert(doubleEqual(sum(z.trans(::,i)),1.0))}
       (l,Seq(1.0, 2.0, 3.0, 4.0, 0.0)).zipped.foreach((x,y) => assert(x.t == y))
       l.foreach{z => z.post.foreach(p => assert(doubleEqual(sum(p), 1.0)))}
       assert(root.toList.map(_.alpha.head) == List(

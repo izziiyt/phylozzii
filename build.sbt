@@ -6,14 +6,16 @@ version := "0.1"
 
 organization := "izzii"
 
-scalaVersion := "2.11.6"
+scalaVersion := "2.10.5"
 
 libraryDependencies  ++= Seq(
-  "org.scalatest" % "scalatest_2.11" % "2.1.3" % "test",
+  "org.scalatest" % "scalatest_2.10" % "2.1.3" % "test",
   "org.scalanlp" %% "breeze" % "0.8.1",
   "org.scalanlp" %% "breeze-natives" % "0.8.1",
-  "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4",
-  "izzii" %% "biutil" % "0.1"
+  // "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4",
+   "izzii" %% "biutil" % "0.1",
+  "org.apache.spark" %% "spark-core" % "1.4.1",
+  "org.apache.spark" %% "spark-mllib" % "1.4.1"
 )
 
 resolvers ++= Seq(
@@ -24,7 +26,7 @@ resolvers ++= Seq(
 lazy val buildSettings = Seq(
   version := "0.1",
   organization := "izzii",
-  scalaVersion := "2.11.6"
+  scalaVersion := "2.10.5"
 )
 
 val app = (project in file("app")).

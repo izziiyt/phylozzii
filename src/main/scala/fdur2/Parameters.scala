@@ -2,13 +2,19 @@ package fdur2
 
 import java.io.FileReader
 
-import breeze.linalg.DenseVector
+import breeze.linalg.{sum, DenseVector}
 
 import scala.util.parsing.combinator.JavaTokenParsers
 
 sealed class Parameters(val Bvec:VD,val pi:VD){
   require(Bvec.length == 6)
   require(pi.length == 4)
+
+  def * (x:Double) = Parameters(Bvec * x,pi * x)
+  def + (that:Parameters) = Parameters(this.Bvec + that.Bvec,this.pi + that.pi)
+  def -(that:Parameters) = Parameters(this.Bvec - that.Bvec,this.pi - that.pi)
+
+  def reglize = Parameters(this.Bvec / sum(Bvec),this.pi / sum(pi))
 
   def a = Bvec(0)
   def b = Bvec(1)

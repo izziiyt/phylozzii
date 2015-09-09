@@ -1,6 +1,7 @@
 package fdur2
 
 import breeze.linalg._
+import breeze.linalg.eigSym.EigSym
 import breeze.numerics.pow
 import scala.annotation.tailrec
 
@@ -22,11 +23,11 @@ sealed trait ModelTrait {
 
 sealed class Model(param:Parameters) extends ModelTrait{
 
-  val ijList = (0 to 3).flatMap(i => (0 to 3).withFilter(j => j != i).map(j => (i,j)))
+  //val ijList = (0 to 3).flatMap(i => (0 to 3).withFilter(j => j != i).map(j => (i,j)))
 
-  protected val T: MD = diag(pow(param.pi, 0.5))
+  protected val Ti: MD = diag(pow(param.pi, 0.5))
 
-  protected val Ti: MD = diag(pow(param.pi, -0.5))
+  protected val T: MD = diag(pow(param.pi, -0.5))
 
   val pi: VD = param.pi
 
@@ -42,20 +43,22 @@ sealed class Model(param:Parameters) extends ModelTrait{
   //the (i,j) element is mutation rate i to j
   val R: MD =
     DenseMatrix(
-      (0.0                  , param.a * param.pi(1), param.b * param.pi(2), param.c * param.pi(3)),
-      (param.a * param.pi(0), 0.0                  , param.d * param.pi(2), param.e * param.pi(3)),
-      (param.b * param.pi(0), param.d * param.pi(1), 0.0                  , param.f * param.pi(3)),
-      (param.c * param.pi(0), param.e * param.pi(1), param.f * param.pi(2), 0.0                  ))
+      (0.0                  , param.a * param.pi(0), param.b * param.pi(0), param.c * param.pi(0)),
+      (param.a * param.pi(1), 0.0                  , param.d * param.pi(1), param.e * param.pi(1)),
+      (param.b * param.pi(2), param.d * param.pi(2), 0.0                  , param.f * param.pi(2)),
+      (param.c * param.pi(3), param.e * param.pi(3), param.f * param.pi(3), 0.0                  ))
 
-  for(i <- 0 to 3){R(i,i) = 0.0 - sum(R(i, ::).t)}
+  for(i <- 0 to 3){R(i,i) = 0.0 - sum(R(::, i))}
 
   for(i <- 0 to 3){B(i,i) = R(i,i) / pi(i)}
 
   protected val tmp: MD = T * R * Ti
+  //protected val tmp: MD = T * R * Ti
   for(i <- 0 to 2; j <- i+1 to 3){tmp(j, i) = tmp(i, j)}
-  val (lambda: VD, eVecs: MD) = eigSym(tmp)
+  val EigSym(lambda: VD, eVecs: MD) = eigSym(tmp)
 
   //R == u * diag(lambda) * ui
+
   val u: MD = Ti * eVecs
 
   val ui: MD = inv(u)
@@ -68,14 +71,16 @@ sealed class Model(param:Parameters) extends ModelTrait{
   }
 
   protected def newPi(Ns:DenseMatrix[Double],Td:DenseVector[Double],ns:DenseVector[Double]) = {
-    val u = List.tabulate(4)(i => ns(i) + sum(Ns(::,i)) - Ns(i,i))
-    val v = List.tabulate(4)(i => (0 to 3).foldLeft(0.0)((x,j) => if(i != j) x + B(j,i) * Td(j) else x))
+    val u = List.tabulate(4)(i => ns(i) + sum(Ns(i,::).t) - Ns(i,i))
+    val v = List.tabulate(4)(i => (0 to 3).foldLeft(0.0)((x,j) => if(i != j) x + B(i,j) * Td(j) else x))
     calcNewParameter(u,v)
   }
 
   protected def newB(Ns:DenseMatrix[Double],Td:DenseVector[Double]) = {
     val u = for(i <- 0 to 2;j <- i+1 to 3) yield Ns(i,j) + Ns(j,i)
     val v = for(i <- 0 to 2;j <- i+1 to 3) yield pi(j) * Td(i) + pi(i) * Td(j)
+    require(u.length == 6)
+    require(v.length == 6)
     calcNewParameter(u.toList,v.toList)
   }
 
@@ -97,7 +102,7 @@ sealed class Model(param:Parameters) extends ModelTrait{
     val mom = (u,v).zipped.foldLeft(0.0){case (x,(i,j)) => x + i / pow(j + l,2.0)}
     val newL = l + boy / mom
     if(newL.isNaN) sys.error("overfitting error")
-    else if(doubleEqual(l,newL,1.0E-10) || loop > 9) newL
+    else if(doubleEqual(l,newL,1.0E-10) || loop > 9) {println(loop);newL}
     else newtonRaphson(newL,u,v,loop + 1)
   }
 }
