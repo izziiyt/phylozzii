@@ -3,6 +3,7 @@ package fdur
 import java.io.FileReader
 
 import breeze.linalg.{sum, DenseVector}
+import breeze.numerics.exp
 
 import scala.util.parsing.combinator.JavaTokenParsers
 
@@ -28,6 +29,14 @@ sealed class Parameters(val Bvec:VD,val pi:VD){
 
 object Parameters extends ParameterParser{
   def apply(Bvec:VD,pi:VD) = new Parameters(Bvec,pi)
+
+  def apply(v:VD) = {
+    require(v.length == 10)
+    val b = exp(v(0 to 5)) / sum(exp(v(0 to 5)))
+    val pi = exp(v(6 to 9)) / sum(exp(v(6 to 9)))
+    new Parameters(b,pi)
+  }
+
   def fromFile(fin:String):Parameters = {
     val reader = new FileReader(fin)
     val tmp = parseAll(parameters,reader).get

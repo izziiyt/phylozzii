@@ -30,7 +30,7 @@ class EMTest extends FunSuite {
     val pi = Array(0.25469972246441502,0.2452686122063337,0.24531127848266232,0.25472038684658888)
     val b =	Array(0.81053441227174539,2.4236183781739533,0.65677131469221517,0.88544145555567511,2.4233580444379776,0.8106412600752263)
     var tree = ModelTree.fromFile(nhf)
-    val cols = Maf.readMaf(maf,1000).toParArray
+    val cols = Maf.readMaf(maf,1000)//.toParArray
     var param = Parameters(DenseVector(b), DenseVector(pi))
 
     val lglw = new PrintWriter("target/log/ll.txt")
@@ -62,35 +62,6 @@ class EMTest extends FunSuite {
     println(myparam)
     println(mytree)
   }*/
-  test("gradientdescent"){
-
-
-    def gd(i : Int,nhf:String,maf:String) = {
-      val pi = Array(0.25469972246441502,0.2452686122063337,0.24531127848266232,0.25472038684658888)
-      val b =	Array(0.81053441227174539,2.4236183781739533,0.65677131469221517,0.88544145555567511,2.4233580444379776,0.8106412600752263)
-      var tree = ModelTree.fromFile(nhf)
-      val cols = Maf.readMaf(maf,1000).toParArray
-      var param = Parameters(DenseVector(b), DenseVector(pi))
-      val lambda = 8.0
-      for(j <- 10 to i){
-        val model = Model(param)
-        val hoge = cols.map(EM.gradMap(tree,_,model)).toArray
-        val (lgl,br,pr) = EM.gradReduce(hoge,param,tree.branches,1 / j.toDouble)
-        tree = tree.changeBranches(br)
-        param = pr.reglize
-        println(tree)
-        println(param)
-      }
-      (tree,param)
-    }
-
-    for(i <- 1 to 1) {
-      val (x, y) = gd(i * 100, nh, maf)
-      println(x)
-      println(y)
-    }
-
-  }
   /*test("fdurResult1"){
     val myparam = Parameters(DenseVector(0.10521890348056277, 0.3086523214043375, 0.0725113057608077,
       0.12186528238712246, 0.2908629992154906, 0.1008891877516788),

@@ -34,20 +34,22 @@ object EM {
     (pi,b,br,likelihood)
   }
 
-  def gradReduce(grads:Array[(VD,MD,List[Double],Double)],param:Parameters,branch:List[Double],alpha:Double)
-  : (Double,List[Double],Parameters) = {
-    val (pi,b,br,lgl):(VD,MD,List[Double],Double) = grads.reduce {
-      (x,y) =>
+  def gradReduce(grads:Array[(VD,MD,List[Double],Double)],breg:VD,pireg:VD)
+  : (Double,VD) = {
+    val (pi, b, br, lgl): (VD, MD, List[Double], Double) = grads.reduce {
+      (x, y) =>
         val n1 = x._1 + y._1
         val n2 = x._2 + y._2
-        val n3 = (x._3,y._3).zipped.map(_ + _)
+        val n3 = (x._3, y._3).zipped.map(_ + _)
         val n4 = x._4 + y._4
-        (n1,n2,n3,n4)
+        (n1, n2, n3, n4)
     }
-    println(lgl)
-    val barray = {for(i <- 0 to 2;j <- i+1 to 3) yield b(i,j)}.toArray
-    (lgl,(branch,br).zipped.map((x,y) => x + alpha*y),param + (Parameters(DenseVector[Double](barray),pi) * alpha))
+    val barray = {
+      for (i <- 0 to 2; j <- i + 1 to 3) yield b(i, j)
+    }.toArray
+    val newb = (DenseVector(barray) :/ breg).toArray
+    val newpi = (pi :/ pireg).toArray
+    val newbr = br.toArray
+    (-lgl, DenseVector[Double](newb ++ (newpi ++ newbr)))
   }
-
-
 }

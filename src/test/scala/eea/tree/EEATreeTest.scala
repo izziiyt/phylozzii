@@ -1,4 +1,4 @@
-package eea.tree
+/*package eea.tree
 
 import alignment.Base._
 import breeze.linalg.{DenseMatrix, DenseVector}
@@ -98,3 +98,4 @@ class TreeTest extends FunSuite {
     t.transProbD = DenseMatrix((1.0,0.0,0.0,0.0),(0.0,1.0,0.0,0.0),(0.0,0.0,1.0,0.0),(0.0,0.0,0.0,1.0))
   }
 }
+*/

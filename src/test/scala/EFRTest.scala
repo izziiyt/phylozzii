@@ -1,4 +1,4 @@
-import java.io.PrintWriter
+/*import java.io.PrintWriter
 
 import alignment.{AminoAcid, Base}
 import org.scalatest.FunSuite
@@ -42,3 +42,4 @@ class EFRTest extends FunSuite {
     assert((Array() zip result1).forall{case (x,y) => x == y})
   }*/
 }
+*/
