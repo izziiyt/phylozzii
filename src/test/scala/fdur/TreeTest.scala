@@ -37,14 +37,14 @@ class TreeTest extends FunSuite {
       assert(s.branches == List(2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0))
     }
     {
-      val t = ModelTree.fromFile("src/test/resources/fdur2/fdur.nh")
+      val t = ModelTree.fromFile("src/test/resources/fdur/fdur.nh")
       val br = t.branches
       val newt = t.changeBranches(br)
       val newbr = newt.branches
       (br,newbr).zipped.foreach((x,y) => assert(x == y))
     }
   }
-  test("Tree") {
+  /*test("Tree") {
     {
       val tree = ModelTree.fromString("((a:1.0,b:2.0):3.0,c:4.0);")
       val param = Parameters(DenseVector[Double](0.1, 0.2, 0.3, 0.4, 0.5, 0.6), DenseVector[Double](0.1, 0.2, 0.3, 0.4))
@@ -67,7 +67,7 @@ class TreeTest extends FunSuite {
         DenseVector(0.0022801564576843923, 0.0010913025073152848, 0.0014234186008417078, 0.0021427729072982207),
         DenseVector(0.1, 0.2, 0.3, 0.4)))
     }
-  }
+  }*/
   test("densevector"){
     val x = new DenseMatrix[Int](2,2,Array(3,4,5,6))
     assert(x(0,0) == 3)
@@ -78,6 +78,11 @@ class TreeTest extends FunSuite {
     assert(y(0) == 3)
     assert(y(1) == 6)
     assert(Array.tabulate(3)(i => i*2) sameElements Array(0,2,4))
+    val a = DenseVector[Int](1,2)
+    val b = DenseVector[Int](3,4)
+    assert(DenseMatrix.vertcat(a.asDenseMatrix, b.asDenseMatrix) == new DenseMatrix[Int](2,2,Array(1,3,2,4)))
+    //assert(DenseMatrix.vertcat(a,b) == DenseMatrix(2,2,Array(1,2,3,4)))
+    assert(DenseVector.vertcat(a,b) == DenseVector[Int](1,2,3,4))
   }
   test("diffTest") {
     val gen: Random = new Random()

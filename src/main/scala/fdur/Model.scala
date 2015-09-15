@@ -21,7 +21,7 @@ sealed trait ModelTrait {
   def b: Seq[Double]
 }
 
-sealed class Model(param:Parameters) extends ModelTrait{
+sealed class Model(param:Parameters) extends ModelTrait {
 
   //val ijList = (0 to 3).flatMap(i => (0 to 3).withFilter(j => j != i).map(j => (i,j)))
 
@@ -38,7 +38,7 @@ sealed class Model(param:Parameters) extends ModelTrait{
       (param.b, param.d, 0.0    , param.f),
       (param.c, param.e, param.f, 0.0    ))
 
-  val b:Seq[Double] = for(i <- 0 to 2; j<-i+1 to 3) yield B(i, j)
+  val b: Seq[Double] = for(i <- 0 to 2; j<-i+1 to 3) yield B(i, j)
 
   //the (i,j) element is mutation rate i to j
   val R: MD =
@@ -98,11 +98,11 @@ sealed class Model(param:Parameters) extends ModelTrait{
 
   @tailrec
   private def newtonRaphson(l:Double,u:List[Double],v:List[Double],loop:Int = 0):Double = {
-    val boy = (u,v).zipped.foldLeft(0.0){case (x,(i,j)) => x + i / (j + l)} - 1.0
-    val mom = (u,v).zipped.foldLeft(0.0){case (x,(i,j)) => x + i / pow(j + l,2.0)}
+    val boy = (u, v).zipped.foldLeft(0.0){case (x, (i, j)) => x + i / (j + l)} - 1.0
+    val mom = (u, v).zipped.foldLeft(0.0){case (x, (i, j)) => x + i / pow(j + l, 2.0)}
     val newL = l + boy / mom
     if(newL.isNaN) sys.error("overfitting error")
-    else if(doubleEqual(l,newL,1.0E-10) || loop > 9) {println(loop);newL}
+    else if(doubleEqual(l, newL, 1.0E-10) || loop > 9) newL
     else newtonRaphson(newL,u,v,loop + 1)
   }
 }

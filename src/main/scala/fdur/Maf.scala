@@ -10,7 +10,6 @@ object Maf {
     val it = MafUnitIterator.fromMSA(mf)
     val totalunit = it.reduceLeft{(n,u) => n + u}
     val bases = totalunit.seqs
-    println(totalunit.lengthes)
     val tmp = div(bases,per)
     tmp
   }
