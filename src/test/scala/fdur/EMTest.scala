@@ -24,7 +24,7 @@ class EMTest extends FunSuite {
     println(param)
     println(tree)
   }*/
-  def em(i : Int,nhf:String,maf:String):(Parameters,ModelRoot)={
+  /*def em(i : Int,nhf:String,maf:String):(Parameters,ModelRoot)={
     //val pi = Array(0.22, 0.28, 0.23, 0.27)
     //val b = Array(0.15, 0.25, 0.1, 0.13, 0.07, 0.3)
     val pi = Array(0.25469972246441502,0.2452686122063337,0.24531127848266232,0.25472038684658888)
@@ -54,7 +54,7 @@ class EMTest extends FunSuite {
     bw.close()
     piw.close()
     (param,tree)
-  }
+  }*/
   val nh = "src/test/resources/fdur2/small.nh"
   val maf = "src/test/resources/fdur2/tmp.maf"
   /*test("small"){

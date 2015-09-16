@@ -1,0 +1,6 @@
+##maf version=1 scoring=zero
+a score=0.000000
+s hg18.seq0 0 20 + 20 CAGTGGCGTACGTCAGACTA
+s panTro2 0   20 + 20 GTGCTAATAGCTCGATCGCT 
+s gorGor1 0   20 + 20 CCGATAGCCGGATAGTTCGA
+

@@ -11,11 +11,26 @@ import breeze.plot._
 
 class BFGSTest extends FunSuite with LazyLogging {
   val nh = "src/test/resources/fdur/small.nh"
-  val maf = "src/test/resources/fdur/small.maf"
+  val maf = "src/test/resources/fdur/test.maf"
+  val pi = DenseVector(0.25469972246441502, 0.2452686122063337, 0.24531127848266232, 0.25472038684658888)
+  val b = DenseVector(0.81053441227174539, 2.4236183781739533, 0.65677131469221517,
+                      0.88544145555567511, 2.4233580444379776, 0.8106412600752263)
+
   test("graddescent") {
-    val cols = Maf.readMaf(maf, 100)
+    val (brnch,param) = exe(1000,nh,maf,pi,b)
+    println(param)
+    println(brnch)
+  }
+
+  test("EM") {
+    val (brnch,param) =EM.exe(100,nh,maf,pi,b)
+    println(param)
+    println(brnch)
+  }
+
+  def exe(maxit:Int,nh:String,maf:String,pi:DenseVector[Double],b:DenseVector[Double]) = {
+    val cols = Maf.readMaf(maf, 1000).toParArray
     val template = ModelTree.fromFile(nh)
-    //val plog = ParamLog(template.branches.length)
 
     val f = new DiffFunction[VD] {
       def calculate(p: VD) = {
@@ -26,26 +41,17 @@ class BFGSTest extends FunSuite with LazyLogging {
         val diffs = cols.map(EM.gradMap(tree, _, model))
         val (regb, regpi) = mkreg(param)
         val (nlgl, newp) = EM.gradReduce(diffs, regb, regpi)
-      //  plog.append(nlgl,newp)
         (nlgl,newp)
       }
     }
 
-    val lbfgs = new LBFGS[VD](maxIter = 1000, m = 3)
-    val iniparam = DenseVector.ones[Double](10 + template.branches.length)
+    val lbfgs = new LBFGS[VD](maxIter = maxit, m = 3)
+    val iniparam = DenseVector.vertcat(b,pi,DenseVector(template.branches.toArray))
+      //DenseVector.ones[Double](10 + template.branches.length)
     val optparam = lbfgs.minimize(f, iniparam)
     val param = Parameters(optparam(0 to 9))
     val brnch = optparam(10 until optparam.length).toArray.toList
-    val (rbr, rpa) = EM.regularize(brnch,param)
-    println(rpa)
-    println(rbr)
-    //plog.show
-  }
-
-  test("EM") {
-    val (brnch,param) =EM.exe(100,nh,maf)
-    println(param)
-    println(brnch)
+    EM.regularize(brnch,param)
   }
 
   protected def mkreg(p: Parameters) = {
@@ -97,9 +103,6 @@ class BFGSTest extends FunSuite with LazyLogging {
       val p = f.subplot(0)
       val x = DenseVector(Array.range(0,n).map(_.toDouble))
       for(i <- xs.indices){p += plot(x, DenseVector(xs(i).toArray))}
-      if(out.endsWith("pi.png")){
-        xs.foreach{y => y.foreach(x => print(x + " ")) ;println}
-      }
       p.xlabel = xlab
       p.ylabel = ylab
       f.saveas(out)

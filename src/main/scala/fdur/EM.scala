@@ -4,15 +4,16 @@ import alignment.Base
 import breeze.linalg.DenseVector
 import com.typesafe.scalalogging.LazyLogging
 
+import scala.collection.parallel.mutable.ParArray
+
 object EM extends LazyLogging {
   type Column = Array[Base]
 
-  def exe(itemax: Int, nhf: String, maf: String): (List[Double], Parameters) = {
-    val pi = Array(0.25469972246441502, 0.2452686122063337, 0.24531127848266232, 0.25472038684658888)
-    val b = Array(0.81053441227174539, 2.4236183781739533, 0.65677131469221517, 0.88544145555567511, 2.4233580444379776, 0.8106412600752263)
+  def exe(itemax: Int, nhf: String, maf: String, pi:DenseVector[Double], b:DenseVector[Double]): (List[Double], Parameters) = {
+
     var tree = ModelTree.fromFile(nhf)
-    val cols = Maf.readMaf(maf, 1000)
-    var param = Parameters(DenseVector(b), DenseVector(pi))
+    val cols = Maf.readMaf(maf, 1000).toParArray
+    var param = Parameters(b, pi)
     var i = 0
     var check = true
     var currentlgl:Double = Double.NegativeInfinity
@@ -37,7 +38,7 @@ object EM extends LazyLogging {
 
   def estep(pr:ModelRoot,cols:List[Column],model:Model): (VD,List[MD],List[VD],Double,Int) = Tree.suffStat(pr,model,cols)
 
-  def mstep(suffs: Array[(VD, List[MD], List[VD], Double, Int)],model:Model, branches:List[Double]):
+  def mstep(suffs: ParArray[(VD, List[MD], List[VD], Double, Int)],model:Model, branches:List[Double]):
   (Double, List[Double], Parameters) = {
     val (rootns, ns, fd, lgl, n):(VD, List[MD], List[VD], Double, Int) = suffs.reduce
     {
@@ -62,7 +63,7 @@ object EM extends LazyLogging {
     (pi,b,br,likelihood)
   }
 
-  def gradReduce(grads:Array[(VD,MD,List[Double],Double)],breg:MD,pireg:MD)
+  def gradReduce(grads:ParArray[(VD,MD,List[Double],Double)],breg:MD,pireg:MD)
   : (Double,VD) = {
     val (pi, b, br, lgl): (VD, MD, List[Double], Double) = grads.reduce {
       (x, y) =>
