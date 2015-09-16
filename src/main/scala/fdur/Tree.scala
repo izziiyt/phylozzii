@@ -137,6 +137,7 @@ trait Child extends Tree with PrimitiveChild{
 
   lazy val r:Array[MD] = (postNs, postFd).zipped.map { (ns, fd) => ns - (model.R * diag(fd) * t)}
 
+  //def ldt:Array[Double] = r map {x => sum(x) / t}
   def ldt:Array[Double] = r map {x => (sum(x) - trace(x)) / t}
 
   def ldb:Array[MD] = r map { x => (x + x.t) :/ model.B}

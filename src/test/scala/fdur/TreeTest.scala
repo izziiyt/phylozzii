@@ -86,23 +86,26 @@ class TreeTest extends FunSuite {
   }
   test("diffTest") {
     val gen: Random = new Random()
-    val templateBranch: List[(Double, Int)] = List(0.3, 0.4, 0.6, 0.5).zipWithIndex
-    val templateTree = ModelTree.fromString("((a:0.3,b:0.4):0.6,c:0.5);")
+    //val templateBranch: List[(Double, Int)] = List(0.3, 0.4, 0.5).zipWithIndex
+    val templateBranch: List[(Double, Int)] = List(0.3, 0.4, 0.6, 0.5, 0.6, 0.7, 0.1).zipWithIndex
+    //val templateTree = ModelTree.fromString("(a:0.3,b:0.4,c:0.5);")
+    val templateTree = ModelTree.fromString("((a:0.3,b:0.4):0.6,(c:0.5,d:0.6):0.7,e:0.1);")
     val pi = Array(0.22, 0.28, 0.23, 0.27)
     val b = Array(0.15, 0.25, 0.1, 0.13, 0.07, 0.3)
     val param = Parameters(DenseVector(b), DenseVector(pi))
-    val cols = List(Array[Base](Base.A), Array[Base](Base.N), Array[Base](Base.G))
+    val cols = List(Array[Base](Base.N), Array[Base](Base.N),Array[Base](Base.N), Array[Base](Base.N),Array[Base](Base.N))
+    //val cols = List(Array[Base](Base.A), Array[Base](Base.A),Array[Base](Base.C), Array[Base](Base.A),Array[Base](Base.C))
     val root = Tree.inout(templateTree, Model(param), cols)
-    for (_ <- 0 until 10) {
-      val h = gen.nextDouble() / 1000.0
-      for (j <- 0 to 3) {
+    for (_ <- 0 until 100) {
+      val h = gen.nextDouble() / 10000.0
+      for (j <- templateBranch.indices) {
         val tree1 = templateTree.changeBranches(templateBranch.map { case (x, i) => if (i == j) x + h else x })
         val tree2 = templateTree.changeBranches(templateBranch.map { case (x, i) => if (i == j) x - h else x })
         val root1 = Tree.inout(tree1, Model(param), cols)
         val root2 = Tree.inout(tree2, Model(param), cols)
         val diffCal = (root1.loglikelihood, root2.loglikelihood).zipped.map((x, y) => (x - y) / (2.0 * h))
         //(root.diffWithT(j), diffCal).zipped.foreach((x,y) => println("branches length : " + x + " " + y))
-        (root.diffWithT(j), diffCal).zipped.foreach((x,y) => assert(doubleEqual(x, y, 1.0E-5)))
+        (root.diffWithT(j), diffCal).zipped.foreach{(x,y) => assert(doubleEqual(x, y, 1.0E-4))}
       }
       for (j <- 0 to 3) {
         val pi1 = pi.zipWithIndex.map{case (x,i) => if(i == j) x + h else x}
@@ -124,8 +127,8 @@ class TreeTest extends FunSuite {
         val root1 = Tree.inout(templateTree, Model(param1), cols)
         val root2 = Tree.inout(templateTree, Model(param2), cols)
         val diffCal = (root1.loglikelihood, root2.loglikelihood).zipped.map((x, y) => (x - y) / (2.0 * h))
-        (root.diffWithB, diffCal).zipped.foreach((x,y) => assert(doubleEqual(x(s,t), y, 1.0E-4)))
         //(root.diffWithB, diffCal).zipped.foreach((x,y) => println("rate : " + x(s,t) + " " + y))
+        (root.diffWithB, diffCal).zipped.foreach((x,y) => assert(doubleEqual(x(s,t), y, 1.0E-4)))
         j += 1
       }
     }

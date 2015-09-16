@@ -1,17 +1,17 @@
 package fdur
 
 import alignment.Base
-import breeze.linalg.DenseVector
+import breeze.linalg.{diag, DenseMatrix, DenseVector}
+import breeze.optimize.{LBFGS, DiffFunction}
 import com.typesafe.scalalogging.LazyLogging
 
 import scala.collection.parallel.mutable.ParArray
 
-object EM extends LazyLogging {
+object Optimizer extends LazyLogging {
   type Column = Array[Base]
 
-  def exe(itemax: Int, nhf: String, maf: String, pi:DenseVector[Double], b:DenseVector[Double]): (List[Double], Parameters) = {
-
-    var tree = ModelTree.fromFile(nhf)
+  def em(itemax: Int, nhf: String, maf: String, pi:DenseVector[Double], b:DenseVector[Double]): (List[Double], Parameters) = {
+    var tree = ModelTree.fromFile(nhf).changeBranches(List(0.003928551508325047, 0.0033438605859147587, 0.007793480956865828))
     val cols = Maf.readMaf(maf, 1000).toParArray
     var param = Parameters(b, pi)
     var i = 0
@@ -19,22 +19,62 @@ object EM extends LazyLogging {
     var currentlgl:Double = Double.NegativeInfinity
     while(i < itemax && check) {
       val model = Model(param)
-      val suffs = cols.map(EM.estep(tree, _, model))
-      val (lgl, br, pr) = EM.mstep(suffs, model, tree.branches)
+      val suffs = cols.map(estep(tree, _, model))
+      val (lgl, br, pr) = mstep(suffs, model, tree.branches)
       tree = tree.changeBranches(br)
       param = pr
       check = !doubleEqual(currentlgl,lgl)
+      /*if(currentlgl > lgl) {
+        logger.error("log likelihood decreased.")
+        check = false
+      }*/
       currentlgl = lgl
       i += 1
+      //if(i % 1000 == 0)
+      println(lgl)
       //logger.info(mkLog(lgl,tree,param))
     }
-    logger.info("\n" + "optimized_log_likelihood=" + currentlgl + "\n" + "iteration=" + i + "\n")
+    logger.info("optimized_log_likelihood=" + currentlgl + " iteration=" + i)
     regularize(tree.branches, param)
+  }
+
+  def gd(maxit:Int,nh:String,maf:String,pi:DenseVector[Double],b:DenseVector[Double]) = {
+    val cols = Maf.readMaf(maf, 1000).toParArray
+    val template = ModelTree.fromFile(nh)
+
+    val f = new DiffFunction[VD] {
+      def calculate(p: VD) = {
+        val param = Parameters(p(0 to 9))
+        val branch = p(10 until p.length).toArray.toList
+        val tree = template.changeBranches(branch)
+        val model = Model(param)
+        val diffs = cols.map(gradMap(tree, _, model))
+        val (regb, regpi) = mkreg(param)
+        val (nlgl, newp) = gradReduce(diffs, regb, regpi)
+        (nlgl,newp)
+      }
+    }
+
+    val lbfgs = new LBFGS[VD](maxIter = maxit, m = 3)
+    val iniparam = DenseVector.vertcat(b,pi,DenseVector(template.branches.toArray))
+    //DenseVector.ones[Double](10 + template.branches.length)
+    val optparam = lbfgs.minimize(f, iniparam)
+    val param = Parameters(optparam(0 to 9))
+    val brnch = optparam(10 until optparam.length).toArray.toList
+    regularize(brnch,param)
+  }
+
+  protected def mkreg(p: Parameters) = {
+    val pitmp = DenseMatrix.vertcat(p.pi.asDenseMatrix,p.pi.asDenseMatrix,p.pi.asDenseMatrix,p.pi.asDenseMatrix)
+    val pi = diag(p.pi) * (DenseMatrix.eye[Double](4) - pitmp)
+    val btmp = DenseMatrix.vertcat(p.Bvec.asDenseMatrix, p.Bvec.asDenseMatrix,
+      p.Bvec.asDenseMatrix, p.Bvec.asDenseMatrix, p.Bvec.asDenseMatrix, p.Bvec.asDenseMatrix)
+    val b = diag(p.Bvec) * (DenseMatrix.eye[Double](6) - btmp)
+    (b, pi)
   }
 
   protected def mkLog(lgl: Double, tree: ModelRoot, param: Parameters):String =
     "\n" + "loglikelihood=" + lgl + "\n" + tree.toString + "\n" + "pi=" + param.pi + "\n" + "b=" + param.Bvec
-
 
   def estep(pr:ModelRoot,cols:List[Column],model:Model): (VD,List[MD],List[VD],Double,Int) = Tree.suffStat(pr,model,cols)
 
@@ -51,9 +91,11 @@ object EM extends LazyLogging {
         (ns, Ns, Fd, l, i)
     }
     val nd = n.toDouble
+    //val nd = 1.0
     val (br, pr) = model.mstep(rootns / nd, ns.map(_ / nd), fd.map(_ / nd), branches)
     (lgl, br, pr)
   }
+
   def gradMap(pr:ModelRoot,cols:List[Array[Base]],model:Model): (VD,MD,List[Double],Double) = {
     val tree = Tree.inout(pr,model,cols)
     val pi = tree.diffWithPi.reduceLeft(_ + _)

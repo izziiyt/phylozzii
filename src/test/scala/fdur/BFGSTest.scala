@@ -10,60 +10,31 @@ import scala.collection.mutable.ArrayBuffer
 import breeze.plot._
 
 class BFGSTest extends FunSuite with LazyLogging {
-  val nh = "src/test/resources/fdur/small.nh"
-  val maf = "src/test/resources/fdur/test.maf"
-  val pi = DenseVector(0.25469972246441502, 0.2452686122063337, 0.24531127848266232, 0.25472038684658888)
+  val nh = "src/test/resources/fdur/fdur.nh"
+  val maf = "src/test/resources/fdur/fdur.maf"
+  /*val pi = DenseVector(0.25469972246441502, 0.2452686122063337, 0.24531127848266232, 0.25472038684658888)
   val b = DenseVector(0.81053441227174539, 2.4236183781739533, 0.65677131469221517,
                       0.88544145555567511, 2.4233580444379776, 0.8106412600752263)
-
+*/
+  val pi = DenseVector(0.23137857635453807, 0.28408070157281884, 0.27729375318455474, 0.20724696888808836)
+  val b = DenseVector(0.6586096484894902, 2.329377965568423, 0.8207872557873153, 0.9101830004835019, 2.7967009808428305, 0.5488972207907554)
   test("graddescent") {
-    val (brnch,param) = exe(1000,nh,maf,pi,b)
+    val (brnch,param) = Optimizer.gd(1000,nh,maf,pi,b)
     println(param)
     println(brnch)
+    val m = Model(param)
+    println(m.R)
   }
 
-  test("EM") {
-    val (brnch,param) =EM.exe(100,nh,maf,pi,b)
+  /*test("EM") {
+    val (brnch,param) = Optimizer.em(10000,nh,maf,pi,b)
     println(param)
     println(brnch)
-  }
+    val m = Model(param)
+    println(m.R)
+  }*/
 
-  def exe(maxit:Int,nh:String,maf:String,pi:DenseVector[Double],b:DenseVector[Double]) = {
-    val cols = Maf.readMaf(maf, 1000).toParArray
-    val template = ModelTree.fromFile(nh)
-
-    val f = new DiffFunction[VD] {
-      def calculate(p: VD) = {
-        val param = Parameters(p(0 to 9))
-        val branch = p(10 until p.length).toArray.toList
-        val tree = template.changeBranches(branch)
-        val model = Model(param)
-        val diffs = cols.map(EM.gradMap(tree, _, model))
-        val (regb, regpi) = mkreg(param)
-        val (nlgl, newp) = EM.gradReduce(diffs, regb, regpi)
-        (nlgl,newp)
-      }
-    }
-
-    val lbfgs = new LBFGS[VD](maxIter = maxit, m = 3)
-    val iniparam = DenseVector.vertcat(b,pi,DenseVector(template.branches.toArray))
-      //DenseVector.ones[Double](10 + template.branches.length)
-    val optparam = lbfgs.minimize(f, iniparam)
-    val param = Parameters(optparam(0 to 9))
-    val brnch = optparam(10 until optparam.length).toArray.toList
-    EM.regularize(brnch,param)
-  }
-
-  protected def mkreg(p: Parameters) = {
-    val pitmp = DenseMatrix.vertcat(p.pi.asDenseMatrix,p.pi.asDenseMatrix,p.pi.asDenseMatrix,p.pi.asDenseMatrix)
-    val pi = diag(p.pi) * (DenseMatrix.eye[Double](4) - pitmp)
-    val btmp = DenseMatrix.vertcat(p.Bvec.asDenseMatrix, p.Bvec.asDenseMatrix,
-      p.Bvec.asDenseMatrix, p.Bvec.asDenseMatrix, p.Bvec.asDenseMatrix, p.Bvec.asDenseMatrix)
-    val b = diag(p.Bvec) * (DenseMatrix.eye[Double](6) - btmp)
-    (b, pi)
-  }
-
-  class ParamLog(val lgl:ArrayBuffer[Double],val b:Array[ArrayBuffer[Double]],
+/*  class ParamLog(val lgl:ArrayBuffer[Double],val b:Array[ArrayBuffer[Double]],
                  val pi:Array[ArrayBuffer[Double]],val brnch:Array[ArrayBuffer[Double]]){
     protected def append(lglx:Double,bx:VD,pix:VD,brnchx:Array[Double]){
       lgl += lglx
@@ -117,5 +88,6 @@ class BFGSTest extends FunSuite with LazyLogging {
         Array.fill(n)(ArrayBuffer[Double]()))
     }
   }
+  */
 }
 

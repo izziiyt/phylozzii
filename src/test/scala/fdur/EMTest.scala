@@ -55,7 +55,7 @@ class EMTest extends FunSuite {
     piw.close()
     (param,tree)
   }*/
-  val nh = "src/test/resources/fdur2/small.nh"
+  val nh = "src/test/resources/fdur2/hoge3.nh"
   val maf = "src/test/resources/fdur2/tmp.maf"
   /*test("small"){
     val (myparam,mytree) = em(1,nh,maf)
@@ -94,7 +94,7 @@ class EMTest extends FunSuite {
     //println(kiryutree.changeBranches(tmp.toList).leafList.map(_.t))
   }*/
   /*test("fdurResult") {
-    val (myparam,mytree) = em(100,"src/test/resources/fdur2/hoge.txt","src/test/resources/fdur2/hoge.maf")
+    val (myparam,mytree) = em(100,"src/test/resources/fdur2/hoge8.nh","src/test/resources/fdur2/hoge.maf")
     //val kiryupi = Array(0.26375328143435972,0.24618387560234775,0.2405650529813031,0.24949778998198935)
     val kiryupi = Array(0.26515358196840971,0.24912782250152404,0.23943170926734045,0.24628688626272591)
     val kiryub = Array(0.79921966694319446,2.5198921296626606,0.59491464482039957,0.86606680133162484,2.4225727926754299,0.81527070154074543)
