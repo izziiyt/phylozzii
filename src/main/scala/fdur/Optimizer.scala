@@ -11,7 +11,7 @@ object Optimizer extends LazyLogging {
   type Column = Array[Base]
 
   def em(itemax: Int, nhf: String, maf: String, pi:DenseVector[Double], b:DenseVector[Double]): (List[Double], Parameters) = {
-    var tree = ModelTree.fromFile(nhf).changeBranches(List(0.003928551508325047, 0.0033438605859147587, 0.007793480956865828))
+    var tree = ModelTree.fromFile(nhf)
     val cols = Maf.readMaf(maf, 1000).toParArray
     var param = Parameters(b, pi)
     var i = 0
@@ -24,15 +24,12 @@ object Optimizer extends LazyLogging {
       tree = tree.changeBranches(br)
       param = pr
       check = !doubleEqual(currentlgl,lgl)
-      /*if(currentlgl > lgl) {
+      if(i > 1 && currentlgl > lgl) {
         logger.error("log likelihood decreased.")
         check = false
-      }*/
+      }
       currentlgl = lgl
       i += 1
-      //if(i % 1000 == 0)
-      println(lgl)
-      //logger.info(mkLog(lgl,tree,param))
     }
     logger.info("optimized_log_likelihood=" + currentlgl + " iteration=" + i)
     regularize(tree.branches, param)
@@ -57,7 +54,6 @@ object Optimizer extends LazyLogging {
 
     val lbfgs = new LBFGS[VD](maxIter = maxit, m = 3)
     val iniparam = DenseVector.vertcat(b,pi,DenseVector(template.branches.toArray))
-    //DenseVector.ones[Double](10 + template.branches.length)
     val optparam = lbfgs.minimize(f, iniparam)
     val param = Parameters(optparam(0 to 9))
     val brnch = optparam(10 until optparam.length).toArray.toList
@@ -91,7 +87,6 @@ object Optimizer extends LazyLogging {
         (ns, Ns, Fd, l, i)
     }
     val nd = n.toDouble
-    //val nd = 1.0
     val (br, pr) = model.mstep(rootns / nd, ns.map(_ / nd), fd.map(_ / nd), branches)
     (lgl, br, pr)
   }

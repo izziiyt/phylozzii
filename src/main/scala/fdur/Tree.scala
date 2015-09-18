@@ -14,8 +14,6 @@ trait Tree extends PrimitiveTree{
   def model: Model
   lazy val insideProp: Array[VD] = {
     require(alpha.nonEmpty)
-    //def f(a:VD) = Array.tabulate(4){trans(_,::) * a}
-    //alpha map {a => DenseVector(f(a))}
     alpha.map(a => trans.t * a)
   }
   def toList: List[Tree]
@@ -86,8 +84,6 @@ object Tree extends TreeUtilTrait {
 
   protected def outsideProp(beta:Array[VD],trans:MD): Array[VD] = {
     require(beta.nonEmpty)
-    //def f(b:VD) = Array.tabulate(4){trans(_,::) * b}
-    //beta.map(b => DenseVector(f(b)))
     beta.map(b => trans * b)
   }
 
@@ -137,7 +133,6 @@ trait Child extends Tree with PrimitiveChild{
 
   lazy val r:Array[MD] = (postNs, postFd).zipped.map { (ns, fd) => ns - (model.R * diag(fd) * t)}
 
-  //def ldt:Array[Double] = r map {x => sum(x) / t}
   def ldt:Array[Double] = r map {x => (sum(x) - trace(x)) / t}
 
   def ldb:Array[MD] = r map { x => (x + x.t) :/ model.B}
@@ -254,8 +249,6 @@ trait TreeUtilTrait {
       val p = DenseMatrix.zeros[Double](4, 4)
       for (i <- 0 to 3; j <- 0 to 3) p(i, j) = a(i) * b(j) * trans(i, j) / l
       p
-      //val tmp = for (from <- 0 to 3; to <- 0 to 3) yield a(to) * b(from) * trans(to, from) / l
-      //new DenseMatrix[Double](4,4,tmp.toArray)
     }
     (alpha,beta,likelihood).zipped.map((a,b,l) => f(a,b,l))
   }
