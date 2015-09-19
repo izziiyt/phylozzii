@@ -12,16 +12,6 @@ package object fdur {
   type VD = DenseVector[Double]
   type MD = DenseMatrix[Double]
 
-
-  def randMaf(tr:PrimitiveTree,param:Parameters,num:Int,pernum:Int) = {
-    require(num > pernum && num % pernum == 0)
-    val m = Model(param)
-    val gen = new Random(0)
-    val rootBase = Base.fromInt(gen.nextInt(4))
-
-
-  }
-
   def printExeTime[T](proc: => T,txt:String,os:OutputStream=System.out) = {
     val start = System.currentTimeMillis
     val result = proc

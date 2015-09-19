@@ -1,40 +1,42 @@
 package fdur
 
-import breeze.linalg._
-import breeze.numerics.{exp,pow}
-import breeze.optimize.{DiffFunction, LBFGS}
+import java.io.PrintWriter
 
-import org.scalatest.FunSuite
-import com.typesafe.scalalogging.LazyLogging
-import scala.collection.mutable.ArrayBuffer
+import breeze.linalg.DenseVector
+import breeze.numerics.exp
 import breeze.plot._
+import org.scalatest.FunSuite
 
-class BFGSTest extends FunSuite with LazyLogging {
-  val nh = "src/test/resources/fdur/fdur.nh"
-  val maf = "src/test/resources/fdur/fdur.maf"
-  /*val pi = DenseVector(0.25469972246441502, 0.2452686122063337, 0.24531127848266232, 0.25472038684658888)
-  val b = DenseVector(0.81053441227174539, 2.4236183781739533, 0.65677131469221517,
-                      0.88544145555567511, 2.4233580444379776, 0.8106412600752263)
-*/
-  val pi = DenseVector(0.23137857635453807, 0.28408070157281884, 0.27729375318455474, 0.20724696888808836)
-  val b = DenseVector(0.6586096484894902, 2.329377965568423, 0.8207872557873153, 0.9101830004835019, 2.7967009808428305, 0.5488972207907554)
-  /*test("graddescent") {
-    val (brnch,param) = Optimizer.gd(1000,nh,maf,pi,b)
-    println(param)
-    println(brnch)
-    val m = Model(param)
-    println(m.R)
-  }*/
-
-  test("EM") {
-    val (brnch,param) = Optimizer.em(200,nh,maf,pi,b)
-    println(param)
-    println(brnch)
-    val m = Model(param)
-    println(m.R)
+class MainTest extends FunSuite {
+  test("EM"){
+    val nh = "src/test/resources/fdur/hoge3.nh"
+    val maf = "src/test/resources/fdur/tmp.maf"
+    val pi = DenseVector(0.22, 0.28, 0.23, 0.27)
+    val b = DenseVector(0.15, 0.25, 0.1, 0.13, 0.07, 0.3)
+    val (mytree,myparam) = Optimizer.em(100,nh,maf,pi,b)
+    assert(myparam.Bvec ==
+      DenseVector(0.9029772041124008, 1.5496457310605152, 0.2314463167603005,
+        0.4094948654450874, 3.4420722263268733, 1.1933345229954484))
+    assert(myparam.pi == DenseVector(0.2890996566317446, 0.31728853261354234, 0.14012372480288945, 0.2534880859518236))
+    assert(mytree == List(0.0323532639602465, 0.09449611080662305, 0.08804053638366899))
   }
-
-  test("fdur.nh && fdur.maf"){
+  test("GD"){
+    val nh = "src/test/resources/fdur/hoge3.nh"
+    val maf = "src/test/resources/fdur/tmp.maf"
+    val pi = DenseVector(0.22, 0.28, 0.23, 0.27)
+    val b = DenseVector(0.15, 0.25, 0.1, 0.13, 0.07, 0.3)
+    val (mytree,myparam) = Optimizer.gd(100,nh,maf,pi,b)
+    assert(myparam.Bvec ==
+      DenseVector(0.9029762997294312, 1.549650561384254, 0.23144369684167088,
+        0.4094882570762578, 3.442072933146371, 1.1933430585496245))
+    assert(myparam.pi == DenseVector(0.2890996606799597, 0.3172884960152071, 0.14012369968993485, 0.25348814361489835))
+    assert(mytree == List(0.03235334014020485, 0.094495983503355, 0.08804052160660056))
+  }
+  /*test("fdur.nh && fdur.maf"){
+    val nh = "src/test/resources/fdur/fdur.nh"
+    val maf = "src/test/resources/fdur/fdur.maf"
+    val pi = DenseVector(0.23137857635453807, 0.28408070157281884, 0.27729375318455474, 0.20724696888808836)
+    val b = DenseVector(0.6586096484894902, 2.329377965568423, 0.8207872557873153, 0.9101830004835019, 2.7967009808428305, 0.5488972207907554)
     val phyloFitpi = DenseVector(0.237118, 0.277034, 0.271539, 0.214309)
     val phyloFitlgl = -149597.338007
     val phyloFitTree = ModelTree.fromString("(((((((((((((((((hg18:0.00390535,panTro2:0.00342466):0.00174157,gorGor1:0.00608027):0.00589362,ponAbe2:0.0152518):0.00614714,rheMac2:0.0249772):0.0126814,calJac1:0.0524466):0.0427622,tarSyr1:0.0907546):0.00511376,(micMur1:0.0511858,otoGar1:0.084799):0.0331766):0.0129697,tupBel1:0.136038):0.00441703,(((((mm9:0.0428934,rn4:0.0444941):0.12316,dipOrd1:0.128492):0.0294094,cavPor3:0.131532):0.0109285,speTri1:0.124952):0.0263487,(oryCun1:0.0822679,ochPri2:0.163033):0.075949):0.0168081):0.0270982,(((vicPac1:0.0750045,(turTru1:0.0396072,bosTau4:0.064478):0.0120592):0.0212053,((equCab2:0.0629226,(felCat3:0.0586419,canFam2:0.0421736):0.0332806):0.00474687,(myoLuc1:0.106576,pteVam1:0.069563):0.025541):0.000818854):0.00742878,(eriEur1:0.161862,sorAra1:0.167363):0.0727508):0.0274296):0.0127911,(((loxAfr2:0.0568017,proCap1:0.115403):0.0165458,echTel1:0.195213):0.0441114,(dasNov2:0.0793843,choHof1:0.0735249):0.049083):0.0200907):0.144024,monDom4:0.250851):0.0607343,ornAna1:0.209931):0.0497305,((galGal3:0.067314,taeGut1:0.0411634):0.0735401,anoCar1:0.269246):0.0819697):0.0618427,xenTro2:0.220942):0.0786431,(((tetNig1:0.0831341,fr2:0.0585228):0.0908991,(gasAcu1:0.0744971,oryLat2:0.123791):0.0361884):0.16552,danRer5:0.322268):0.0784432):0.0,petMar1:0.308722);")
@@ -77,61 +79,5 @@ class BFGSTest extends FunSuite with LazyLogging {
       p.ylabel = "value"
       f.saveas("target/R.png")
     }
-  }
-/*  class ParamLog(val lgl:ArrayBuffer[Double],val b:Array[ArrayBuffer[Double]],
-                 val pi:Array[ArrayBuffer[Double]],val brnch:Array[ArrayBuffer[Double]]){
-    protected def append(lglx:Double,bx:VD,pix:VD,brnchx:Array[Double]){
-      lgl += lglx
-      (b,bx.toArray).zipped.foreach((x,y) => x += y)
-      (pi,pix.toArray).zipped.foreach((x,y) => x += y)
-      (brnch,brnchx).zipped.foreach((x,y) => x += y)
-    }
-
-    def append(lglx:Double,p:VD): Unit ={
-      val param = Parameters(p(0 to 9))
-      append(lglx, param.Bvec, param.pi, p(10 until p.length).toArray)
-    }
-
-    def show = {
-      val n = lgl.length
-      require(n == pi.head.length)
-      require(b.head.length == n)
-      require(n == brnch.head.length)
-      innerShow(pi,"target/pi.png","iteration","pi",n)
-      innerShow(b,"target/b.png","iteration","b",n)
-      innerShow(brnch,"target/brnch.png","iteration","branch_length",n)
-      lglshow
-    }
-
-    protected def lglshow = {
-      val f = Figure()
-      val p = f.subplot(0)
-      val x = DenseVector(Array.range(0,lgl.length).map(_.toDouble))
-      p += plot(x, DenseVector(lgl.toArray))
-      p.xlabel = "iteration"
-      p.ylabel = "log_likelihood"
-      f.saveas("target/lgl.png")
-    }
-
-    protected def innerShow(xs:Array[ArrayBuffer[Double]],out:String,xlab:String,ylab:String,n:Int) = {
-      val f = Figure()
-      val p = f.subplot(0)
-      val x = DenseVector(Array.range(0,n).map(_.toDouble))
-      for(i <- xs.indices){p += plot(x, DenseVector(xs(i).toArray))}
-      p.xlabel = xlab
-      p.ylabel = ylab
-      f.saveas(out)
-    }
-  }
-
-  object ParamLog{
-    def apply(n:Int) = {
-      new ParamLog(ArrayBuffer[Double](),
-        Array.fill(6)(ArrayBuffer[Double]()),
-        Array.fill(4)(ArrayBuffer[Double]()),
-        Array.fill(n)(ArrayBuffer[Double]()))
-    }
-  }
-  */
+  }*/
 }
-

@@ -44,7 +44,7 @@ class TreeTest extends FunSuite {
       (br,newbr).zipped.foreach((x,y) => assert(x == y))
     }
   }
-  /*test("Tree") {
+  test("Tree") {
     {
       val tree = ModelTree.fromString("((a:1.0,b:2.0):3.0,c:4.0);")
       val param = Parameters(DenseVector[Double](0.1, 0.2, 0.3, 0.4, 0.5, 0.6), DenseVector[Double](0.1, 0.2, 0.3, 0.4))
@@ -57,17 +57,19 @@ class TreeTest extends FunSuite {
       assert(root.toList.map(_.alpha.head) == List(
         DenseVector(1.0, 0.0, 0.0, 0.0),
         DenseVector(0.0, 1.0, 0.0, 0.0),
-        DenseVector(0.037916113737557565, 0.0061431966414293455, 0.0020895120688616793, 0.0032263653760986927),
+        DenseVector(0.037916113737557516, 0.006143196641429347, 0.0020895120688616793, 0.003226365376098689),
         DenseVector(0.0, 0.0, 1.0, 0.0),
-        DenseVector(0.003935947883108595, 0.0013438580299404868, 0.0019294855949989174, 0.0014930250881236683)))
+        DenseVector(0.003935947883108591, 0.0013438580299404874, 0.0019294855949989176, 0.0014930250881236662)
+      ))
       assert(root.toList.map(_.beta.head) == List(
-        DenseVector(0.001084463180635185, 0.03190563010964688, 0.011117852783783938, 0.015309646162751444),
-        DenseVector(0.019272492583596635, 6.407904172066742E-4, 0.0018309353265542714, 0.0030412928271287545),
-        DenseVector(0.017261744780030307, 0.049257030784122885, 0.1219976354441457, 0.11148358899170095),
-        DenseVector(0.0022801564576843923, 0.0010913025073152848, 0.0014234186008417078, 0.0021427729072982207),
-        DenseVector(0.1, 0.2, 0.3, 0.4)))
+        DenseVector(0.0010844631806351834, 0.0319056301096469, 0.011117852783783955, 0.015309646162751439),
+        DenseVector(0.019272492583596628, 6.407904172066744E-4, 0.0018309353265542714, 0.003041292827128754),
+        DenseVector(0.017261744780030307, 0.04925703078412293, 0.12199763544414578, 0.11148358899170092),
+        DenseVector(0.0022801564576843893, 0.0010913025073152846, 0.001423418600841707, 0.002142772907298218),
+        DenseVector(0.1, 0.2, 0.3, 0.4)
+      ))
     }
-  }*/
+  }
   test("densevector"){
     val x = new DenseMatrix[Int](2,2,Array(3,4,5,6))
     assert(x(0,0) == 3)
@@ -81,7 +83,6 @@ class TreeTest extends FunSuite {
     val a = DenseVector[Int](1,2)
     val b = DenseVector[Int](3,4)
     assert(DenseMatrix.vertcat(a.asDenseMatrix, b.asDenseMatrix) == new DenseMatrix[Int](2,2,Array(1,3,2,4)))
-    //assert(DenseMatrix.vertcat(a,b) == DenseMatrix(2,2,Array(1,2,3,4)))
     assert(DenseVector.vertcat(a,b) == DenseVector[Int](1,2,3,4))
   }
   test("diffTest") {
