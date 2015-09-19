@@ -3,6 +3,8 @@ package util
 import breeze.linalg.{DenseVector, DenseMatrix}
 import breeze.math.LogDouble
 import breeze.math.LogDouble.doubleExtra
+import breeze.math.LogDouble.SemiringLogDouble
+import breeze.numerics.exp
 
 trait Mymatrix {
   def x = Vector[LogDouble]
@@ -43,13 +45,27 @@ class LDVector protected (val x:Vector[LogDouble]) {
   def *:(dx:DenseMatrix[Double]):LDVector = {
     require(this.length == dx.cols)
     val tmp = for(i <- 0 until dx.rows) yield
-      indices.foldLeft(new LogDouble(1.0))((n,j) => n + x(j) * dx(i,j))
-    new LDVector(tmp.toVector)
+      indices.foldLeft(SemiringLogDouble.zero)((n,j) => n + x(j) * dx(i,j))
+    LDVector(tmp.toVector)
   }
   def +(that: LDVector): LDVector = {
     require(this.length == that.length)
     val tmp = for(i <- indices) yield this.x(i) + that.x(i)
-    new LDVector(tmp.toVector)
+    LDVector(tmp.toVector)
+  }
+  def :*(that: LDVector): LDVector = {
+    require(this.length == that.length)
+    val tmp = for(i <- indices) yield this.x(i) * that.x(i)
+    LDVector(tmp.toVector)
   }
   def toDenseVector: DenseVector[Double] = DenseVector(x.toArray.map(_.value))
+}
+
+object LDVector {
+  def zeros(n: Int) = new LDVector(Vector.fill(n)(SemiringLogDouble.zero))
+  def ones(n: Int) = LDVector(Vector.fill(n)(SemiringLogDouble.one))
+  def apply(x:Vector[LogDouble]) = new LDVector(x)
+  def apply(x:Array[LogDouble]) = LDVector(x.toVector)
+  def apply(x:Array[Double]) = LDVector(x.map(doubleExtra(_).toLogDouble))
+  def apply(x:DenseVector[Double]) = LDVector(x.toArray.map(doubleExtra(_).toLogDouble))
 }
