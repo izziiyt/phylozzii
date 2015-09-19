@@ -1,6 +1,7 @@
 import java.io.{PrintWriter, OutputStream}
 
 import breeze.linalg.{DenseMatrix, DenseVector}
+import util.{LDMatrix, LDVector}
 
 import scala.annotation.tailrec
 import scala.math._
@@ -11,6 +12,8 @@ package object fdur {
 
   type VD = DenseVector[Double]
   type MD = DenseMatrix[Double]
+  type VL = LDVector
+  type ML = LDMatrix
 
   def printExeTime[T](proc: => T,txt:String,os:OutputStream=System.out) = {
     val start = System.currentTimeMillis
