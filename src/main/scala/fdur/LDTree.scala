@@ -2,14 +2,18 @@ package fdur
 
 import breeze.linalg._
 import alignment.Base
-import breeze.math.{Semiring, LogDouble}
+import breeze.math.LogDouble
 import breeze.numerics.{log, exp}
 import util.{LDVector, LDMatrix}
+import util.LDVector._
+import breeze.math.LogDouble.doubleExtra
+import util.LDMatrix._
 import scala.annotation.tailrec
 import breeze.math.LogDouble.SemiringLogDouble
 
 trait LDTree extends PrimitiveTree{
   type NsFd = (MD,VD)
+  val LogDoubleZero = SemiringLogDouble.zero
   def alpha: Array[VL]
   def beta: Array[VL]
   def post: Array[ML]
@@ -79,7 +83,7 @@ object LDTree extends LDTreeUtilTrait {
   def outside(tr:LDRoot):LDRoot = {
     require(tr.alpha.nonEmpty)
     val n = tr.alpha.length
-    val beta = Array.fill(n)(LDVector(tr.model.pi))
+    val beta = Array.fill(n)(tr.model.pi.toLDVector)
     val fromThis = outsideProp(beta,tr.trans)
     val newch = innerOut(tr.children,Nil,Nil,fromThis,tr.likelihood)
     LDRoot(newch,tr.trans,tr.alpha,beta,mkPost(tr.alpha,beta,tr.trans,tr.likelihood),tr.model)
@@ -114,16 +118,16 @@ trait LDChild extends LDTree with PrimitiveChild{
   lazy val f: Array[Array[ML]] = {
     def l(start:Int,end:Int,from:Int,to:Int,u:Int,v:Int):LogDouble = {
       def k(x:Double,y:Double):Double = {val tmp = (exp(x) - exp(y)) / (x - y); if(tmp.isNaN) exp(x) else tmp}
-      ld(model.u(end, u)) * ld(model.ui(u, to)) * ld(model.u(from, v)) * ld(model.ui(v, start)) *
-        ld(k(t * model.lambda(u), t * model.lambda(v)))
+      model.u(end, u).toLogDouble * model.ui(u, to).toLogDouble * model.u(from, v).toLogDouble *
+        model.ui(v, start).toLogDouble * k(t * model.lambda(u), t * model.lambda(v)).toLogDouble
     }
     Array.tabulate(4){ end =>
       Array.tabulate(4){ start =>
         val tmp = for (from <- 0 to 3; to <- 0 to 3) yield {
-          (0 to 3).foldLeft(SemiringLogDouble.zero){(n,u) => n +
-            (0 to 3).foldLeft(SemiringLogDouble.zero){(m,v) => m + l(start, end, from, to, u, v)}}
+          (0 to 3).foldLeft(LogDoubleZero){(n,u) => n +
+            (0 to 3).foldLeft(LogDoubleZero){(m,v) => m + l(start, end, from, to, u, v)}}
         }
-        LDMatrix(tmp, 4, 4) / trans(end, start)
+        LDMatrix(4, 4, tmp) / trans(end, start)
       }
     }
   }
@@ -190,7 +194,7 @@ case class LDRoot(children:List[LDChild], trans:ML, alpha:Array[VL],
 
   lazy val likelihood: Array[LogDouble] = {
     require(alpha.nonEmpty)
-    alpha.map(LDVector(model.pi).t * _)
+    alpha.map(model.pi.toLDVector.t * _)
   }
 
   override def leafList = super.leafList.reverse
@@ -222,7 +226,7 @@ object LDLeaf extends LDTreeUtilTrait{
     case x =>
       val tmp = DenseVector.zeros[Double](4)
       tmp(x.toInt) = 1.0
-      LDVector(tmp)
+      tmp.toLDVector
   }
 }
 
@@ -247,14 +251,16 @@ trait LDTreeUtilTrait {
     fromChildren.reduceLeft{(ns,xs) => (ns,xs).zipped.map(_ :* _)}
   def mkBeta(fromSib:List[Array[VL]],fromPar:Array[VL]):Array[VL] =
     (mkAlpha(fromSib),fromPar).zipped.map(_ :* _)
-  def mkTrans(ti:Double,mi:Model):ML =
-    LDMatrix(mi.u * diag(exp(mi.lambda * ti)).*(mi.ui))
+  def mkTrans(ti:Double,mi:Model):ML = {
+    val tmp: DenseMatrix[Double] = mi.u * diag(exp(mi.lambda * ti)).*(mi.ui)
+    tmp.toLDMatrix
+  }
   def mkPost(alpha:Array[VL],beta:Array[VL], trans:ML,likelihood:Array[LogDouble]): Array[ML] = {
     def f(a: VL, b: VL, l:LogDouble): ML = {
       //val p:LDMatrix = LDMatrix.zeros(4, 4)
       val tmp = for (i <- 0 to 3; j <- 0 to 3) yield a(j) * b(i) * trans(j, i) / l
       //val tmp = for (i <- 0 to 3; j <- 0 to 3) yield a(i) * b(j) * trans(i, j) / l
-      LDMatrix(tmp.toVector,4,4)
+      LDMatrix(4,4,tmp.toVector)
     }
     (alpha,beta,likelihood).zipped.map((a,b,l) => f(a,b,l))
   }

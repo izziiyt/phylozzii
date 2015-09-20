@@ -23,11 +23,11 @@ package object fdur {
     writer.flush()
     result
   }
-
-  def doubleEqual(x:Double,y:Double,th:Double = 1.0E-14):Boolean = abs(x - y) < th
-
+  @deprecated
+  def doubleEqual(x:Double,y:Double,th:Double = 1.0E-14):Boolean = abs(x - y) < min(x,y) * th
+  @deprecated
   def doubleEqual(x:DenseVector[Double],y:DenseVector[Double]):Boolean = doubleEqual(x.toArray,y.toArray)
-
+  @deprecated
   def doubleEqual(x:Seq[Double],y:Seq[Double]):Boolean = (x,y).zipped.forall{(i,j) => doubleEqual(i,j)}
 
 }
