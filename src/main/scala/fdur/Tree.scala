@@ -232,7 +232,8 @@ object Node extends TreeUtilTrait{
 object Root extends TreeUtilTrait{
   def inside(ch:List[Child],m:Model,fromChildren:List[Array[VD]]) = {
     val alpha = mkAlpha(fromChildren)
-    val trans = mkTrans(0.0,m)
+    val trans = diag(DenseVector.ones[Double](4))
+    //val trans = mkTrans(0.0,m)
     new Root(ch,trans,alpha,null,null,m)
   }
 }

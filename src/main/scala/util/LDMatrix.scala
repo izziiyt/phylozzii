@@ -53,11 +53,6 @@ object LDMatrix {
   def zeros(x: Int, y: Int): LDMatrix = {
     new LDMatrix(Vector.fill(x * y)(0.0 toLogDouble),x,y)
   }
-  implicit def DenseMatrixDoubleExtra(x: DenseMatrix[Double]) = new {
-    def toLDMatrix: LDMatrix = {
-      val tmp = for(j <- 0 until x.cols;i <- 0 until x.rows) yield  x(i,j).toLogDouble
-      LDMatrix(x.rows,x.cols,tmp.toVector)
-    }
-  }
+
   val x = DenseVector.ones[LogDouble](4)
 }

@@ -1,7 +1,8 @@
 import java.io.{PrintWriter, OutputStream}
 
 import breeze.linalg.{DenseMatrix, DenseVector}
-import util.{LDMatrix, LDVector}
+import breeze.math.LogDouble
+import breeze.math.LogDouble._
 
 import scala.annotation.tailrec
 import scala.math._
@@ -12,8 +13,10 @@ package object fdur {
 
   type VD = DenseVector[Double]
   type MD = DenseMatrix[Double]
-  type VL = LDVector
-  type ML = LDMatrix
+  type VL = DenseVector[LogDouble]
+  type ML = DenseMatrix[LogDouble]
+
+  val LogDoubleZero = SemiringLogDouble.zero
 
   def printExeTime[T](proc: => T,txt:String,os:OutputStream=System.out) = {
     val start = System.currentTimeMillis
@@ -23,11 +26,22 @@ package object fdur {
     writer.flush()
     result
   }
-  @deprecated
-  def doubleEqual(x:Double,y:Double,th:Double = 1.0E-14):Boolean = abs(x - y) < min(x,y) * th
-  @deprecated
-  def doubleEqual(x:DenseVector[Double],y:DenseVector[Double]):Boolean = doubleEqual(x.toArray,y.toArray)
-  @deprecated
-  def doubleEqual(x:Seq[Double],y:Seq[Double]):Boolean = (x,y).zipped.forall{(i,j) => doubleEqual(i,j)}
 
+  implicit def DenseMatrixDoubleExtra(x: DenseMatrix[Double]) = new {
+    def toLogDouble: DenseMatrix[LogDouble] = x.map(_.toLogDouble)
+  }
+
+  implicit def DenseMatrixLogDoubleExtra(x: DenseMatrix[LogDouble]) = new {
+    def value: DenseMatrix[Double] = x.map(_.value)
+    def logValue: DenseMatrix[Double] = x.map(_.logValue)
+  }
+
+  implicit def DenseVectorDoubleExtra(x: DenseVector[Double]) = new {
+    def toLogDouble: DenseVector[LogDouble] = x.map(_.toLogDouble)
+  }
+
+  implicit def DenseVectorLogDoubleExtra(x: DenseVector[LogDouble]) = new {
+    def value: DenseVector[Double] = x.map(_.value)
+    def logValue: DenseVector[Double] = x.map(_.logValue)
+  }
 }

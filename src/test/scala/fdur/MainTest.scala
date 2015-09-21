@@ -14,11 +14,10 @@ class MainTest extends FunSuite {
     val pi = DenseVector(0.22, 0.28, 0.23, 0.27)
     val b = DenseVector(0.15, 0.25, 0.1, 0.13, 0.07, 0.3)
     val (mytree,myparam) = Optimizer.em(100,nh,maf,pi,b)
-    assert(myparam.Bvec ==
-      DenseVector(0.9029772041124008, 1.5496457310605152, 0.2314463167603005,
-        0.4094948654450874, 3.4420722263268733, 1.1933345229954484))
-    assert(myparam.pi == DenseVector(0.2890996566317446, 0.31728853261354234, 0.14012372480288945, 0.2534880859518236))
-    assert(mytree == List(0.0323532639602465, 0.09449611080662305, 0.08804053638366899))
+    assert(myparam.Bvec == DenseVector(0.9029772041124088, 1.5496457310605205, 0.23144631676029334,
+        0.4094948654450864, 3.442072226326874, 1.1933345229954473))
+    assert(myparam.pi == DenseVector(0.2890996566317448, 0.3172885326135423, 0.14012372480288943, 0.2534880859518233))
+    assert(mytree == List(0.03235326396024641, 0.09449611080662308, 0.08804053638366865))
   }
   test("GD"){
     val nh = "src/test/resources/fdur/hoge3.nh"
@@ -26,11 +25,33 @@ class MainTest extends FunSuite {
     val pi = DenseVector(0.22, 0.28, 0.23, 0.27)
     val b = DenseVector(0.15, 0.25, 0.1, 0.13, 0.07, 0.3)
     val (mytree,myparam) = Optimizer.gd(100,nh,maf,pi,b)
+    assert(myparam.Bvec == DenseVector(0.9029762997592751, 1.5496505614030591, 0.23144369683135552,
+      0.40948825705477887, 3.4420729331154045, 1.1933430585496674))
+    assert(myparam.pi == DenseVector(0.28909966067892373, 0.3172884960158941, 0.14012369968993024, 0.25348814361525196))
+    assert(mytree == List(0.03235334014042676, 0.0944959835032008, 0.0880405216067559))
+  }
+  test("LDEM"){
+    val nh = "src/test/resources/fdur/hoge3.nh"
+    val maf = "src/test/resources/fdur/tmp.maf"
+    val pi = DenseVector(0.22, 0.28, 0.23, 0.27)
+    val b = DenseVector(0.15, 0.25, 0.1, 0.13, 0.07, 0.3)
+    val (mytree,myparam) = Optimizer.ldem(100,nh,maf,pi,b)
     assert(myparam.Bvec ==
-      DenseVector(0.9029762997294312, 1.549650561384254, 0.23144369684167088,
-        0.4094882570762578, 3.442072933146371, 1.1933430585496245))
-    assert(myparam.pi == DenseVector(0.2890996606799597, 0.3172884960152071, 0.14012369968993485, 0.25348814361489835))
-    assert(mytree == List(0.03235334014020485, 0.094495983503355, 0.08804052160660056))
+      DenseVector(0.9029772041124008, 1.5496457310605152, 0.2314463167603005,
+        0.4094948654450874, 3.4420722263268733, 1.1933345229954484))
+    assert(myparam.pi == DenseVector(0.2890996566317446, 0.31728853261354234, 0.14012372480288945, 0.2534880859518236))
+    assert(mytree == List(0.0323532639602465, 0.09449611080662305, 0.08804053638366899))
+  }
+  test("LDGD"){
+    val nh = "src/test/resources/fdur/hoge3.nh"
+    val maf = "src/test/resources/fdur/tmp.maf"
+    val pi = DenseVector(0.22, 0.28, 0.23, 0.27)
+    val b = DenseVector(0.15, 0.25, 0.1, 0.13, 0.07, 0.3)
+    val (mytree,myparam) = Optimizer.ldgd(100,nh,maf,pi,b)
+    assert(myparam.Bvec == DenseVector(0.9029762997592751, 1.5496505614030591, 0.23144369683135552,
+      0.40948825705477887, 3.4420729331154045, 1.1933430585496674))
+    assert(myparam.pi == DenseVector(0.28909966067892373, 0.3172884960158941, 0.14012369968993024, 0.25348814361525196))
+    assert(mytree == List(0.03235334014042676, 0.0944959835032008, 0.0880405216067559))
   }
   /*test("fdur.nh && fdur.maf"){
     val nh = "src/test/resources/fdur/fdur.nh"

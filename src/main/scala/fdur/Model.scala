@@ -90,6 +90,8 @@ sealed class Model(param:Parameters) extends ModelTrait {
   }
 
   protected def calcNewParameter(u:List[Double],v:List[Double]):DenseVector[Double] = {
+    //println(u)
+    //println(v)
     if(u.exists(_ < 0) || u.sum <= 0) throw new Exception
     val lmd:Double = (u,v).zipped.collect{case (i,j) if i >= 0 => i - j}.max
     val nlmd = newtonRaphson(lmd,u,v)
@@ -102,7 +104,7 @@ sealed class Model(param:Parameters) extends ModelTrait {
     val mom = (u, v).zipped.foldLeft(0.0){case (x, (i, j)) => x + i / pow(j + l, 2.0)}
     val newL = l + boy / mom
     if(newL.isNaN) sys.error("overfitting error")
-    else if(doubleEqual(l, newL, 1.0E-10) || loop > 9) newL
+    else if(util.doubleEqual(l, newL, 1.0E-10) || loop > 9) newL
     else newtonRaphson(newL,u,v,loop + 1)
   }
 }

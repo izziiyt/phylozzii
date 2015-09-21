@@ -1,13 +1,13 @@
 import java.io.{File, PrintWriter, OutputStream}
 
 import alignment.Base
-import breeze.linalg.DenseVector
+import breeze.linalg.{DenseMatrix, DenseVector}
 
 import scala.io.Source
 import scala.math._
 
 package object util {
-  val EPSILON = 0.00001
+  //val EPSILON = 0.00001
   //.al file name to col alignments.
   def getAlignments(al:String):Array[Array[Base]] = {
     val source = Source.fromFile(al)
@@ -19,9 +19,11 @@ package object util {
 
   def toTSV(arg:DenseVector[Double]):String = arg.foldLeft(""){(x,i) => x + "\t" + i}.toString.tail
 
-  def doubleEqual(x:Double,y:Double,th:Double = 1.0E-5):Boolean = abs(x - y) < th
+  def doubleEqual(x:Double,y:Double,th:Double = 1.0E-14):Boolean = abs(x - y) < th
 
   def doubleEqual(x:DenseVector[Double],y:DenseVector[Double],th:Double):Boolean = doubleEqual(x.toArray,y.toArray,th)
+
+  def doubleEqual(x:DenseMatrix[Double],y:DenseMatrix[Double],th:Double):Boolean = doubleEqual(x.toArray,y.toArray,th)
 
   def doubleEqual(x:Seq[Double],y:Seq[Double],th:Double):Boolean = (x,y).zipped.forall{(i,j) => doubleEqual(i,j,th)}
 

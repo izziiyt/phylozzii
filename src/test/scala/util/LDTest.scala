@@ -1,5 +1,5 @@
 package util
-
+/*
 import breeze.linalg.{DenseMatrix, DenseVector}
 import breeze.math.LogDouble
 import breeze.math.LogDouble.doubleExtra
@@ -27,6 +27,7 @@ class LDTest extends FunSuite {
     println(ys)
     println(xs + ys)
     println(ys + zs)
+    println(DenseVector.zeros[Double](6).toLogDouble)
     //implicit def toLogDouble(xs:DenseVector[Double]): DenseVector[LogDouble] = xs.map(_.toLogDouble)
     //implicit def DenseVectorDoubleExtra(xs:DenseVector[Double]) = new {
       //def toLogDouble: DenseVector[LogDouble] = xs.map(_.toLogDouble)
@@ -35,3 +36,4 @@ class LDTest extends FunSuite {
   }
 
 }
+*/
