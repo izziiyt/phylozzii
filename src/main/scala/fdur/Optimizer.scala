@@ -4,11 +4,21 @@ import alignment.Base
 import breeze.linalg.{diag, DenseMatrix, DenseVector}
 import breeze.optimize.{LBFGS, DiffFunction}
 import com.typesafe.scalalogging.LazyLogging
+import main.{QReducer, QMapper}
 
 import scala.collection.parallel.mutable.ParArray
 
 object Optimizer extends LazyLogging {
   type Column = Array[Base]
+
+  def main(args: Array[String]): Unit ={
+    val tree = ModelTree.fromFile(args(0))
+    val cols = Maf.readMaf(args(1), 10000).toParArray
+    val param = Parameters.fromFile(args(2))
+    val (optbrnch, optparam) = ldem(args(3).toInt, tree, cols, param)
+    QReducer.writeLine(tree.changeBranches(optbrnch).toString,args(4),false)
+    QReducer.writeLine(optparam.toString,args(5),false)
+  }
 
   protected def emLike(itemax: Int, treex: ModelRoot, colsx: ParArray[List[Array[Base]]], paramx: Parameters,
              estepFunc:(ModelRoot,List[Column],Model) => (VD,List[MD],List[VD],Double,Long)): (List[Double], Parameters) = {

@@ -39,3 +39,5 @@ val app = (project in file("app")).
   )
 
 test in assembly := {}
+
+testOptions in Test := Seq(Tests.Filter(s => s.endsWith("Test")))

@@ -27,7 +27,8 @@ object QMapper {
               (ns, Ns, Fd, l, i)
           }
           EMprinter(summed, out)
-        case "gd" =>
+        case _ => Unit
+        /* case "gd" =>
           val param = Parameters.readAsGD(args(2))
           val model = Model(Parameters(DenseVector.vertcat(param,DenseVector(tree.branches.toArray))))
           val results = cols.map{c => Optimizer.ldgradMap(tree, c, model)}
@@ -43,8 +44,12 @@ object QMapper {
       }
     }finally {
       out.close()
+    }*/
+      }
     }
-
+    finally{
+      out.close()
+    }
   }
 
   protected def EMprinter(result:(VD,List[MD],List[VD],Double,Long),w:PrintWriter): Unit = {
@@ -65,60 +70,3 @@ object QMapper {
   }
 }
 
-object QReducer extends SuffStatParser{
-  def main(args:Array[String]): Unit = {
-    val files = new java.io.File(args(1)).listFiles.filter(_.getName.endsWith(".txt"))
-    val suffs = files.map(EMreader).toParArray
-    val param = Parameters.fromFile(args(2))
-    val tree = ModelTree.fromFile(args(3))
-    val (lgl, brnch, newparam) = Optimizer.mstep(suffs,Model(param), tree.branches)
-    write(newparam.toString,args(2),false)
-    write(tree.changeBranches(brnch).toString,args(3),false)
-    write(lgl.toString,args(4),true)
-  }
-
-  protected def write(x:String,f:String,bool:Boolean): Unit = {
-    val y = new PrintWriter(new FileWriter(f,bool))
-    y.println(x)
-    y.close()
-  }
-
-  protected def EMreader(x:File): (VD, List[MD], List[VD], Double, Long) = {
-    val reader = new FileReader(x)
-    parseAll(suffstat,reader).get
-  }
-}
-
-trait SuffStatParser extends JavaTokenParsers {
-  def ns: Parser[DenseVector[Double]] = "ns:"~>densevector
-
-  def doubleArray: Parser[Array[Double]] = rep(floatingPointNumber) ^^
-    {case xs => xs.map(_.toDouble).toArray}
-
-  def densevector: Parser[DenseVector[Double]] = "("~>doubleArray<~")" ^^
-    {case xs => DenseVector(xs)}
-
-  def Ns: Parser[List[DenseVector[Double]]] = "Ns:"~>rep(densevector)
-
-  def Fd: Parser[List[DenseMatrix[Double]]] = "Fd:"~>rep(densematrix(4, 4))
-
-  def densematrix(n:Int, m:Int): Parser[DenseMatrix[Double]] = "("~>doubleArray<~")" ^^
-    {case xs => new DenseMatrix[Double](n, m, xs)}
-
-  def lgl: Parser[Double] = "lgl:"~>floatingPointNumber ^^ {x => x.toDouble}
-
-  def length: Parser[Long] = "length:"~>wholeNumber ^^ {x => x.toLong}
-
-  def suffstat: Parser[(VD, List[MD], List[VD], Double, Long)] =
-    ns~Fd~Ns~lgl~length ^^ {case x~y~z~w~v => (x, y, z, w, v)}
-
-  def pi: Parser[DenseVector[Double]] = "pi:"~>densevector
-
-  def b: Parser[DenseMatrix[Double]] = "b:"~>densematrix(4, 4)
-
-  def branch: Parser[List[Double]] = "branch: ("~>rep(floatingPointNumber)<~")" ^^
-    {case xs => xs.map(_.toDouble)}
-
-  def gradient: Parser[(VD, MD, List[Double], Double)] =
-    pi~b~branch~lgl ^^ {case x~y~z~w => (x, y, z, w)}
-}
