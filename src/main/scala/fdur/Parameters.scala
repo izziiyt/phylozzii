@@ -3,8 +3,9 @@ package fdur
 import java.io.FileReader
 
 import breeze.linalg.{sum, DenseVector}
-import breeze.numerics.exp
+import breeze.numerics.{log, exp}
 
+import scala.io.Source
 import scala.util.parsing.combinator.JavaTokenParsers
 
 sealed class Parameters(val Bvec:VD,val pi:VD){
@@ -25,6 +26,15 @@ sealed class Parameters(val Bvec:VD,val pi:VD){
   def f = Bvec(5)
 
   override def toString:String = "Parameters(" + Bvec + "," + pi + ")"
+
+  def asGD: DenseVector[Double] = {
+    val tmp1 = sum(log(pi))
+    val pix = pi.map(x => (4.0 * log(x) - tmp1 + 1.0) / 4.0)
+    val tmp2 = sum(log(Bvec))
+    val bx = Bvec.map(x => (6.0 * log(x) - tmp2 + 1.0) / 6.0)
+    DenseVector.vertcat(bx,pix)
+  }
+
 }
 
 object Parameters extends ParameterParser{
@@ -35,6 +45,13 @@ object Parameters extends ParameterParser{
     val b = exp(v(0 to 5)) / sum(exp(v(0 to 5)))
     val pi = exp(v(6 to 9)) / sum(exp(v(6 to 9)))
     new Parameters(b,pi)
+  }
+
+  def readAsGD(fin: String): DenseVector[Double] = {
+    val s = Source.fromFile(fin)
+    val xs = s.getLines().reduce(_ + _).split(",").map(_.toDouble)
+    require(xs.length == 10)
+    DenseVector(xs)
   }
 
   def fromFile(fin:String):Parameters = {

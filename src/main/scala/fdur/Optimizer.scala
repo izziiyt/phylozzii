@@ -10,11 +10,11 @@ import scala.collection.parallel.mutable.ParArray
 object Optimizer extends LazyLogging {
   type Column = Array[Base]
 
-  protected def emLike(itemax: Int, nhf: String, maf: String, pi:DenseVector[Double], b:DenseVector[Double],
-             estepFunc:(ModelRoot,List[Column],Model) => (VD,List[MD],List[VD],Double,Int)): (List[Double], Parameters) = {
-    var tree = ModelTree.fromFile(nhf)
-    val cols = Maf.readMaf(maf, 1000).toParArray
-    var param = Parameters(b, pi)
+  protected def emLike(itemax: Int, treex: ModelRoot, colsx: ParArray[List[Array[Base]]], paramx: Parameters,
+             estepFunc:(ModelRoot,List[Column],Model) => (VD,List[MD],List[VD],Double,Long)): (List[Double], Parameters) = {
+    var tree = treex
+    val cols = colsx
+    var param = paramx
     var i = 0
     var converged = false
     var currentlgl = Double.NegativeInfinity
@@ -39,18 +39,16 @@ object Optimizer extends LazyLogging {
     regularize(tree.branches, param)
   }
 
+  def em(itemax: Int, treex: ModelRoot, colsx: ParArray[List[Array[Base]]], paramx: Parameters) =
+    emLike(itemax, treex, colsx, paramx, estep)
 
+  def ldem(itemax: Int, treex: ModelRoot, colsx: ParArray[List[Array[Base]]], paramx: Parameters) =
+    emLike(itemax, treex, colsx, paramx, ldestep)
 
-  def em(itemax: Int, nhf: String, maf: String, pi:DenseVector[Double], b:DenseVector[Double]) =
-    emLike(itemax,nhf,maf,pi,b,estep)
-
-  def ldem(itemax: Int, nhf: String, maf: String, pi:DenseVector[Double], b:DenseVector[Double]) =
-    emLike(itemax,nhf,maf,pi,b,ldestep)
-
-  protected def gdLike(maxit:Int,nh:String,maf:String,pi:DenseVector[Double],b:DenseVector[Double],
+  protected def gdLike(maxit:Int, template:ModelRoot, cols:ParArray[List[Array[Base]]], iniparam:DenseVector[Double],
                         mapper:(ModelRoot,List[Array[Base]],Model) => (VD,MD,List[Double],Double)) = {
-    val cols = Maf.readMaf(maf, 1000).toParArray
-    val template = ModelTree.fromFile(nh)
+    //val cols = Maf.readMaf(maf, 1000).toParArray
+    //val template = ModelTree.fromFile(nh)
 
     val f = new DiffFunction[VD] {
       def calculate(p: VD) = {
@@ -66,17 +64,19 @@ object Optimizer extends LazyLogging {
     }
 
     val lbfgs = new LBFGS[VD](maxIter = maxit, m = 3)
-    val iniparam = DenseVector.vertcat(b,pi,DenseVector(template.branches.toArray))
-    val optparam = lbfgs.minimize(f, iniparam)
+    //val iniparam = paramx
+   // val iniparam = DenseVector.vertcat(b,pi,DenseVector(template.branches.toArray))
+    val optparam = lbfgs.minimize(f, DenseVector.vertcat(iniparam,DenseVector(template.branches.toArray)))
     val param = Parameters(optparam(0 to 9))
     val brnch = optparam(10 until optparam.length).toArray.toList
     regularize(brnch,param)
   }
 
-  def ldgd(maxit:Int,nh:String,maf:String,pi:DenseVector[Double],b:DenseVector[Double]) =
-    gdLike(maxit,nh,maf,pi,b,ldgradMap)
-  def gd(maxit:Int,nh:String,maf:String,pi:DenseVector[Double],b:DenseVector[Double]) =
-    gdLike(maxit,nh,maf,pi,b,gradMap)
+  def gd(maxit:Int, template:ModelRoot, cols:ParArray[List[Array[Base]]], iniparam:DenseVector[Double]) =
+    gdLike(maxit, template, cols, iniparam, gradMap)
+
+  def ldgd(maxit:Int, template:ModelRoot, cols:ParArray[List[Array[Base]]], iniparam:DenseVector[Double]) =
+    gdLike(maxit, template, cols, iniparam, ldgradMap)
 
   protected def mkreg(p: Parameters) = {
     val pitmp = DenseMatrix.vertcat(p.pi.asDenseMatrix,p.pi.asDenseMatrix,p.pi.asDenseMatrix,p.pi.asDenseMatrix)
@@ -90,15 +90,15 @@ object Optimizer extends LazyLogging {
   //protected def mkLog(lgl: Double, tree: ModelRoot, param: Parameters):String =
   //  "\n" + "loglikelihood=" + lgl + "\n" + tree.toString + "\n" + "pi=" + param.pi + "\n" + "b=" + param.Bvec
 
-  protected def estep(pr:ModelRoot,cols:List[Column],model:Model): (VD,List[MD],List[VD],Double,Int) =
+  def estep(pr:ModelRoot,cols:List[Column],model:Model): (VD,List[MD],List[VD],Double,Long) =
     Tree.suffStat(pr,model,cols)
 
-  protected def ldestep(pr:ModelRoot,cols:List[Column],model:Model): (VD,List[MD],List[VD],Double,Int) =
+  def ldestep(pr:ModelRoot,cols:List[Column],model:Model): (VD,List[MD],List[VD],Double,Long) =
     LDTree.suffStat(pr,model,cols)
 
-  def mstep(suffs: ParArray[(VD, List[MD], List[VD], Double, Int)],model:Model, branches:List[Double]):
+  def mstep(suffs: ParArray[(VD, List[MD], List[VD], Double, Long)],model:Model, branches:List[Double]):
   (Double, List[Double], Parameters) = {
-    val (rootns, ns, fd, lgl, n):(VD, List[MD], List[VD], Double, Int) = suffs.reduce
+    val (rootns, ns, fd, lgl, n):(VD, List[MD], List[VD], Double, Long) = suffs.reduce
     {
       (m, x) =>
         val ns = m._1 + x._1
@@ -122,7 +122,7 @@ object Optimizer extends LazyLogging {
     (pi,b,br,likelihood)
   }
 
-  protected def ldgradMap(pr:ModelRoot,cols:List[Array[Base]],model:Model): (VD,MD,List[Double],Double) = {
+  def ldgradMap(pr:ModelRoot,cols:List[Array[Base]],model:Model): (VD,MD,List[Double],Double) = {
     val tree = LDTree.inout(pr,model,cols)
     val pi = tree.diffWithPi.reduceLeft(_ + _)
     val b = tree.diffWithB.reduceLeft(_ + _)
@@ -148,7 +148,7 @@ object Optimizer extends LazyLogging {
     (-lgl, -DenseVector.vertcat(bgrad,pigrad,brgrad))
   }
 
-  protected def regularize(brnc:List[Double],param:Parameters): (List[Double],Parameters) = {
+  def regularize(brnc:List[Double],param:Parameters): (List[Double],Parameters) = {
     val model = Model(param)
     val summ = - (0 to 3).foldLeft(0.0){(x,i) => x + model.pi(i) * model.R(i,i)}
     val br = brnc map (_ * summ)

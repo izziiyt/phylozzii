@@ -94,11 +94,11 @@ object Tree extends TreeUtilTrait {
     outside(afterIn)
   }
 
-  def suffStat(tr:ModelRoot,model:Model,columns:List[Array[Base]]): (VD, List[MD], List[VD], Double, Int) = {
+  def suffStat(tr:ModelRoot,model:Model,columns:List[Array[Base]]): (VD, List[MD], List[VD], Double, Long) = {
     val root = inout(tr,model,columns)
     val sufs = root.suffStats
     val lgl = root.loglikelihood.sum
-    (sufs._1,sufs._2,sufs._3,lgl, columns.head.length)
+    (sufs._1,sufs._2,sufs._3,lgl, columns.head.length.toLong)
   }
 
 }

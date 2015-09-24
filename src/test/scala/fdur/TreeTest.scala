@@ -1,7 +1,6 @@
 package fdur
 
 import breeze.linalg.{diag, sum, DenseMatrix, DenseVector}
-import breeze.numerics.abs
 import util.doubleEqual
 import org.scalatest.FunSuite
 import alignment.Base
