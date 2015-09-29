@@ -1,17 +1,32 @@
 package fdur
 
-import breeze.plot._
+import java.io.PrintWriter
+
 import org.scalatest.FunSuite
 import breeze.linalg._
 
-class Fdur extends FunSuite{
+class FdurTest extends FunSuite{
   test("fdur"){
     val nh = ModelTree.fromFile("src/test/resources/fdur/fdur.nh")
     val cols = Maf.readMaf("src/test/resources/fdur/fdur.maf",1000).toParArray
     val pi = DenseVector(0.23137857635453807, 0.28408070157281884, 0.27729375318455474, 0.20724696888808836)
-    val b = DenseVector(0.6586096484894902, 2.329377965568423, 0.8207872557873153, 0.9101830004835019, 2.7967009808428305, 0.5488972207907554)
-    val (embrnch,emparam) = Optimizer.ldem(10000, nh, cols, Parameters(b,pi))
-    val (gdbrnch,gdparam) = Optimizer.ldgd(10000, nh, cols, Parameters(b,pi).asGD)
+    val b = DenseVector(0.6586096484894902, 2.329377965568423, 0.8207872557873153,
+      0.9101830004835019, 2.7967009808428305, 0.5488972207907554)
+    //val (embrnch, emparam) = Optimizer.ldem(10000, nh, cols, Parameters(b,pi))
+    val (gdbrnch, gdparam, _) = Optimizer.ldgd(10000, nh, cols, Parameters(b,pi).asGD)
+    val brw = new PrintWriter("target/br.txt")
+    brw.println(gdbrnch.mkString(","))
+    //brw.println(embrnch.mkString(","))
+    brw.close()
+    val bw = new PrintWriter("target/b.txt")
+    bw.println(gdparam.Bvec.toArray.mkString(","))
+   // bw.println(emparam.Bvec.toArray.mkString(","))
+    bw.close()
+    val piw = new PrintWriter("target/pi.txt")
+    piw.println(gdparam.pi.toArray.mkString(","))
+   // piw.println(emparam.pi.toArray.mkString(","))
+    piw.close()
+    /*
     val f = Figure()
     val p1 = f.subplot(0)
     val x1 = linspace(gdbrnch.min, gdbrnch.max)
@@ -29,5 +44,6 @@ class Fdur extends FunSuite{
     p3 += plot(x3, x3, '-')
     p3.title = "mutation rate"
     f.saveas("target/R.png")
+    */
   }
 }

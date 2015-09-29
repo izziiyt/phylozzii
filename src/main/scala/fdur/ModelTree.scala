@@ -15,9 +15,9 @@ object ModelTree extends NHParser{
 }
 
 trait ModelChild extends PrimitiveChild{
-  def changeBranches(branches:List[Double]):(ModelChild,List[Double])
-  def leafList:List[ModelLeaf]
-
+  def changeBranches(branches:List[Double]): (ModelChild, List[Double])
+  def leafList: List[ModelLeaf]
+  def init: ModelChild
 }
 
 case class ModelRoot(children:List[ModelChild]) extends PrimitiveRoot {
@@ -36,6 +36,14 @@ case class ModelRoot(children:List[ModelChild]) extends PrimitiveRoot {
     if(newbr.nonEmpty) sys.error("BAD branches")
     ModelRoot(newch.reverse)
   }
+
+  def init: ModelRoot = {
+    require(children.length > 1)
+    children.last match {
+      case ModelLeaf(_,_) => ModelRoot(children.init)
+      case _ => ModelRoot(children.init :+ children.last.init)
+    }
+  }
 }
 
 case class ModelNode(children:List[ModelChild],t:Double) extends ModelChild with PrimitiveNode {
@@ -52,12 +60,30 @@ case class ModelNode(children:List[ModelChild],t:Double) extends ModelChild with
     val (newch,newbr) = innerChangeBranches(children, branches, Nil)
     (ModelNode(newch.reverse, newbr.head), newbr.tail)
   }
+
   def leafList:List[ModelLeaf] = children.foldLeft(Nil:List[ModelLeaf])((n,x) => x.leafList ::: n)
+
+  def init: ModelChild = {
+    val n = children.length
+    val x = children.last
+    require(n > 1)
+    x match {
+      case ModelLeaf(_,_) =>
+        if(n == 2) {
+          val ModelLeaf(name, t) = children.head
+          ModelLeaf(name,  t + this.t)
+        }
+        else ModelNode(children.init, this.t)
+      case _ =>
+        ModelNode(children.init :+ x.init, this.t)
+    }
+  }
 }
 
 case class ModelLeaf(name:String,t:Double) extends ModelChild with PrimitiveLeaf {
   def leafList = this :: Nil
   def changeBranches(branches:List[Double]) = (ModelLeaf(name,branches.head),branches.tail)
+  def init = null
 }
 
 trait NHParser extends JavaTokenParsers {

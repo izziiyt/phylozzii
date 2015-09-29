@@ -1,18 +1,16 @@
 package fdur
 
-import java.io.PrintWriter
+import java.io.{FileWriter, PrintWriter}
 
-import breeze.linalg.DenseVector
-import breeze.numerics.exp
-import breeze.plot._
+import breeze.linalg._
 import org.scalatest.FunSuite
-
+import breeze.plot._
 class MainTest extends FunSuite {
   val nh = ModelTree.fromFile("src/test/resources/fdur/hoge3.nh")
-  val cols = Maf.readMaf("src/test/resources/fdur/tmp.maf",1000).toParArray
+  val cols = Maf.readMaf("src/test/resources/fdur/test3.maf",1000).toParArray
   val param = Parameters.fromFile("src/test/resources/fdur/testparam.txt")
   val gdparam = param.asGD
-  test("EM"){
+  /*test("EM"){
     val (mytree,myparam) = Optimizer.em(100,nh,cols,param)
     assert(myparam.Bvec == DenseVector(0.9029772041124088, 1.5496457310605205, 0.23144631676029334,
         0.4094948654450864, 3.442072226326874, 1.1933345229954473))
@@ -40,12 +38,88 @@ class MainTest extends FunSuite {
       0.40948825707277103, 3.4420729331524753, 1.1933430585618146))
     assert(myparam.pi == DenseVector(0.28909966068047344, 0.31728849601494175, 0.1401236996899247, 0.25348814361466004))
     assert(mytree == List(0.032353340140169724, 0.09449598350320525, 0.088040521606799))
+  }*/
+  test("EM and GD ver 3") {
+    var nhx = nh
+    var colsx = cols
+    val pi = DenseVector(0.2890996566317448, 0.3172885326135423, 0.14012372480288943, 0.2534880859518233)
+    val br = List(0.03235326396024641, 0.09449611080662308, 0.08804053638366865)
+    val b = DenseVector(0.9029762997592751, 1.5496505614030591, 0.23144369683135552,
+      0.40948825705477887, 3.4420729331154045, 1.1933430585496674)
+    for (i <- 0 to 90) {
+      nhx = nhx.init
+      colsx = colsx.map(_.init)
+      val n = 100 - i
+      val (emtree, empara, emlgl, emit) = Optimizer.em(10000, nhx, colsx, param)
+      val (gdtree, gdpara, gdlgl) = Optimizer.gd(10000, nhx, colsx, gdparam)
+      val (ldemtree, ldempara, ldemlgl, ldemit) = Optimizer.ldem(10000, nhx, colsx, param)
+      val (ldgdtree, ldgdpara, ldgdlgl) = Optimizer.ldgd(10000, nhx, colsx, gdparam)
+      val emR = Model(empara).R
+      val ldemR = Model(ldempara).R
+      val gdR = Model(gdpara).R
+      val ldgdR = Model(ldgdpara).R
+      val wr = new PrintWriter("target/" + n + "r.txt")
+      wr.println(emR.toArray.mkString(","))
+      wr.println(ldemR.toArray.mkString(","))
+      wr.println(gdR.toArray.mkString(","))
+      wr.println(ldgdR.toArray.mkString(","))
+      wr.close()
+      val wb = new PrintWriter("target/" + n + "b.txt")
+      wb.println(emtree.mkString(","))
+      wb.println(ldemtree.mkString(","))
+      wb.println(gdtree.mkString(","))
+      wb.println(ldgdtree.mkString(","))
+      wb.close()
+      val w = new PrintWriter(new FileWriter("target/lgl.txt", true))
+      w.println(Array(emlgl, ldemlgl, gdlgl, ldgdlgl).mkString(","))
+      w.close()
+      val wx = new PrintWriter(new FileWriter("target/iteration.txt", true))
+      wx.println(Array(emit, ldemit).mkString(","))
+      wx.close()
+      /*val phytree = ModelTree.fromString("(hg18:0.00392848,panTro2:0.00334377,gorGor1:0.00779322);")
+      val phyR = DenseMatrix((-0.996772, 0.185242, 0.642592, 0.168938),
+        (0.153957, -0.989008, 0.253607, 0.581444),
+        (0.541859, 0.257307, -0.912752, 0.113585),
+        (0.191254, 0.792014, 0.152495, -1.135764))
+
+      val f = Figure()
+      val p = f.subplot(0)
+      val x = DenseVector(Array.range(0, br.length).map(_.toDouble))
+      p += plot(x, DenseVector(emtree.toArray), '+')
+      p += plot(x, DenseVector(ldemtree.toArray), '+')
+      p += plot(x, DenseVector(gdtree.toArray), '.')
+      p += plot(x, DenseVector(ldgdtree.toArray), '.')
+      p.xlabel = "branch index"
+      p.ylabel = "value"
+      val p2 = f.subplot(2, 1, 1)
+      val x2 = DenseVector(Array.range(0, 16).map(_.toDouble))
+      p2 += plot(x2, emR.toDenseVector, '+')
+      p2 += plot(x2, ldemR.toDenseVector, '+')
+      p2 += plot(x2, gdR.toDenseVector, '.')
+      p2 += plot(x2, ldgdR.toDenseVector, '.')
+      p2.xlabel = "R index"
+      p2.ylabel = "value"
+      f.saveas("target/" + n + ".png")
+      */
+    }
   }
-  /*test("fdur.nh && fdur.maf"){
+    /*test("em&gd"){
+    val cols = Maf.readMaf("src/test/resources/fdur/hoge33.maf",1000).toParArray
+    val nh = ModelTree.fromFile("src/test/resources/fdur/hoge33.nh")
+    val (emtree, empara) = Optimizer.em(1000,nh,cols,param)
+    val (gdtree, gdpara) = Optimizer.gd(1000,nh,cols,gdparam)
+    println(emtree)
+    println(gdtree)
+    println(empara)
+    println(gdpara)
+  }*/
+    /*test("fdur.nh && fdur.maf"){
     val nh = "src/test/resources/fdur/fdur.nh"
     val maf = "src/test/resources/fdur/fdur.maf"
+    val oribranch = ModelTree.fromFile(nh).branches
     val pi = DenseVector(0.23137857635453807, 0.28408070157281884, 0.27729375318455474, 0.20724696888808836)
     val b = DenseVector(0.6586096484894902, 2.329377965568423, 0.8207872557873153, 0.9101830004835019, 2.7967009808428305, 0.5488972207907554)
+    val oriR = Model(Parameters(b, pi)).R
     val phyloFitpi = DenseVector(0.237118, 0.277034, 0.271539, 0.214309)
     val phyloFitlgl = -149597.338007
     val phyloFitTree = ModelTree.fromString("(((((((((((((((((hg18:0.00390535,panTro2:0.00342466):0.00174157,gorGor1:0.00608027):0.00589362,ponAbe2:0.0152518):0.00614714,rheMac2:0.0249772):0.0126814,calJac1:0.0524466):0.0427622,tarSyr1:0.0907546):0.00511376,(micMur1:0.0511858,otoGar1:0.084799):0.0331766):0.0129697,tupBel1:0.136038):0.00441703,(((((mm9:0.0428934,rn4:0.0444941):0.12316,dipOrd1:0.128492):0.0294094,cavPor3:0.131532):0.0109285,speTri1:0.124952):0.0263487,(oryCun1:0.0822679,ochPri2:0.163033):0.075949):0.0168081):0.0270982,(((vicPac1:0.0750045,(turTru1:0.0396072,bosTau4:0.064478):0.0120592):0.0212053,((equCab2:0.0629226,(felCat3:0.0586419,canFam2:0.0421736):0.0332806):0.00474687,(myoLuc1:0.106576,pteVam1:0.069563):0.025541):0.000818854):0.00742878,(eriEur1:0.161862,sorAra1:0.167363):0.0727508):0.0274296):0.0127911,(((loxAfr2:0.0568017,proCap1:0.115403):0.0165458,echTel1:0.195213):0.0441114,(dasNov2:0.0793843,choHof1:0.0735249):0.049083):0.0200907):0.144024,monDom4:0.250851):0.0607343,ornAna1:0.209931):0.0497305,((galGal3:0.067314,taeGut1:0.0411634):0.0735401,anoCar1:0.269246):0.0819697):0.0618427,xenTro2:0.220942):0.0786431,(((tetNig1:0.0831341,fr2:0.0585228):0.0908991,(gasAcu1:0.0744971,oryLat2:0.123791):0.0361884):0.16552,danRer5:0.322268):0.0784432):0.0,petMar1:0.308722);")
@@ -64,13 +138,19 @@ class MainTest extends FunSuite {
     val mygdb = DenseVector(0.8218480994470997, 2.4734862876176154, 0.5886328833574198, 0.9203858222621918, 2.369021383304364, 0.849783999333609)
     val mygdlgl = -149323.0
     val mygdR = Model(Parameters(mygdb,mygdpi)).R
+    val myemb = DenseVector(0.7608472067973289,2.433610689993851,0.7840960915959433,0.9693614006454003,2.3944863913228236,0.662809299721435)
+    val myempi = DenseVector(0.26432304646605526,0.2433199353270187,0.24644828250110523,0.24590873570582075)
+    val myembranch = List(0.0024971645045018154,0.0030960759749493836,0.0011561235630533238,0.006409396005541419,0.005725154623896445,0.01742591929115939,0.008033741045478238,0.02116076305065678,0.01646849061428318,0.03731203113167523,0.03147682797333345,0.03714065227889885,0.016686448855499213,0.0346911198191995,0.03698601400259656,0.031136460656350187,0.019897108676683168,0.05564543757502381,0.017088978438151374,0.03325462063696049,0.03343904508266521,0.05549885677646793,0.05652026696921148,0.03456175168655953,0.05613174867497574,0.023314619696174946,0.055100727917543814,0.028982247138199167,0.03773405291503097,0.06343989073033295,0.04722052370139487,0.02314361142159547,0.0320668241910488,0.03534636719531201,0.03142038324080207,0.03974317412908475,0.01573412063789342,0.02053374124487472,0.03986235735862709,0.027694443317770635,0.030306688692921958,0.0279162329742367,0.009782324014672515,0.05024968779360031,0.04232031563533193,0.028157415881727918,1.725945744040376E-4,0.01801385700283274,0.06129993282244382,0.05290211901471176,0.049686305304805084,0.027708829248446493,0.02643990259275256,0.03401254305770241,0.055113252494523,0.029127864127436388,0.06606171155962644,0.035511895088144736,0.04085920772521921,0.034008539538628965,0.03612233266630682,0.026518201765534908,0.055731413553638004,0.06861729440550023,0.04245833124845213,0.06267548128032471,0.02818642669649333,0.026727487887545073,0.021493372420722953,0.03069165870417591,0.05476438842665361,0.030654371912971295,0.025957631547442,0.04991598546581199,0.026617312231787038,0.02359260964542909,0.021419756566283817,0.022203825637387174,0.024360230138132294,0.031163869401524307,0.016206541500240985,0.027480337800276432,0.044304751737811905,0.028379167814424087,0.03973850307755768,0.03965734245280561)
+    val myemR = Model(Parameters(myemb, myempi)).R
     val x = {
       val f = Figure()
       val p = f.subplot(0)
       val x = DenseVector(Array.range(0, phyloFitbrnch.length).map(_.toDouble))
-      p += plot(x, DenseVector(phyloFitbrnch.toArray), '-')
+      p += plot(x, DenseVector(oribranch.toArray), '-')
+      p += plot(x, DenseVector(phyloFitbrnch.toArray), '.')
       p += plot(x, DenseVector(krybrnch.toArray), '.')
-      p += plot(x, DenseVector(mygdbrnch.toArray), '+')
+      p += plot(x, DenseVector(mygdbrnch.toArray), '.')
+      p += plot(x, DenseVector(myembranch.toArray), '.')
       p.xlabel = "branch index"
       p.ylabel = "value"
       f.saveas("target/brnch.png")
@@ -81,9 +161,11 @@ class MainTest extends FunSuite {
       val x = DenseVector(Array.range(0, 16).map(_.toDouble))
       println(phyloR.toDenseVector)
       println(phyloR.toDenseVector.length)
-      p += plot(x, phyloR.toDenseVector, '-')
-      p += plot(x, kryR.toDenseVector, '.')
-      p += plot(x, mygdR.toDenseVector, '+')
+      p += plot(x, oriR.toDenseVector, '-', name="original")
+      p += plot(x, phyloR.toDenseVector, '.', name="original")
+      p += plot(x, kryR.toDenseVector, '.', name="original")
+      p += plot(x, mygdR.toDenseVector, '.', name="original")
+      p += plot(x, myemR.toDenseVector, '.', name="original")
       p.xlabel = "R matrix index"
       p.ylabel = "value"
       f.saveas("target/R.png")

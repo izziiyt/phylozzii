@@ -11,17 +11,18 @@ import scala.collection.parallel.mutable.ParArray
 object Optimizer extends LazyLogging {
   type Column = Array[Base]
 
-  def main(args: Array[String]): Unit ={
+  def main(args: Array[String]): Unit = {
     val tree = ModelTree.fromFile(args(0))
     val cols = Maf.readMaf(args(1), 10000).toParArray
     val param = Parameters.fromFile(args(2))
-    val (optbrnch, optparam) = ldem(args(3).toInt, tree, cols, param)
+    val (optbrnch, optparam, _, _) = ldem(args(3).toInt, tree, cols, param)
     QReducer.writeLine(tree.changeBranches(optbrnch).toString,args(4),false)
     QReducer.writeLine(optparam.toString,args(5),false)
   }
 
   protected def emLike(itemax: Int, treex: ModelRoot, colsx: ParArray[List[Array[Base]]], paramx: Parameters,
-             estepFunc:(ModelRoot,List[Column],Model) => (VD,List[MD],List[VD],Double,Long)): (List[Double], Parameters) = {
+             estepFunc:(ModelRoot,List[Column],Model) => (VD,List[MD],List[VD],Double,Long)):
+  (List[Double], Parameters, Double, Int) = {
     var tree = treex
     val cols = colsx
     var param = paramx
@@ -33,9 +34,9 @@ object Optimizer extends LazyLogging {
       val suffs = cols.map(estepFunc(tree, _, model))
       val (lgl, br, pr) = mstep(suffs, model, tree.branches)
       converged =
-        util.doubleEqual(br,tree.branches,1.0E-8) &&
-        util.doubleEqual(pr.pi,param.pi,1.0E-8) &&
-        util.doubleEqual(pr.Bvec,param.Bvec,1.0E-8)
+        util.doubleEqual(br,tree.branches,1.0E-7) &&
+        util.doubleEqual(pr.pi,param.pi,1.0E-5) &&
+        util.doubleEqual(pr.Bvec,param.Bvec,1.0E-5)
       tree = tree.changeBranches(br)
       param = pr
       if(i > 1 && currentlgl > lgl) {
@@ -46,7 +47,8 @@ object Optimizer extends LazyLogging {
       i += 1
     }
     logger.info("optimized_log_likelihood=" + currentlgl + " iteration=" + i)
-    regularize(tree.branches, param)
+    val tmp = regularize(tree.branches, param)
+    (tmp._1, tmp._2, currentlgl, i)
   }
 
   def em(itemax: Int, treex: ModelRoot, colsx: ParArray[List[Array[Base]]], paramx: Parameters) =
@@ -56,7 +58,8 @@ object Optimizer extends LazyLogging {
     emLike(itemax, treex, colsx, paramx, ldestep)
 
   protected def gdLike(maxit:Int, template:ModelRoot, cols:ParArray[List[Array[Base]]], iniparam:DenseVector[Double],
-                        mapper:(ModelRoot,List[Array[Base]],Model) => (VD,MD,List[Double],Double)) = {
+                        mapper:(ModelRoot,List[Array[Base]],Model) => (VD,MD,List[Double],Double)):
+  (List[Double], Parameters, Double) = {
     //val cols = Maf.readMaf(maf, 1000).toParArray
     //val template = ModelTree.fromFile(nh)
 
@@ -74,12 +77,12 @@ object Optimizer extends LazyLogging {
     }
 
     val lbfgs = new LBFGS[VD](maxIter = maxit, m = 3)
-    //val iniparam = paramx
-   // val iniparam = DenseVector.vertcat(b,pi,DenseVector(template.branches.toArray))
     val optparam = lbfgs.minimize(f, DenseVector.vertcat(iniparam,DenseVector(template.branches.toArray)))
+    val lgl = f.valueAt(optparam)
     val param = Parameters(optparam(0 to 9))
     val brnch = optparam(10 until optparam.length).toArray.toList
-    regularize(brnch,param)
+    val tmp = regularize(brnch,param)
+    (tmp._1, tmp._2, -lgl)
   }
 
   def gd(maxit:Int, template:ModelRoot, cols:ParArray[List[Array[Base]]], iniparam:DenseVector[Double]) =
