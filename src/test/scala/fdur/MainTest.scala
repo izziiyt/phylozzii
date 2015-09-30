@@ -6,8 +6,8 @@ import breeze.linalg._
 import org.scalatest.FunSuite
 import breeze.plot._
 class MainTest extends FunSuite {
-  val nh = ModelTree.fromFile("src/test/resources/fdur/hoge3.nh")
-  val cols = Maf.readMaf("src/test/resources/fdur/test3.maf",1000).toParArray
+  val nh = ModelTree.fromFile("src/test/resources/fdur/fdur.nh")
+  val cols = Maf.readMaf("src/test/resources/fdur/fdur.maf",1000).toParArray
   val param = Parameters.fromFile("src/test/resources/fdur/testparam.txt")
   val gdparam = param.asGD
   /*test("EM"){
@@ -42,40 +42,44 @@ class MainTest extends FunSuite {
   test("EM and GD ver 3") {
     var nhx = nh
     var colsx = cols
-    val pi = DenseVector(0.2890996566317448, 0.3172885326135423, 0.14012372480288943, 0.2534880859518233)
-    val br = List(0.03235326396024641, 0.09449611080662308, 0.08804053638366865)
-    val b = DenseVector(0.9029762997592751, 1.5496505614030591, 0.23144369683135552,
-      0.40948825705477887, 3.4420729331154045, 1.1933430585496674)
-    for (i <- 0 to 90) {
+    println(nh.leafList.length)
+    println(colsx.head.length)
+    //val pi = DenseVector(0.2890996566317448, 0.3172885326135423, 0.14012372480288943, 0.2534880859518233)
+    //val br = List(0.03235326396024641, 0.09449611080662308, 0.08804053638366865)
+    //val b = DenseVector(0.9029762997592751, 1.5496505614030591, 0.23144369683135552,
+    //  0.40948825705477887, 3.4420729331154045, 1.1933430585496674)
+    val m = nhx.leafLength
+    for (i <- m until 10 by -1) {
       nhx = nhx.init
-      colsx = colsx.map(_.init)
-      val n = 100 - i
-      val (emtree, empara, emlgl, emit) = Optimizer.em(10000, nhx, colsx, param)
-      val (gdtree, gdpara, gdlgl) = Optimizer.gd(10000, nhx, colsx, gdparam)
-      val (ldemtree, ldempara, ldemlgl, ldemit) = Optimizer.ldem(10000, nhx, colsx, param)
-      val (ldgdtree, ldgdpara, ldgdlgl) = Optimizer.ldgd(10000, nhx, colsx, gdparam)
-      val emR = Model(empara).R
-      val ldemR = Model(ldempara).R
-      val gdR = Model(gdpara).R
-      val ldgdR = Model(ldgdpara).R
-      val wr = new PrintWriter("target/" + n + "r.txt")
-      wr.println(emR.toArray.mkString(","))
-      wr.println(ldemR.toArray.mkString(","))
-      wr.println(gdR.toArray.mkString(","))
-      wr.println(ldgdR.toArray.mkString(","))
-      wr.close()
-      val wb = new PrintWriter("target/" + n + "b.txt")
-      wb.println(emtree.mkString(","))
-      wb.println(ldemtree.mkString(","))
-      wb.println(gdtree.mkString(","))
-      wb.println(ldgdtree.mkString(","))
-      wb.close()
-      val w = new PrintWriter(new FileWriter("target/lgl.txt", true))
-      w.println(Array(emlgl, ldemlgl, gdlgl, ldgdlgl).mkString(","))
-      w.close()
-      val wx = new PrintWriter(new FileWriter("target/iteration.txt", true))
-      wx.println(Array(emit, ldemit).mkString(","))
-      wx.close()
+      colsx = colsx.map(x => x.init)
+      if(i > 10 && i < 12) {
+        val (emtree, empara, emlgl, emit) = Optimizer.em(5, nhx, colsx, param)
+        val (gdtree, gdpara, gdlgl) = Optimizer.gd(5, nhx, colsx, gdparam)
+        //val (ldemtree, ldempara, ldemlgl, ldemit) = Optimizer.ldem(10000, nhx, colsx, param)
+        //val (ldgdtree, ldgdpara, ldgdlgl) = Optimizer.ldgd(10000, nhx, colsx, gdparam)
+        val emR = Model(empara).R
+        //val ldemR = Model(ldempara).R
+        val gdR = Model(gdpara).R
+        //val ldgdR = Model(ldgdpara).R
+        val wr = new PrintWriter("target/" + i + "r.txt")
+        wr.println(emR.toArray.mkString(","))
+        //wr.println(ldemR.toArray.mkString(","))
+        wr.println(gdR.toArray.mkString(","))
+        //wr.println(ldgdR.toArray.mkString(","))
+        wr.close()
+        val wb = new PrintWriter("target/" + i + "b.txt")
+        wb.println(emtree.mkString(","))
+        //wb.println(ldemtree.mkString(","))
+        wb.println(gdtree.mkString(","))
+        //wb.println(ldgdtree.mkString(","))
+        wb.close()
+        val w = new PrintWriter(new FileWriter("target/lgl.txt", true))
+        //w.println(Array(emlgl, ldemlgl, gdlgl, ldgdlgl).mkString(","))
+        w.close()
+        val wx = new PrintWriter(new FileWriter("target/iteration.txt", true))
+        //wx.println(Array(emit, ldemit).mkString(","))
+        wx.close()
+      }
       /*val phytree = ModelTree.fromString("(hg18:0.00392848,panTro2:0.00334377,gorGor1:0.00779322);")
       val phyR = DenseMatrix((-0.996772, 0.185242, 0.642592, 0.168938),
         (0.153957, -0.989008, 0.253607, 0.581444),
@@ -103,7 +107,7 @@ class MainTest extends FunSuite {
       */
     }
   }
-    /*test("em&gd"){
+  /*test("em&gd"){
     val cols = Maf.readMaf("src/test/resources/fdur/hoge33.maf",1000).toParArray
     val nh = ModelTree.fromFile("src/test/resources/fdur/hoge33.nh")
     val (emtree, empara) = Optimizer.em(1000,nh,cols,param)

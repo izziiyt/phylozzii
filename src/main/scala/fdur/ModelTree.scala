@@ -39,9 +39,18 @@ case class ModelRoot(children:List[ModelChild]) extends PrimitiveRoot {
 
   def init: ModelRoot = {
     require(children.length > 1)
-    children.last match {
-      case ModelLeaf(_,_) => ModelRoot(children.init)
-      case _ => ModelRoot(children.init :+ children.last.init)
+    val x = children.last
+    x match {
+      case ModelLeaf(_,_) =>
+        if(children.length == 2) children.head match {
+          case ModelLeaf(_, _) =>
+            sys.error("SingleLeafTreeError")
+            null
+          case ModelNode(ch, _) =>
+            ModelRoot(children)
+        }
+        else ModelRoot(children.init)
+      case _ => ModelRoot(children.init :+ x.init)
     }
   }
 }
@@ -70,12 +79,14 @@ case class ModelNode(children:List[ModelChild],t:Double) extends ModelChild with
     x match {
       case ModelLeaf(_,_) =>
         if(n == 2) {
-          val ModelLeaf(name, t) = children.head
-          ModelLeaf(name,  t + this.t)
+          val y = children.head
+          y match {
+            case ModelLeaf(name, tx) => ModelLeaf(name, tx + this.t)
+            case ModelNode(ch, tx) => ModelNode(ch, tx + this.t)
+          }
         }
         else ModelNode(children.init, this.t)
-      case _ =>
-        ModelNode(children.init :+ x.init, this.t)
+      case _ => ModelNode(children.init :+ x.init, this.t)
     }
   }
 }
@@ -83,7 +94,10 @@ case class ModelNode(children:List[ModelChild],t:Double) extends ModelChild with
 case class ModelLeaf(name:String,t:Double) extends ModelChild with PrimitiveLeaf {
   def leafList = this :: Nil
   def changeBranches(branches:List[Double]) = (ModelLeaf(name,branches.head),branches.tail)
-  def init = null
+  def init = {
+    sys.error("LeafInitCalledError")
+    null
+  }
 }
 
 trait NHParser extends JavaTokenParsers {
