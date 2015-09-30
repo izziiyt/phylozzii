@@ -6159,3 +6159,747 @@
 11:35:39.837 TKD [pool-6-thread-4-ScalaTest-running-MainTest] ERROR b.optimize.StrongWolfeLineSearch - Encountered bad values in function evaluation. Decreasing step size to 0.25
 11:35:43.208 TKD [pool-6-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.2500
 11:35:43.209 TKD [pool-6-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 34392.9 (rel: 0.00278) 2549.00
+14:33:28.236 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  fdur.Optimizer$ - optimized_log_likelihood=-262.56426106867326 iteration=23
+14:33:28.542 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.0004427
+14:33:28.543 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 281.725 (rel: 0.228) 22.5850
+14:33:28.584 TKD [pool-10-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 1.5
+14:33:28.651 TKD [pool-10-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 2.25
+14:33:28.694 TKD [pool-10-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 3.375
+14:33:28.717 TKD [pool-10-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 5.0625
+14:33:28.738 TKD [pool-10-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 7.59375
+14:33:28.760 TKD [pool-10-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 11.390625
+14:33:28.775 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 11.39
+14:33:28.776 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 279.332 (rel: 0.00849) 19.4144
+14:33:28.791 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:28.792 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 269.108 (rel: 0.0366) 8.08759
+14:33:28.811 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:28.811 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 265.867 (rel: 0.0120) 7.00578
+14:33:28.828 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:28.829 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 264.043 (rel: 0.00686) 8.51858
+14:33:28.845 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:28.845 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 263.353 (rel: 0.00261) 5.81255
+14:33:28.860 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:28.860 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.810 (rel: 0.00206) 1.36081
+14:33:28.881 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:28.882 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.768 (rel: 0.000159) 0.862863
+14:33:28.897 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:28.898 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.737 (rel: 0.000116) 0.973421
+14:33:28.913 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:28.914 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.619 (rel: 0.000452) 1.05045
+14:33:28.933 TKD [pool-10-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Line search t: 1.0 fval: 262.6861560591076 cdd: 0.23619182848941628
+14:33:28.957 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  b.optimize.StrongWolfeLineSearch - Line search t: 0.3002752175052432 fval: 262.6036272469202 rhs: 262.61876559841363 cdd: 1.3904038847098628E-5
+14:33:28.958 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.3003
+14:33:28.958 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.604 (rel: 5.77e-05) 1.13579
+14:33:28.984 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:28.985 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.580 (rel: 9.14e-05) 0.303808
+14:33:29.010 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:29.011 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.577 (rel: 9.94e-06) 0.230462
+14:33:29.045 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:29.046 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.571 (rel: 2.28e-05) 0.310406
+14:33:29.087 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:29.088 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.566 (rel: 2.00e-05) 0.224095
+14:33:29.126 TKD [pool-10-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Line search t: 1.0 fval: 262.5797796112882 cdd: 0.03389100696847031
+14:33:29.155 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  b.optimize.StrongWolfeLineSearch - Line search t: 0.15009672195176937 fval: 262.56533483260193 rhs: 262.56578832017686 cdd: 9.609728702813486E-7
+14:33:29.156 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.1501
+14:33:29.156 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.565 (rel: 1.73e-06) 0.174378
+14:33:29.182 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:29.182 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.565 (rel: 2.24e-06) 0.0551365
+14:33:29.194 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:29.194 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.565 (rel: 4.83e-07) 0.0465164
+14:33:29.209 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:29.209 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 1.13e-06) 0.0388405
+14:33:29.222 TKD [pool-10-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Line search t: 1.0 fval: 262.5644339722545 cdd: 3.8084202538313396E-4
+14:33:29.233 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  b.optimize.StrongWolfeLineSearch - Line search t: 0.2991485065007825 fval: 262.5643005870912 rhs: 262.564324846212 cdd: 5.048588416312904E-10
+14:33:29.233 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.2991
+14:33:29.234 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 9.24e-08) 0.0382792
+14:33:29.246 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:29.246 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 1.18e-07) 0.00834584
+14:33:29.258 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:29.258 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 9.32e-09) 0.00432668
+14:33:29.273 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:29.274 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 5.25e-09) 0.00418923
+14:33:29.287 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:29.287 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 5.17e-09) 0.00531573
+14:33:29.298 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:29.298 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 3.00e-09) 0.00427323
+14:33:29.309 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:29.310 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 2.35e-09) 0.00301624
+14:33:29.321 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:29.321 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 4.13e-09) 0.00336963
+14:33:29.332 TKD [pool-10-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Line search t: 1.0 fval: 262.564262006721 cdd: 1.3104857099636248E-6
+14:33:29.345 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  b.optimize.StrongWolfeLineSearch - Line search t: 0.4360586179306404 fval: 262.56426163720255 rhs: 262.5642618580886 cdd: 1.303973209491475E-13
+14:33:29.345 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.4361
+14:33:29.345 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 8.41e-10) 0.00234530
+14:33:29.359 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:29.360 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 4.34e-10) 0.00174028
+14:33:29.370 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:29.371 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 9.99e-10) 0.00128797
+14:33:29.381 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:29.382 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 3.50e-10) 0.00122153
+14:33:29.392 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:29.393 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 4.95e-11) 0.00136012
+14:33:29.405 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:29.405 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 8.94e-11) 0.000468439
+14:33:29.416 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:29.416 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 2.85e-11) 0.000373044
+14:33:29.429 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:29.429 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 9.08e-11) 0.000518816
+14:33:29.441 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:29.441 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 4.15e-11) 0.000500414
+14:33:29.452 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:29.453 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 3.01e-11) 0.000331788
+14:33:29.463 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:29.464 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 2.01e-11) 0.000204064
+14:33:29.475 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:29.476 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 1.72e-11) 0.000162022
+14:33:30.435 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  fdur.Optimizer$ - optimized_log_likelihood=-262.56426106867326 iteration=23
+14:33:30.545 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.0004427
+14:33:30.545 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 281.725 (rel: 0.228) 22.5850
+14:33:30.576 TKD [pool-10-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 1.5
+14:33:30.605 TKD [pool-10-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 2.25
+14:33:30.628 TKD [pool-10-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 3.375
+14:33:30.650 TKD [pool-10-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 5.0625
+14:33:30.675 TKD [pool-10-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 7.59375
+14:33:30.697 TKD [pool-10-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 11.390625
+14:33:30.721 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 11.39
+14:33:30.721 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 279.332 (rel: 0.00849) 19.4144
+14:33:30.745 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:30.746 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 269.108 (rel: 0.0366) 8.08759
+14:33:30.769 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:30.770 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 265.867 (rel: 0.0120) 7.00578
+14:33:30.791 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:30.791 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 264.043 (rel: 0.00686) 8.51858
+14:33:30.813 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:30.813 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 263.353 (rel: 0.00261) 5.81255
+14:33:30.834 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:30.834 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.810 (rel: 0.00206) 1.36081
+14:33:30.859 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:30.860 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.768 (rel: 0.000159) 0.862863
+14:33:30.881 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:30.882 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.737 (rel: 0.000116) 0.973421
+14:33:30.903 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:30.903 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.619 (rel: 0.000452) 1.05045
+14:33:30.925 TKD [pool-10-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Line search t: 1.0 fval: 262.68615605910827 cdd: 0.23619182849170914
+14:33:30.946 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  b.optimize.StrongWolfeLineSearch - Line search t: 0.3002752175062766 fval: 262.60362724692004 rhs: 262.618765598414 cdd: 1.3904039651423117E-5
+14:33:30.946 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.3003
+14:33:30.946 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.604 (rel: 5.77e-05) 1.13579
+14:33:30.967 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:30.968 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.580 (rel: 9.14e-05) 0.303808
+14:33:30.989 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:30.990 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.577 (rel: 9.94e-06) 0.230462
+14:33:31.013 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:31.013 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.571 (rel: 2.28e-05) 0.310406
+14:33:31.034 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:31.034 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.566 (rel: 2.00e-05) 0.224095
+14:33:31.055 TKD [pool-10-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Line search t: 1.0 fval: 262.57977961128694 cdd: 0.03389100696696709
+14:33:31.077 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  b.optimize.StrongWolfeLineSearch - Line search t: 0.15009672197010293 fval: 262.56533483260216 rhs: 262.56578832017715 cdd: 9.609735362654622E-7
+14:33:31.077 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.1501
+14:33:31.077 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.565 (rel: 1.73e-06) 0.174378
+14:33:31.102 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:31.102 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.565 (rel: 2.24e-06) 0.0551365
+14:33:31.123 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:31.123 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.565 (rel: 4.83e-07) 0.0465164
+14:33:31.143 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:31.144 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 1.13e-06) 0.0388405
+14:33:31.165 TKD [pool-10-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Line search t: 1.0 fval: 262.56443397225445 cdd: 3.808420251796257E-4
+14:33:31.187 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  b.optimize.StrongWolfeLineSearch - Line search t: 0.2991485059795841 fval: 262.5643005870915 rhs: 262.5643248462118 cdd: 5.045266801199613E-10
+14:33:31.187 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.2991
+14:33:31.187 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 9.24e-08) 0.0382792
+14:33:31.208 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:31.209 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 1.18e-07) 0.00834584
+14:33:31.229 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:31.229 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 9.32e-09) 0.00432668
+14:33:31.249 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:31.249 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 5.25e-09) 0.00418923
+14:33:31.270 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:31.270 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 5.17e-09) 0.00531573
+14:33:31.291 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:31.291 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 3.00e-09) 0.00427323
+14:33:31.311 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:31.312 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 2.35e-09) 0.00301624
+14:33:31.335 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:31.335 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 4.13e-09) 0.00336963
+14:33:31.355 TKD [pool-10-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Line search t: 1.0 fval: 262.56426200672115 cdd: 1.3104856768383353E-6
+14:33:31.376 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  b.optimize.StrongWolfeLineSearch - Line search t: 0.4360581098286911 fval: 262.56426163720266 rhs: 262.564261858088 cdd: -1.0535271596052094E-12
+14:33:31.376 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.4361
+14:33:31.376 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 8.41e-10) 0.00234529
+14:33:31.396 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:31.397 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 4.34e-10) 0.00174028
+14:33:31.417 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:31.417 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 9.99e-10) 0.00128797
+14:33:31.437 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:31.437 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 3.50e-10) 0.00122154
+14:33:31.457 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:31.458 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 4.95e-11) 0.00136010
+14:33:31.478 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:31.478 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 8.94e-11) 0.000468438
+14:33:31.506 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:31.507 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 2.85e-11) 0.000373044
+14:33:31.527 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:31.527 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 9.08e-11) 0.000518817
+14:33:31.548 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:31.548 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 4.15e-11) 0.000500408
+14:33:31.568 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:31.568 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 3.01e-11) 0.000331800
+14:33:31.589 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:31.590 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 2.01e-11) 0.000204065
+14:33:31.610 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:33:31.610 TKD [pool-10-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 1.72e-11) 0.000162023
+14:37:42.269 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  fdur.Optimizer$ - optimized_log_likelihood=-262.56426106867326 iteration=23
+14:37:42.444 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.0004427
+14:37:42.445 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 281.725 (rel: 0.228) 22.5850
+14:37:42.498 TKD [pool-12-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 1.5
+14:37:42.522 TKD [pool-12-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 2.25
+14:37:42.539 TKD [pool-12-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 3.375
+14:37:42.564 TKD [pool-12-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 5.0625
+14:37:42.612 TKD [pool-12-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 7.59375
+14:37:42.625 TKD [pool-12-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 11.390625
+14:37:42.638 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 11.39
+14:37:42.639 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 279.332 (rel: 0.00849) 19.4144
+14:37:42.652 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:42.652 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 269.108 (rel: 0.0366) 8.08759
+14:37:42.666 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:42.666 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 265.867 (rel: 0.0120) 7.00578
+14:37:42.680 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:42.680 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 264.043 (rel: 0.00686) 8.51858
+14:37:42.698 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:42.698 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 263.353 (rel: 0.00261) 5.81255
+14:37:42.713 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:42.713 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.810 (rel: 0.00206) 1.36081
+14:37:42.729 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:42.730 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.768 (rel: 0.000159) 0.862863
+14:37:42.745 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:42.745 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.737 (rel: 0.000116) 0.973421
+14:37:42.758 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:42.758 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.619 (rel: 0.000452) 1.05045
+14:37:42.772 TKD [pool-12-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Line search t: 1.0 fval: 262.6861560591076 cdd: 0.23619182848941628
+14:37:42.794 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  b.optimize.StrongWolfeLineSearch - Line search t: 0.3002752175052432 fval: 262.6036272469202 rhs: 262.61876559841363 cdd: 1.3904038847098628E-5
+14:37:42.794 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.3003
+14:37:42.794 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.604 (rel: 5.77e-05) 1.13579
+14:37:42.808 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:42.808 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.580 (rel: 9.14e-05) 0.303808
+14:37:42.821 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:42.822 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.577 (rel: 9.94e-06) 0.230462
+14:37:42.834 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:42.835 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.571 (rel: 2.28e-05) 0.310406
+14:37:42.848 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:42.848 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.566 (rel: 2.00e-05) 0.224095
+14:37:42.868 TKD [pool-12-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Line search t: 1.0 fval: 262.5797796112882 cdd: 0.03389100696847031
+14:37:42.892 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  b.optimize.StrongWolfeLineSearch - Line search t: 0.15009672195176937 fval: 262.56533483260193 rhs: 262.56578832017686 cdd: 9.609728702813486E-7
+14:37:42.892 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.1501
+14:37:42.892 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.565 (rel: 1.73e-06) 0.174378
+14:37:42.915 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:42.915 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.565 (rel: 2.24e-06) 0.0551365
+14:37:42.929 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:42.930 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.565 (rel: 4.83e-07) 0.0465164
+14:37:42.944 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:42.944 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 1.13e-06) 0.0388405
+14:37:42.957 TKD [pool-12-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Line search t: 1.0 fval: 262.5644339722545 cdd: 3.8084202538313396E-4
+14:37:42.968 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  b.optimize.StrongWolfeLineSearch - Line search t: 0.2991485065007825 fval: 262.5643005870912 rhs: 262.564324846212 cdd: 5.048588416312904E-10
+14:37:42.968 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.2991
+14:37:42.968 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 9.24e-08) 0.0382792
+14:37:42.983 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:42.983 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 1.18e-07) 0.00834584
+14:37:42.995 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:42.995 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 9.32e-09) 0.00432668
+14:37:43.010 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:43.010 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 5.25e-09) 0.00418923
+14:37:43.021 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:43.021 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 5.17e-09) 0.00531573
+14:37:43.032 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:43.032 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 3.00e-09) 0.00427323
+14:37:43.043 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:43.043 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 2.35e-09) 0.00301624
+14:37:43.057 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:43.057 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 4.13e-09) 0.00336963
+14:37:43.069 TKD [pool-12-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Line search t: 1.0 fval: 262.564262006721 cdd: 1.3104857099636248E-6
+14:37:43.080 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  b.optimize.StrongWolfeLineSearch - Line search t: 0.4360586179306404 fval: 262.56426163720255 rhs: 262.5642618580886 cdd: 1.303973209491475E-13
+14:37:43.080 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.4361
+14:37:43.081 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 8.41e-10) 0.00234530
+14:37:43.092 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:43.092 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 4.34e-10) 0.00174028
+14:37:43.103 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:43.103 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 9.99e-10) 0.00128797
+14:37:43.114 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:43.115 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 3.50e-10) 0.00122153
+14:37:43.125 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:43.126 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 4.95e-11) 0.00136012
+14:37:43.140 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:43.140 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 8.94e-11) 0.000468439
+14:37:43.150 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:43.151 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 2.85e-11) 0.000373044
+14:37:43.161 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:43.161 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 9.08e-11) 0.000518816
+14:37:43.172 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:43.172 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 4.15e-11) 0.000500414
+14:37:43.182 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:43.183 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 3.01e-11) 0.000331788
+14:37:43.193 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:43.193 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 2.01e-11) 0.000204064
+14:37:43.203 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:43.204 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 1.72e-11) 0.000162022
+14:37:44.053 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  fdur.Optimizer$ - optimized_log_likelihood=-262.56426106867326 iteration=23
+14:37:44.167 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.0004427
+14:37:44.167 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 281.725 (rel: 0.228) 22.5850
+14:37:44.209 TKD [pool-12-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 1.5
+14:37:44.235 TKD [pool-12-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 2.25
+14:37:44.257 TKD [pool-12-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 3.375
+14:37:44.287 TKD [pool-12-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 5.0625
+14:37:44.313 TKD [pool-12-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 7.59375
+14:37:44.334 TKD [pool-12-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 11.390625
+14:37:44.356 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 11.39
+14:37:44.356 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 279.332 (rel: 0.00849) 19.4144
+14:37:44.386 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:44.387 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 269.108 (rel: 0.0366) 8.08759
+14:37:44.408 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:44.408 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 265.867 (rel: 0.0120) 7.00578
+14:37:44.430 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:44.430 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 264.043 (rel: 0.00686) 8.51858
+14:37:44.452 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:44.452 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 263.353 (rel: 0.00261) 5.81255
+14:37:44.474 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:44.475 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.810 (rel: 0.00206) 1.36081
+14:37:44.502 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:44.503 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.768 (rel: 0.000159) 0.862863
+14:37:44.531 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:44.531 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.737 (rel: 0.000116) 0.973421
+14:37:44.553 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:44.553 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.619 (rel: 0.000452) 1.05045
+14:37:44.574 TKD [pool-12-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Line search t: 1.0 fval: 262.68615605910827 cdd: 0.23619182849170914
+14:37:44.595 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  b.optimize.StrongWolfeLineSearch - Line search t: 0.3002752175062766 fval: 262.60362724692004 rhs: 262.618765598414 cdd: 1.3904039651423117E-5
+14:37:44.595 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.3003
+14:37:44.595 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.604 (rel: 5.77e-05) 1.13579
+14:37:44.617 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:44.618 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.580 (rel: 9.14e-05) 0.303808
+14:37:44.638 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:44.639 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.577 (rel: 9.94e-06) 0.230462
+14:37:44.660 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:44.660 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.571 (rel: 2.28e-05) 0.310406
+14:37:44.683 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:44.684 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.566 (rel: 2.00e-05) 0.224095
+14:37:44.705 TKD [pool-12-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Line search t: 1.0 fval: 262.57977961128694 cdd: 0.03389100696696709
+14:37:44.727 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  b.optimize.StrongWolfeLineSearch - Line search t: 0.15009672197010293 fval: 262.56533483260216 rhs: 262.56578832017715 cdd: 9.609735362654622E-7
+14:37:44.727 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.1501
+14:37:44.728 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.565 (rel: 1.73e-06) 0.174378
+14:37:44.753 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:44.753 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.565 (rel: 2.24e-06) 0.0551365
+14:37:44.774 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:44.774 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.565 (rel: 4.83e-07) 0.0465164
+14:37:44.795 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:44.795 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 1.13e-06) 0.0388405
+14:37:44.818 TKD [pool-12-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Line search t: 1.0 fval: 262.56443397225445 cdd: 3.808420251796257E-4
+14:37:44.841 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  b.optimize.StrongWolfeLineSearch - Line search t: 0.2991485059795841 fval: 262.5643005870915 rhs: 262.5643248462118 cdd: 5.045266801199613E-10
+14:37:44.842 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.2991
+14:37:44.842 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 9.24e-08) 0.0382792
+14:37:44.862 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:44.862 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 1.18e-07) 0.00834584
+14:37:44.883 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:44.883 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 9.32e-09) 0.00432668
+14:37:44.903 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:44.904 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 5.25e-09) 0.00418923
+14:37:44.924 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:44.924 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 5.17e-09) 0.00531573
+14:37:44.944 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:44.945 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 3.00e-09) 0.00427323
+14:37:44.967 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:44.967 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 2.35e-09) 0.00301624
+14:37:44.991 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:44.991 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 4.13e-09) 0.00336963
+14:37:45.012 TKD [pool-12-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Line search t: 1.0 fval: 262.56426200672115 cdd: 1.3104856768383353E-6
+14:37:45.033 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  b.optimize.StrongWolfeLineSearch - Line search t: 0.4360581098286911 fval: 262.56426163720266 rhs: 262.564261858088 cdd: -1.0535271596052094E-12
+14:37:45.033 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.4361
+14:37:45.033 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 8.41e-10) 0.00234529
+14:37:45.054 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:45.054 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 4.34e-10) 0.00174028
+14:37:45.076 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:45.076 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 9.99e-10) 0.00128797
+14:37:45.096 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:45.097 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 3.50e-10) 0.00122154
+14:37:45.117 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:45.117 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 4.95e-11) 0.00136010
+14:37:45.141 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:45.141 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 8.94e-11) 0.000468438
+14:37:45.162 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:45.162 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 2.85e-11) 0.000373044
+14:37:45.183 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:45.183 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 9.08e-11) 0.000518817
+14:37:45.204 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:45.204 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 4.15e-11) 0.000500408
+14:37:45.225 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:45.225 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 3.01e-11) 0.000331800
+14:37:45.246 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:45.246 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 2.01e-11) 0.000204065
+14:37:45.266 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:37:45.267 TKD [pool-12-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 1.72e-11) 0.000162023
+14:40:46.983 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  fdur.Optimizer$ - optimized_log_likelihood=-262.56426106867326 iteration=23
+14:40:47.153 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.0004427
+14:40:47.155 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 281.725 (rel: 0.228) 22.5850
+14:40:47.195 TKD [pool-14-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 1.5
+14:40:47.219 TKD [pool-14-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 2.25
+14:40:47.236 TKD [pool-14-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 3.375
+14:40:47.261 TKD [pool-14-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 5.0625
+14:40:47.287 TKD [pool-14-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 7.59375
+14:40:47.301 TKD [pool-14-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 11.390625
+14:40:47.314 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 11.39
+14:40:47.314 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 279.332 (rel: 0.00849) 19.4144
+14:40:47.329 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:47.329 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 269.108 (rel: 0.0366) 8.08759
+14:40:47.343 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:47.343 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 265.867 (rel: 0.0120) 7.00578
+14:40:47.357 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:47.357 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 264.043 (rel: 0.00686) 8.51858
+14:40:47.371 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:47.372 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 263.353 (rel: 0.00261) 5.81255
+14:40:47.385 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:47.386 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.810 (rel: 0.00206) 1.36081
+14:40:47.406 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:47.406 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.768 (rel: 0.000159) 0.862863
+14:40:47.420 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:47.421 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.737 (rel: 0.000116) 0.973421
+14:40:47.436 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:47.436 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.619 (rel: 0.000452) 1.05045
+14:40:47.450 TKD [pool-14-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Line search t: 1.0 fval: 262.6861560591076 cdd: 0.23619182848941628
+14:40:47.464 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  b.optimize.StrongWolfeLineSearch - Line search t: 0.3002752175052432 fval: 262.6036272469202 rhs: 262.61876559841363 cdd: 1.3904038847098628E-5
+14:40:47.465 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.3003
+14:40:47.465 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.604 (rel: 5.77e-05) 1.13579
+14:40:47.480 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:47.480 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.580 (rel: 9.14e-05) 0.303808
+14:40:47.497 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:47.498 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.577 (rel: 9.94e-06) 0.230462
+14:40:47.511 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:47.511 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.571 (rel: 2.28e-05) 0.310406
+14:40:47.527 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:47.527 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.566 (rel: 2.00e-05) 0.224095
+14:40:47.547 TKD [pool-14-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Line search t: 1.0 fval: 262.5797796112882 cdd: 0.03389100696847031
+14:40:47.566 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  b.optimize.StrongWolfeLineSearch - Line search t: 0.15009672195176937 fval: 262.56533483260193 rhs: 262.56578832017686 cdd: 9.609728702813486E-7
+14:40:47.567 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.1501
+14:40:47.567 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.565 (rel: 1.73e-06) 0.174378
+14:40:47.591 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:47.592 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.565 (rel: 2.24e-06) 0.0551365
+14:40:47.603 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:47.604 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.565 (rel: 4.83e-07) 0.0465164
+14:40:47.621 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:47.621 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 1.13e-06) 0.0388405
+14:40:47.634 TKD [pool-14-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Line search t: 1.0 fval: 262.5644339722545 cdd: 3.8084202538313396E-4
+14:40:47.645 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  b.optimize.StrongWolfeLineSearch - Line search t: 0.2991485065007825 fval: 262.5643005870912 rhs: 262.564324846212 cdd: 5.048588416312904E-10
+14:40:47.645 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.2991
+14:40:47.645 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 9.24e-08) 0.0382792
+14:40:47.656 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:47.656 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 1.18e-07) 0.00834584
+14:40:47.666 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:47.667 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 9.32e-09) 0.00432668
+14:40:47.681 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:47.681 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 5.25e-09) 0.00418923
+14:40:47.691 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:47.692 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 5.17e-09) 0.00531573
+14:40:47.702 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:47.703 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 3.00e-09) 0.00427323
+14:40:47.715 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:47.716 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 2.35e-09) 0.00301624
+14:40:47.726 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:47.726 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 4.13e-09) 0.00336963
+14:40:47.737 TKD [pool-14-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Line search t: 1.0 fval: 262.564262006721 cdd: 1.3104857099636248E-6
+14:40:47.748 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  b.optimize.StrongWolfeLineSearch - Line search t: 0.4360586179306404 fval: 262.56426163720255 rhs: 262.5642618580886 cdd: 1.303973209491475E-13
+14:40:47.748 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.4361
+14:40:47.748 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 8.41e-10) 0.00234530
+14:40:47.759 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:47.759 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 4.34e-10) 0.00174028
+14:40:47.770 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:47.770 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 9.99e-10) 0.00128797
+14:40:47.780 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:47.780 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 3.50e-10) 0.00122153
+14:40:47.791 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:47.791 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 4.95e-11) 0.00136012
+14:40:47.802 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:47.802 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 8.94e-11) 0.000468439
+14:40:47.813 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:47.813 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 2.85e-11) 0.000373044
+14:40:47.826 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:47.827 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 9.08e-11) 0.000518816
+14:40:47.838 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:47.838 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 4.15e-11) 0.000500414
+14:40:47.850 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:47.851 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 3.01e-11) 0.000331788
+14:40:47.863 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:47.864 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 2.01e-11) 0.000204064
+14:40:47.876 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:47.877 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 1.72e-11) 0.000162022
+14:40:48.746 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  fdur.Optimizer$ - optimized_log_likelihood=-262.56426106867326 iteration=23
+14:40:48.863 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.0004427
+14:40:48.863 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 281.725 (rel: 0.228) 22.5850
+14:40:48.897 TKD [pool-14-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 1.5
+14:40:48.933 TKD [pool-14-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 2.25
+14:40:48.957 TKD [pool-14-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 3.375
+14:40:48.985 TKD [pool-14-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 5.0625
+14:40:49.008 TKD [pool-14-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 7.59375
+14:40:49.030 TKD [pool-14-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 11.390625
+14:40:49.051 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 11.39
+14:40:49.052 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 279.332 (rel: 0.00849) 19.4144
+14:40:49.076 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:49.076 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 269.108 (rel: 0.0366) 8.08759
+14:40:49.097 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:49.097 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 265.867 (rel: 0.0120) 7.00578
+14:40:49.119 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:49.119 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 264.043 (rel: 0.00686) 8.51858
+14:40:49.141 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:49.141 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 263.353 (rel: 0.00261) 5.81255
+14:40:49.163 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:49.164 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.810 (rel: 0.00206) 1.36081
+14:40:49.189 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:49.189 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.768 (rel: 0.000159) 0.862863
+14:40:49.211 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:49.211 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.737 (rel: 0.000116) 0.973421
+14:40:49.233 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:49.234 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.619 (rel: 0.000452) 1.05045
+14:40:49.258 TKD [pool-14-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Line search t: 1.0 fval: 262.68615605910827 cdd: 0.23619182849170914
+14:40:49.279 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  b.optimize.StrongWolfeLineSearch - Line search t: 0.3002752175062766 fval: 262.60362724692004 rhs: 262.618765598414 cdd: 1.3904039651423117E-5
+14:40:49.280 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.3003
+14:40:49.280 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.604 (rel: 5.77e-05) 1.13579
+14:40:49.302 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:49.302 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.580 (rel: 9.14e-05) 0.303808
+14:40:49.324 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:49.324 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.577 (rel: 9.94e-06) 0.230462
+14:40:49.345 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:49.346 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.571 (rel: 2.28e-05) 0.310406
+14:40:49.368 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:49.369 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.566 (rel: 2.00e-05) 0.224095
+14:40:49.390 TKD [pool-14-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Line search t: 1.0 fval: 262.57977961128694 cdd: 0.03389100696696709
+14:40:49.411 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  b.optimize.StrongWolfeLineSearch - Line search t: 0.15009672197010293 fval: 262.56533483260216 rhs: 262.56578832017715 cdd: 9.609735362654622E-7
+14:40:49.412 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.1501
+14:40:49.412 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.565 (rel: 1.73e-06) 0.174378
+14:40:49.439 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:49.439 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.565 (rel: 2.24e-06) 0.0551365
+14:40:49.461 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:49.461 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.565 (rel: 4.83e-07) 0.0465164
+14:40:49.482 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:49.482 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 1.13e-06) 0.0388405
+14:40:49.505 TKD [pool-14-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Line search t: 1.0 fval: 262.56443397225445 cdd: 3.808420251796257E-4
+14:40:49.526 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  b.optimize.StrongWolfeLineSearch - Line search t: 0.2991485059795841 fval: 262.5643005870915 rhs: 262.5643248462118 cdd: 5.045266801199613E-10
+14:40:49.526 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.2991
+14:40:49.526 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 9.24e-08) 0.0382792
+14:40:49.547 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:49.547 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 1.18e-07) 0.00834584
+14:40:49.568 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:49.569 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 9.32e-09) 0.00432668
+14:40:49.590 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:49.590 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 5.25e-09) 0.00418923
+14:40:49.613 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:49.614 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 5.17e-09) 0.00531573
+14:40:49.635 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:49.635 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 3.00e-09) 0.00427323
+14:40:49.657 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:49.657 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 2.35e-09) 0.00301624
+14:40:49.677 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:49.678 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 4.13e-09) 0.00336963
+14:40:49.698 TKD [pool-14-thread-4-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Line search t: 1.0 fval: 262.56426200672115 cdd: 1.3104856768383353E-6
+14:40:49.719 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  b.optimize.StrongWolfeLineSearch - Line search t: 0.4360581098286911 fval: 262.56426163720266 rhs: 262.564261858088 cdd: -1.0535271596052094E-12
+14:40:49.720 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.4361
+14:40:49.720 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 8.41e-10) 0.00234529
+14:40:49.741 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:49.741 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 4.34e-10) 0.00174028
+14:40:49.764 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:49.764 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 9.99e-10) 0.00128797
+14:40:49.785 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:49.785 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 3.50e-10) 0.00122154
+14:40:49.805 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:49.805 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 4.95e-11) 0.00136010
+14:40:49.826 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:49.826 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 8.94e-11) 0.000468438
+14:40:49.847 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:49.847 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 2.85e-11) 0.000373044
+14:40:49.869 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:49.869 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 9.08e-11) 0.000518817
+14:40:49.889 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:49.889 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 4.15e-11) 0.000500408
+14:40:49.911 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:49.911 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 3.01e-11) 0.000331800
+14:40:49.932 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:49.932 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 2.01e-11) 0.000204065
+14:40:49.955 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:40:49.955 TKD [pool-14-thread-4-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 1.72e-11) 0.000162023
+14:43:13.679 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  fdur.Optimizer$ - optimized_log_likelihood=-262.56426106867326 iteration=23
+14:43:13.821 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.0004427
+14:43:13.822 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 281.725 (rel: 0.228) 22.5850
+14:43:13.867 TKD [pool-15-thread-1-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 1.5
+14:43:13.892 TKD [pool-15-thread-1-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 2.25
+14:43:13.911 TKD [pool-15-thread-1-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 3.375
+14:43:13.930 TKD [pool-15-thread-1-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 5.0625
+14:43:13.947 TKD [pool-15-thread-1-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 7.59375
+14:43:13.963 TKD [pool-15-thread-1-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 11.390625
+14:43:13.977 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 11.39
+14:43:13.977 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 279.332 (rel: 0.00849) 19.4144
+14:43:13.991 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:13.991 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 269.108 (rel: 0.0366) 8.08759
+14:43:14.005 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:14.005 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 265.867 (rel: 0.0120) 7.00578
+14:43:14.018 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:14.019 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 264.043 (rel: 0.00686) 8.51858
+14:43:14.037 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:14.037 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 263.353 (rel: 0.00261) 5.81255
+14:43:14.050 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:14.050 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.810 (rel: 0.00206) 1.36081
+14:43:14.066 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:14.066 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.768 (rel: 0.000159) 0.862863
+14:43:14.082 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:14.082 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.737 (rel: 0.000116) 0.973421
+14:43:14.095 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:14.096 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.619 (rel: 0.000452) 1.05045
+14:43:14.109 TKD [pool-15-thread-1-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Line search t: 1.0 fval: 262.6861560591076 cdd: 0.23619182848941628
+14:43:14.123 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  b.optimize.StrongWolfeLineSearch - Line search t: 0.3002752175052432 fval: 262.6036272469202 rhs: 262.61876559841363 cdd: 1.3904038847098628E-5
+14:43:14.123 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.3003
+14:43:14.123 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.604 (rel: 5.77e-05) 1.13579
+14:43:14.137 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:14.137 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.580 (rel: 9.14e-05) 0.303808
+14:43:14.151 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:14.151 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.577 (rel: 9.94e-06) 0.230462
+14:43:14.167 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:14.167 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.571 (rel: 2.28e-05) 0.310406
+14:43:14.187 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:14.188 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.566 (rel: 2.00e-05) 0.224095
+14:43:14.208 TKD [pool-15-thread-1-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Line search t: 1.0 fval: 262.5797796112882 cdd: 0.03389100696847031
+14:43:14.230 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  b.optimize.StrongWolfeLineSearch - Line search t: 0.15009672195176937 fval: 262.56533483260193 rhs: 262.56578832017686 cdd: 9.609728702813486E-7
+14:43:14.231 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.1501
+14:43:14.231 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.565 (rel: 1.73e-06) 0.174378
+14:43:14.254 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:14.254 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.565 (rel: 2.24e-06) 0.0551365
+14:43:14.265 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:14.265 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.565 (rel: 4.83e-07) 0.0465164
+14:43:14.278 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:14.279 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 1.13e-06) 0.0388405
+14:43:14.289 TKD [pool-15-thread-1-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Line search t: 1.0 fval: 262.5644339722545 cdd: 3.8084202538313396E-4
+14:43:14.299 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  b.optimize.StrongWolfeLineSearch - Line search t: 0.2991485065007825 fval: 262.5643005870912 rhs: 262.564324846212 cdd: 5.048588416312904E-10
+14:43:14.300 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.2991
+14:43:14.300 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 9.24e-08) 0.0382792
+14:43:14.311 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:14.311 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 1.18e-07) 0.00834584
+14:43:14.325 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:14.325 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 9.32e-09) 0.00432668
+14:43:14.336 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:14.336 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 5.25e-09) 0.00418923
+14:43:14.347 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:14.348 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 5.17e-09) 0.00531573
+14:43:14.359 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:14.359 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 3.00e-09) 0.00427323
+14:43:14.370 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:14.370 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 2.35e-09) 0.00301624
+14:43:14.381 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:14.381 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 4.13e-09) 0.00336963
+14:43:14.395 TKD [pool-15-thread-1-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Line search t: 1.0 fval: 262.564262006721 cdd: 1.3104857099636248E-6
+14:43:14.406 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  b.optimize.StrongWolfeLineSearch - Line search t: 0.4360586179306404 fval: 262.56426163720255 rhs: 262.5642618580886 cdd: 1.303973209491475E-13
+14:43:14.406 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.4361
+14:43:14.406 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 8.41e-10) 0.00234530
+14:43:14.418 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:14.418 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 4.34e-10) 0.00174028
+14:43:14.432 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:14.432 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 9.99e-10) 0.00128797
+14:43:14.443 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:14.443 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 3.50e-10) 0.00122153
+14:43:14.454 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:14.454 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 4.95e-11) 0.00136012
+14:43:14.466 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:14.466 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 8.94e-11) 0.000468439
+14:43:14.477 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:14.477 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 2.85e-11) 0.000373044
+14:43:14.491 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:14.491 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 9.08e-11) 0.000518816
+14:43:14.502 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:14.503 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 4.15e-11) 0.000500414
+14:43:14.513 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:14.514 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 3.01e-11) 0.000331788
+14:43:14.524 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:14.524 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 2.01e-11) 0.000204064
+14:43:14.535 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:14.535 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 1.72e-11) 0.000162022
+14:43:15.376 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  fdur.Optimizer$ - optimized_log_likelihood=-262.56426106867326 iteration=23
+14:43:15.495 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.0004427
+14:43:15.496 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 281.725 (rel: 0.228) 22.5850
+14:43:15.532 TKD [pool-15-thread-1-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 1.5
+14:43:15.554 TKD [pool-15-thread-1-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 2.25
+14:43:15.577 TKD [pool-15-thread-1-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 3.375
+14:43:15.605 TKD [pool-15-thread-1-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 5.0625
+14:43:15.632 TKD [pool-15-thread-1-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 7.59375
+14:43:15.653 TKD [pool-15-thread-1-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Sufficent Decrease condition but not curvature condition satisfied. Increased t to: 11.390625
+14:43:15.674 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 11.39
+14:43:15.675 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 279.332 (rel: 0.00849) 19.4144
+14:43:15.697 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:15.697 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 269.108 (rel: 0.0366) 8.08759
+14:43:15.719 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:15.719 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 265.867 (rel: 0.0120) 7.00578
+14:43:15.740 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:15.740 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 264.043 (rel: 0.00686) 8.51858
+14:43:15.762 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:15.762 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 263.353 (rel: 0.00261) 5.81255
+14:43:15.786 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:15.787 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.810 (rel: 0.00206) 1.36081
+14:43:15.812 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:15.812 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.768 (rel: 0.000159) 0.862863
+14:43:15.834 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:15.834 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.737 (rel: 0.000116) 0.973421
+14:43:15.856 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:15.856 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.619 (rel: 0.000452) 1.05045
+14:43:15.877 TKD [pool-15-thread-1-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Line search t: 1.0 fval: 262.68615605910827 cdd: 0.23619182849170914
+14:43:15.898 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  b.optimize.StrongWolfeLineSearch - Line search t: 0.3002752175062766 fval: 262.60362724692004 rhs: 262.618765598414 cdd: 1.3904039651423117E-5
+14:43:15.899 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.3003
+14:43:15.899 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.604 (rel: 5.77e-05) 1.13579
+14:43:15.919 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:15.920 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.580 (rel: 9.14e-05) 0.303808
+14:43:15.944 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:15.944 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.577 (rel: 9.94e-06) 0.230462
+14:43:15.965 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:15.965 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.571 (rel: 2.28e-05) 0.310406
+14:43:15.987 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:15.987 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.566 (rel: 2.00e-05) 0.224095
+14:43:16.009 TKD [pool-15-thread-1-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Line search t: 1.0 fval: 262.57977961128694 cdd: 0.03389100696696709
+14:43:16.034 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  b.optimize.StrongWolfeLineSearch - Line search t: 0.15009672197010293 fval: 262.56533483260216 rhs: 262.56578832017715 cdd: 9.609735362654622E-7
+14:43:16.034 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.1501
+14:43:16.035 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.565 (rel: 1.73e-06) 0.174378
+14:43:16.062 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:16.062 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.565 (rel: 2.24e-06) 0.0551365
+14:43:16.083 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:16.083 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.565 (rel: 4.83e-07) 0.0465164
+14:43:16.103 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:16.104 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 1.13e-06) 0.0388405
+14:43:16.130 TKD [pool-15-thread-1-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Line search t: 1.0 fval: 262.56443397225445 cdd: 3.808420251796257E-4
+14:43:16.150 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  b.optimize.StrongWolfeLineSearch - Line search t: 0.2991485059795841 fval: 262.5643005870915 rhs: 262.5643248462118 cdd: 5.045266801199613E-10
+14:43:16.151 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.2991
+14:43:16.151 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 9.24e-08) 0.0382792
+14:43:16.171 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:16.171 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 1.18e-07) 0.00834584
+14:43:16.193 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:16.193 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 9.32e-09) 0.00432668
+14:43:16.214 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:16.214 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 5.25e-09) 0.00418923
+14:43:16.234 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:16.234 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 5.17e-09) 0.00531573
+14:43:16.255 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:16.255 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 3.00e-09) 0.00427323
+14:43:16.276 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:16.276 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 2.35e-09) 0.00301624
+14:43:16.299 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:16.300 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 4.13e-09) 0.00336963
+14:43:16.320 TKD [pool-15-thread-1-ScalaTest-running-MainTest] DEBUG b.optimize.StrongWolfeLineSearch - Line search t: 1.0 fval: 262.56426200672115 cdd: 1.3104856768383353E-6
+14:43:16.340 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  b.optimize.StrongWolfeLineSearch - Line search t: 0.4360581098286911 fval: 262.56426163720266 rhs: 262.564261858088 cdd: -1.0535271596052094E-12
+14:43:16.340 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 0.4361
+14:43:16.341 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 8.41e-10) 0.00234529
+14:43:16.361 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:16.361 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 4.34e-10) 0.00174028
+14:43:16.381 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:16.381 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 9.99e-10) 0.00128797
+14:43:16.401 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:16.402 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 3.50e-10) 0.00122154
+14:43:16.422 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:16.422 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 4.95e-11) 0.00136010
+14:43:16.442 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:16.443 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 8.94e-11) 0.000468438
+14:43:16.465 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:16.466 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 2.85e-11) 0.000373044
+14:43:16.490 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:16.490 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 9.08e-11) 0.000518817
+14:43:16.511 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:16.511 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 4.15e-11) 0.000500408
+14:43:16.531 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:16.531 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 3.01e-11) 0.000331800
+14:43:16.551 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:16.552 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 2.01e-11) 0.000204065
+14:43:16.575 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Step Size: 1.000
+14:43:16.575 TKD [pool-15-thread-1-ScalaTest-running-MainTest] INFO  breeze.optimize.LBFGS - Val and Grad Norm: 262.564 (rel: 1.72e-11) 0.000162023

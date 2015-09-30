@@ -6,80 +6,78 @@ import breeze.linalg._
 import org.scalatest.FunSuite
 import breeze.plot._
 class MainTest extends FunSuite {
-  val nh = ModelTree.fromFile("src/test/resources/fdur/fdur.nh")
-  val cols = Maf.readMaf("src/test/resources/fdur/fdur.maf",1000).toParArray
+  val nh = ModelTree.fromFile("src/test/resources/fdur/hoge3.nh")
+  val cols = Maf.readMaf("src/test/resources/fdur/tmp.maf", 1000).toParArray
   val param = Parameters.fromFile("src/test/resources/fdur/testparam.txt")
   val gdparam = param.asGD
-  /*test("EM"){
-    val (mytree,myparam) = Optimizer.em(100,nh,cols,param)
-    assert(myparam.Bvec == DenseVector(0.9029772041124088, 1.5496457310605205, 0.23144631676029334,
-        0.4094948654450864, 3.442072226326874, 1.1933345229954473))
-    assert(myparam.pi == DenseVector(0.2890996566317448, 0.3172885326135423, 0.14012372480288943, 0.2534880859518233))
-    assert(mytree == List(0.03235326396024641, 0.09449611080662308, 0.08804053638366865))
+  test("EM") {
+    val (mytree, myparam, lgl, it) = Optimizer.em(100, nh, cols, param)
+    assert(lgl == -262.56426106867326)
+    assert(it == 23)
+    assert(myparam.Bvec == DenseVector(0.9029772880659012, 1.549645515313852, 0.23144634780985607,
+      0.40949485620945203, 3.4420723289179946, 1.193334278097425))
+    assert(myparam.pi == DenseVector(0.2890996541686653, 0.3172885290203346, 0.1401237309627439, 0.2534880858482561))
+    assert(mytree == List(0.032353266722865, 0.09449610185696634, 0.08804052823361941))
   }
-  test("GD"){
-    val (mytree,myparam) = Optimizer.gd(100,nh,cols,gdparam)
-    assert(myparam.Bvec == DenseVector(0.9029762997592751, 1.5496505614030591, 0.23144369683135552,
-      0.40948825705477887, 3.4420729331154045, 1.1933430585496674))
-    assert(myparam.pi == DenseVector(0.28909966067892373, 0.3172884960158941, 0.14012369968993024, 0.25348814361525196))
-    assert(mytree == List(0.03235334014042676, 0.0944959835032008, 0.0880405216067559))
+  test("GD") {
+    val (mytree, myparam, lgl) = Optimizer.gd(100, nh, cols, gdparam)
+    assert(lgl == -262.5642610724553)
+    assert(myparam.Bvec == DenseVector(0.9029786541479242, 1.5496048487228964, 0.23145504241858905,
+      0.4095163462146755, 3.442054330508882, 1.193370983100064))
+    assert(myparam.pi == DenseVector(0.28909961284968816, 0.3172888659692541, 0.1401235350513622, 0.2534879861296956))
+    assert(mytree == List(0.032353163523556674, 0.0944956917657327, 0.08804007063814091))
   }
-  test("LDEM"){
-    val (mytree,myparam) = Optimizer.ldem(100,nh,cols,param)
-    assert(myparam.Bvec ==
-      DenseVector(0.9029772041124008, 1.5496457310605152, 0.2314463167603005,
-        0.4094948654450874, 3.4420722263268733, 1.1933345229954484))
-    assert(myparam.pi == DenseVector(0.2890996566317446, 0.31728853261354234, 0.14012372480288945, 0.2534880859518236))
-    assert(mytree == List(0.0323532639602465, 0.09449611080662305, 0.08804053638366899))
+  test("LDEM") {
+    val (mytree, myparam, lgl, it) = Optimizer.ldem(100, nh, cols, param)
+    assert(lgl == -262.56426106867326)
+    assert(it == 23)
+    assert(myparam.Bvec == DenseVector(0.9029772880659016, 1.5496455153138498, 0.23144634780985265,
+      0.4094948562094516, 3.442072328917995, 1.1933342780974254))
+    assert(myparam.pi == DenseVector(0.28909965416866534, 0.3172885290203347, 0.14012373096274386, 0.2534880858482562))
+    assert(mytree == List(0.032353266722864926, 0.09449610185696637, 0.08804052823361927))
   }
-  test("LDGD"){
-    val (mytree,myparam) = Optimizer.ldgd(100,nh,cols,gdparam)
-    assert(myparam.Bvec == DenseVector(0.9029762997266854, 1.5496505613816651, 0.23144369684084984,
-      0.40948825707277103, 3.4420729331524753, 1.1933430585618146))
-    assert(myparam.pi == DenseVector(0.28909966068047344, 0.31728849601494175, 0.1401236996899247, 0.25348814361466004))
-    assert(mytree == List(0.032353340140169724, 0.09449598350320525, 0.088040521606799))
-  }*/
-  test("EM and GD ver 3") {
+  test("LDGD") {
+    val (mytree, myparam, lgl) = Optimizer.ldgd(100, nh, cols, gdparam)
+    assert(lgl == -262.5642610724553)
+    assert(myparam.Bvec == DenseVector(0.9029786529885385, 1.549604848371667, 0.23145504373754897,
+      0.40951634630331124, 3.442054332750641, 1.1933709819026477))
+    assert(myparam.pi == DenseVector(0.28909961301778464, 0.3172888658504728, 0.14012353506358088, 0.2534879860681617))
+    assert(mytree == List(0.03235316347212327, 0.0944956917371125, 0.08804007060600447))
+  }
+}
+  /*test("EM and GD ver 3") {
     var nhx = nh
     var colsx = cols
-    println(nh.leafList.length)
-    println(colsx.head.length)
-    //val pi = DenseVector(0.2890996566317448, 0.3172885326135423, 0.14012372480288943, 0.2534880859518233)
-    //val br = List(0.03235326396024641, 0.09449611080662308, 0.08804053638366865)
-    //val b = DenseVector(0.9029762997592751, 1.5496505614030591, 0.23144369683135552,
-    //  0.40948825705477887, 3.4420729331154045, 1.1933430585496674)
     val m = nhx.leafLength
     for (i <- m until 10 by -1) {
       nhx = nhx.init
       colsx = colsx.map(x => x.init)
-      if(i > 10 && i < 12) {
-        val (emtree, empara, emlgl, emit) = Optimizer.em(5, nhx, colsx, param)
-        val (gdtree, gdpara, gdlgl) = Optimizer.gd(5, nhx, colsx, gdparam)
-        //val (ldemtree, ldempara, ldemlgl, ldemit) = Optimizer.ldem(10000, nhx, colsx, param)
-        //val (ldgdtree, ldgdpara, ldgdlgl) = Optimizer.ldgd(10000, nhx, colsx, gdparam)
-        val emR = Model(empara).R
-        //val ldemR = Model(ldempara).R
-        val gdR = Model(gdpara).R
-        //val ldgdR = Model(ldgdpara).R
-        val wr = new PrintWriter("target/" + i + "r.txt")
-        wr.println(emR.toArray.mkString(","))
-        //wr.println(ldemR.toArray.mkString(","))
-        wr.println(gdR.toArray.mkString(","))
-        //wr.println(ldgdR.toArray.mkString(","))
-        wr.close()
-        val wb = new PrintWriter("target/" + i + "b.txt")
-        wb.println(emtree.mkString(","))
-        //wb.println(ldemtree.mkString(","))
-        wb.println(gdtree.mkString(","))
-        //wb.println(ldgdtree.mkString(","))
-        wb.close()
-        val w = new PrintWriter(new FileWriter("target/lgl.txt", true))
-        //w.println(Array(emlgl, ldemlgl, gdlgl, ldgdlgl).mkString(","))
-        w.close()
-        val wx = new PrintWriter(new FileWriter("target/iteration.txt", true))
-        //wx.println(Array(emit, ldemit).mkString(","))
-        wx.close()
-      }
+      val (emtree, empara, emlgl, emit) = Optimizer.em(5, nhx, colsx, param)
+      val (gdtree, gdpara, gdlgl) = Optimizer.gd(5, nhx, colsx, gdparam)
+      val (ldemtree, ldempara, ldemlgl, ldemit) = Optimizer.ldem(10000, nhx, colsx, param)
+      val (ldgdtree, ldgdpara, ldgdlgl) = Optimizer.ldgd(10000, nhx, colsx, gdparam)
+      val emR = Model(empara).R
+      val ldemR = Model(ldempara).R
+      val gdR = Model(gdpara).R
+      val ldgdR = Model(ldgdpara).R
+      val wr = new PrintWriter("target/" + i + "r.txt")
+      wr.println(emR.toArray.mkString(","))
+      wr.println(ldemR.toArray.mkString(","))
+      wr.println(gdR.toArray.mkString(","))
+      wr.println(ldgdR.toArray.mkString(","))
+      wr.close()
+      val wb = new PrintWriter("target/" + i + "b.txt")
+      wb.println(emtree.mkString(","))
+      wb.println(ldemtree.mkString(","))
+      wb.println(gdtree.mkString(","))
+      wb.println(ldgdtree.mkString(","))
+      wb.close()
+      val w = new PrintWriter(new FileWriter("target/lgl.txt", true))
+      w.println(Array(emlgl, ldemlgl, gdlgl, ldgdlgl).mkString(","))
+      w.close()
+      val wx = new PrintWriter(new FileWriter("target/iteration.txt", true))
+      wx.println(Array(emit, ldemit).mkString(","))
+      wx.close()
       /*val phytree = ModelTree.fromString("(hg18:0.00392848,panTro2:0.00334377,gorGor1:0.00779322);")
       val phyR = DenseMatrix((-0.996772, 0.185242, 0.642592, 0.168938),
         (0.153957, -0.989008, 0.253607, 0.581444),
@@ -117,8 +115,8 @@ class MainTest extends FunSuite {
     println(empara)
     println(gdpara)
   }*/
-    /*test("fdur.nh && fdur.maf"){
-    val nh = "src/test/resources/fdur/fdur.nh"
+  /*test("fdur.nh && fdur.maf"){
+i    val nh = "src/test/resources/fdur/fdur.nh"
     val maf = "src/test/resources/fdur/fdur.maf"
     val oribranch = ModelTree.fromFile(nh).branches
     val pi = DenseVector(0.23137857635453807, 0.28408070157281884, 0.27729375318455474, 0.20724696888808836)
@@ -176,3 +174,4 @@ class MainTest extends FunSuite {
     }
   }*/
 }
+*/

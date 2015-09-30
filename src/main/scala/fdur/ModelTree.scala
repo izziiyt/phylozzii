@@ -47,7 +47,7 @@ case class ModelRoot(children:List[ModelChild]) extends PrimitiveRoot {
             sys.error("SingleLeafTreeError")
             null
           case ModelNode(ch, _) =>
-            ModelRoot(children)
+            ModelRoot(ch)
         }
         else ModelRoot(children.init)
       case _ => ModelRoot(children.init :+ x.init)
