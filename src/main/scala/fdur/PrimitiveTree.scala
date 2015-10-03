@@ -16,9 +16,8 @@ trait PrimitiveParent extends PrimitiveTree {
   def leafLength:Int = children.foldLeft(0)((n,c) => n + c.leafLength)
   override def toString = children.foldLeft("(")((n,x) => n + x.toString).init + ")"
   def branches:List[Double] = mappedChildList[Double](_ branches)
-  //def branches:List[Double] = children.foldLeft(Nil:List[Double]){(n,x) => x.branches ::: n}
-  def mappedChildList[T](f:PrimitiveChild => List[T]): List[T] = children.foldLeft(Nil:List[T]){(n,x) => f(x) ::: n}
-  def names = mappedChildList(_ names)
+  def mappedChildList[T](f: PrimitiveChild => List[T]): List[T] = children.foldLeft(Nil:List[T]){(n,x) => f(x) ::: n}
+  def names = mappedChildList[String](_ names)
 }
 
 trait PrimitiveRoot extends PrimitiveParent {

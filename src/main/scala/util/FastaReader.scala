@@ -49,23 +49,22 @@ class ExonFastaReader(val cdntbl: CodonTable) extends FastaReader{
     None
   }
 
-  protected def mkCandidates(dna:DNA,prt:Protein,lw:PrintWriter,thresholdX:Double=0.8, thresholdY:Double=0.7): Array[Int] = {
+  protected def offsetter(dna:DNA, prt:Protein, lw:PrintWriter, thresholdX:Double=0.8, thresholdY:Double=0.7):
+  Option[Int] = {
     val dnas = Array(dna, dna.tail, dna.drop(2))
     val cdns = dnas.map(toCodonsFromHead)
-    cdns.foreach(x => println(x.map(cdntbl.transcript).mkString("")))
-    println(prt.mkString(""))
-    println()
-    val scrs:Array[Double] = cdns.map(x => swg(x.map(cdntbl.transcript), prt) / 15.0).sorted
-    println(scrs.mkString(""))
-    if (scrs.max < thresholdX || scrs(2) - scrs(1) < thresholdY) Array()
+    val scrs: Array[Double] = cdns.map(x => swg(x.map(cdntbl.transcript), prt) / 15.0)
+    val (maxscr, maxoffset) = scrs.zipWithIndex.reduceLeft((n , x) => if(n._1 < x._1) x else n)
+    lazy val sorted = scrs.sorted
+    if (maxscr < thresholdX || sorted(2) - sorted(1) < thresholdY) None
     else {
       lw.println(scrs.mkString(","))
-      val cdn = cdns.zipWithIndex.maxBy(x => swg(x._1.map(cdntbl.transcript), prt))
-      fFPosition(cdn._1).map(_ + cdn._2)
+      Some(maxoffset)
     }
   }
 
   protected def genPair(nuc:Iterator[String],aa:Iterator[String]):Option[(Array[DNA],Array[Protein])] = {
+    println("in genpair")
     val ag = genGroup(aa, _.map(AminoAcid.fromChar).toArray)
     var ng = genGroup(nuc, _.map(Base.fromChar).toArray)
     while (true) {
@@ -76,6 +75,12 @@ class ExonFastaReader(val cdntbl: CodonTable) extends FastaReader{
     None
   }
 
+  def check(i: Int, xs: Array[DNA]): Boolean = {
+    val fst = xs.find(x => ! x(i - 2).isN).get(i - 2)
+    val snd = xs.find(x => ! x(i - 1).isN).get(i - 1)
+    xs.forall(x => x(i - 2) == fst && x(i - 1) == snd)
+  }
+
   def filtered(nucf: String,aaf: String,ouf: String, selected:Set[Int], species:Seq[String]): Unit = {
     val nucSource = Source.fromFile(nucf)
     val aaSource = Source.fromFile(aaf)
@@ -84,30 +89,43 @@ class ExonFastaReader(val cdntbl: CodonTable) extends FastaReader{
     val lw = new PrintWriter("log.txt")
     val w = new PrintWriter(ouf)
     try {
+      val buffer = Array.fill(species.length)(new ArrayBuffer[Base]())
       var pair = genPair(nucLines, aaLines)
       w.println("##maf version=1 scoring=zero")
       while (pair.isDefined) {
-        w.println("a score=0.000000")
-        //not filtered species
-        val all = pair.get.zipped.toList
-        //filtered by selected species
-        val sel = all.zipWithIndex.withFilter{case (_,i) => selected.contains(i)}.map(_._1)
-        val n = all.head._1.length
-        //4d sites of selected species
-        val poss: Seq[Set[Int]] = sel.map{case (ds,ps) => mkCandidates(ds, ps, lw).toSet}
-        //val poss: Seq[Set[Int]] = sel.map{case (ds,ps) => mkCandidates(ds, ps, lw, 0.8).toSet}
-        poss.foreach(x => println(x.mkString(" ")))
-        println("hoge")
-        //catch intersection of selected species's 4d sites
-        val indices = poss.foldLeft((0 until n).toSet)(_ & _).toArray.sorted
-        println(indices.mkString(" "))
-        (all, species).zipped.foreach{
-          (x,y) =>
-            val tmp = indices.map(x._1(_))
-            w.println("s " + y + " 0 0 + 0 " + tmp.mkString(""))
+        //non-filtered species
+        val offset = offsetter(pair.get._1.head, pair.get._2.head, lw)
+        println("yeah")
+        println(offset)
+        if (offset.isDefined) {
+          val dnas = pair.get._1.map(_.drop(offset.get))
+          lazy val chosen = dnas.zipWithIndex.withFilter(x => selected.contains(x._2)).map(_._1)
+          val n = dnas.head.length
+          require(dnas.forall(x => x.length == n))
+          for (i <- 2 until n by 3) {
+            val fst = chosen.find(!_(i - 2).isN).get(i - 2)
+            val snd = chosen.find(!_(i - 1).isN).get(i - 1)
+            lazy val is4fold = ((fst == Base.A || fst == Base.T) && snd == Base.C) ||
+              ((fst == Base.C || fst == Base.G) && snd != Base.A)
+            if (!fst.isN && !snd.isN && is4fold &&
+              chosen.forall { x => x(i - 2) == fst || x(i - 2).isN } &&
+              chosen.forall { x => x(i - 1) == snd || x(i - 1).isN }) {
+              val thds = dnas.map(_(i))
+              (buffer, thds).zipped.foreach((b, x) => b += x)
+            }
+          }
+          if (buffer.head.length > 1000) {
+            w.println("a score=0.000000")
+            (buffer, species).zipped.foreach { (b, y) => w.println("s " + y + " 0 0 + 0 " + b.mkString("")) }
+            buffer.foreach(_.clear())
+          }
         }
-        //poss.foldLeft((0 until n).toSet)(_ & _).foreach(i => w.println(all.map(_._1(i)).mkString(" ")))
         pair = genPair(nucLines, aaLines)
+      }
+      if(buffer.head.nonEmpty){
+        w.println("a score=0.000000")
+        (buffer, species).zipped.foreach{(b, y) => w.println("s " + y + " 0 0 + 0 " + b.mkString(""))}
+        buffer.foreach{_.clear()}
       }
     }
     catch{
@@ -175,8 +193,7 @@ object FdFilter {
     }
   }
 }
-/*
-package util
+/*package util
 
 import java.io.PrintWriter
 import fdur.ModelTree
@@ -227,11 +244,15 @@ class ExonFastaReader(val cdntbl: CodonTable) extends FastaReader{
     None
   }
 
-  protected def mkCandidates(dna:DNA,prt:Protein,lw:PrintWriter,threshold:Double): Array[Int] = {
+  protected def mkCandidates(dna:DNA,prt:Protein,lw:PrintWriter,thresholdX:Double=0.8, thresholdY:Double=0.7): Array[Int] = {
     val dnas = Array(dna, dna.tail, dna.drop(2))
     val cdns = dnas.map(toCodonsFromHead)
+    //cdns.foreach(x => println(x.map(cdntbl.transcript).mkString("")))
+    //println(prt.mkString(""))
+    //println()
     val scrs:Array[Double] = cdns.map(x => swg(x.map(cdntbl.transcript), prt) / 15.0).sorted
-    if (scrs.max < threshold || scrs(2) - scrs(1) < threshold) Array()
+    //println(scrs.mkString(""))
+    if (scrs.max < thresholdX || scrs(2) - scrs(1) < thresholdY) Array()
     else {
       lw.println(scrs.mkString(","))
       val cdn = cdns.zipWithIndex.maxBy(x => swg(x._1.map(cdntbl.transcript), prt))
@@ -250,7 +271,13 @@ class ExonFastaReader(val cdntbl: CodonTable) extends FastaReader{
     None
   }
 
-  def filtered(nucf: String,aaf: String,ouf: String, indices:Set[Int]): Unit = {
+  def check(i: Int, xs: Array[DNA]): Boolean = {
+    val fst = xs.find(x => ! x(i - 2).isN).get(i - 2)
+    val snd = xs.find(x => ! x(i - 1).isN).get(i - 1)
+    xs.forall(x => x(i - 2) == fst && x(i - 1) == snd)
+  }
+
+  def filtered(nucf: String,aaf: String,ouf: String, selected:Set[Int], species:Seq[String]): Unit = {
     val nucSource = Source.fromFile(nucf)
     val aaSource = Source.fromFile(aaf)
     val nucLines = nucSource.getLines()
@@ -259,16 +286,26 @@ class ExonFastaReader(val cdntbl: CodonTable) extends FastaReader{
     val w = new PrintWriter(ouf)
     try {
       var pair = genPair(nucLines, aaLines)
+      w.println("##maf version=1 scoring=zero")
       while (pair.isDefined) {
-        //not filtered species
+        w.println("a score=0.000000")
+        //non-filtered species
         val all = pair.get.zipped.toList
         //filtered by selected species
-        val sel = pair.get.zipped.toList.zipWithIndex.withFilter{case (_,i) => indices.contains(i)}.map(_._1)
+        val sel = all.zipWithIndex.withFilter{case (_,i) => selected.contains(i)}.map(_._1)
         val n = all.head._1.length
         //4d sites of selected species
-        val poss:Seq[Set[Int]] = sel.map{case (ds,ps) => mkCandidates(ds, ps, lw, 0.8).toSet}
+        val poss: Seq[Set[Int]] = sel.map{case (ds,ps) => mkCandidates(ds, ps, lw).toSet}
+        //val poss: Seq[Set[Int]] = sel.map{case (ds,ps) => mkCandidates(ds, ps, lw, 0.8).toSet}
         //catch intersection of selected species's 4d sites
-        poss.foldLeft((0 until n).toSet)(_ & _).foreach(i => w.println(all.map(_._1(i)).mkString(" ")))
+        val indices = poss.foldLeft((0 until n).toSet)(_ & _).toArray.filter(check(_, pair.get._1)).sorted
+        println(indices.mkString(" "))
+        (all, species).zipped.foreach{
+          (x,y) =>
+            val tmp = indices.map(x._1(_))
+            w.println("s " + y + " 0 0 + 0 " + tmp.mkString(""))
+        }
+        //poss.foldLeft((0 until n).toSet)(_ & _).foreach(i => w.println(all.map(_._1(i)).mkString(" ")))
         pair = genPair(nucLines, aaLines)
       }
     }
@@ -297,19 +334,20 @@ object FdFilter {
     * */
     val nucf = args(0)
     val aaf = args(1)
-    val indices = file2Indices(args(2),args(3))
+    val (indices, species) = file2Indices(args(2),args(3))
     val ouf = args(5)
     val cdntbl = CodonTable.fromFile(args(4))
-    new ExonFastaReader(cdntbl).filtered(nucf, aaf, ouf, indices)
+    new ExonFastaReader(cdntbl).filtered(nucf, aaf, ouf, indices, species)
     postFilter(ouf)
   }
 
-  def file2Indices(fi:String,nh:String): Set[(String, Int)] = {
+  def file2Indices(fi:String,nh:String): (Set[Int],Seq[String]) = {
     val sps = Source.fromFile(fi)
     try{
       val all = ModelTree.fromFile(nh).names
       val sel = sps.getLines().toSet
-      all.zipWithIndex.withFilter{case (n,_) => sel.contains(n)}.map(_._2).toSet
+      val tmp = all.zipWithIndex.withFilter{case (n,_) => sel.contains(n)}.map(_._2).toSet
+      (tmp, all)
     }
     catch{
       case _: Throwable => sys.error("In file2Indices.")

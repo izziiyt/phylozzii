@@ -14,14 +14,21 @@ object ModelTree extends NHParser{
   }
 }
 
-trait ModelChild extends PrimitiveChild{
+
+trait ModelParent extends PrimitiveParent {
+  override def children: List[ModelChild]
+  def mappedMCL[T](f: ModelChild => List[T]): List[T] = children.foldLeft(Nil:List[T]){(n,x) => f(x) ::: n}
+  def leafList = mappedMCL(_ leafList)
+}
+
+trait ModelChild extends PrimitiveChild {
   def changeBranches(branches:List[Double]): (ModelChild, List[Double])
   def leafList: List[ModelLeaf]
   def init: ModelChild
 }
 
-case class ModelRoot(children:List[ModelChild]) extends PrimitiveRoot {
-  def leafList:List[ModelLeaf] = children.foldLeft(Nil:List[ModelLeaf])((n,x) => x.leafList ::: n).reverse
+case class ModelRoot(children:List[ModelChild]) extends ModelParent with PrimitiveRoot{
+  override def leafList: List[ModelLeaf] = super.leafList.reverse
   def changeBranches(branches: List[Double]):ModelRoot = {
     @tailrec
     def innerChangeBranches(ch: List[ModelChild], br: List[Double], result: List[ModelChild]):
@@ -55,7 +62,7 @@ case class ModelRoot(children:List[ModelChild]) extends PrimitiveRoot {
   }
 }
 
-case class ModelNode(children:List[ModelChild],t:Double) extends ModelChild with PrimitiveNode {
+case class ModelNode(children:List[ModelChild],t:Double) extends ModelChild with ModelParent with PrimitiveNode {
   def changeBranches(branches: List[Double]):(ModelNode,List[Double]) = {
     @tailrec
     def innerChangeBranches(ch: List[ModelChild], br: List[Double], result: List[ModelChild]):
@@ -69,8 +76,6 @@ case class ModelNode(children:List[ModelChild],t:Double) extends ModelChild with
     val (newch,newbr) = innerChangeBranches(children, branches, Nil)
     (ModelNode(newch.reverse, newbr.head), newbr.tail)
   }
-
-  def leafList:List[ModelLeaf] = children.foldLeft(Nil:List[ModelLeaf])((n,x) => x.leafList ::: n)
 
   def init: ModelChild = {
     val n = children.length
@@ -92,7 +97,7 @@ case class ModelNode(children:List[ModelChild],t:Double) extends ModelChild with
 }
 
 case class ModelLeaf(name:String,t:Double) extends ModelChild with PrimitiveLeaf {
-  def leafList = this :: Nil
+  def leafList: List[ModelLeaf] = this :: Nil
   def changeBranches(branches:List[Double]) = (ModelLeaf(name,branches.head),branches.tail)
   def init = {
     sys.error("LeafInitCalledError")

@@ -11,5 +11,10 @@ class FastaTest extends FunSuite{
     val cdn = "src/test/resources/codon.table.txt"
     val target = "target/result.txt"
     FdFilter.main(Array(nuc, aa, species, nh, cdn, target))
+    //23 32 35
+    //3 6 9 12 15 24 27 33 36 42 48 60 63 69 78 81 84 99 102 111 114 123
+  }
+  test("in main"){
+
   }
 }

@@ -44,40 +44,47 @@ class MainTest extends FunSuite {
     assert(myparam.pi == DenseVector(0.28909961301778464, 0.3172888658504728, 0.14012353506358088, 0.2534879860681617))
     assert(mytree == List(0.03235316347212327, 0.0944956917371125, 0.08804007060600447))
   }
-}
-  /*test("EM and GD ver 3") {
+  test("EM and GD ver 3") {
+    val nh = ModelTree.fromFile("src/test/resources/fdur/fdur.nh")
+    val cols = Maf.readMaf("src/test/resources/fdur/fdur.maf", 1000).toParArray
     var nhx = nh
     var colsx = cols
     val m = nhx.leafLength
     for (i <- m until 10 by -1) {
+      println(i)
       nhx = nhx.init
       colsx = colsx.map(x => x.init)
-      val (emtree, empara, emlgl, emit) = Optimizer.em(5, nhx, colsx, param)
-      val (gdtree, gdpara, gdlgl) = Optimizer.gd(5, nhx, colsx, gdparam)
-      val (ldemtree, ldempara, ldemlgl, ldemit) = Optimizer.ldem(10000, nhx, colsx, param)
-      val (ldgdtree, ldgdpara, ldgdlgl) = Optimizer.ldgd(10000, nhx, colsx, gdparam)
-      val emR = Model(empara).R
-      val ldemR = Model(ldempara).R
-      val gdR = Model(gdpara).R
-      val ldgdR = Model(ldgdpara).R
-      val wr = new PrintWriter("target/" + i + "r.txt")
-      wr.println(emR.toArray.mkString(","))
-      wr.println(ldemR.toArray.mkString(","))
-      wr.println(gdR.toArray.mkString(","))
-      wr.println(ldgdR.toArray.mkString(","))
-      wr.close()
-      val wb = new PrintWriter("target/" + i + "b.txt")
-      wb.println(emtree.mkString(","))
-      wb.println(ldemtree.mkString(","))
-      wb.println(gdtree.mkString(","))
-      wb.println(ldgdtree.mkString(","))
-      wb.close()
-      val w = new PrintWriter(new FileWriter("target/lgl.txt", true))
-      w.println(Array(emlgl, ldemlgl, gdlgl, ldgdlgl).mkString(","))
-      w.close()
-      val wx = new PrintWriter(new FileWriter("target/iteration.txt", true))
-      wx.println(Array(emit, ldemit).mkString(","))
-      wx.close()
+      try {
+        val (emtree, empara, emlgl, emit) = Optimizer.em(10000, nhx, colsx, param)
+        val (gdtree, gdpara, gdlgl) = Optimizer.gd(10000, nhx, colsx, gdparam)
+        val (ldemtree, ldempara, ldemlgl, ldemit) = Optimizer.ldem(10000, nhx, colsx, param)
+        val (ldgdtree, ldgdpara, ldgdlgl) = Optimizer.ldgd(10000, nhx, colsx, gdparam)
+        val emR = Model(empara).R
+        val ldemR = Model(ldempara).R
+        val gdR = Model(gdpara).R
+        val ldgdR = Model(ldgdpara).R
+        val wr = new PrintWriter("target/" + i + "r.txt")
+        wr.println(emR.toArray.mkString(","))
+        wr.println(ldemR.toArray.mkString(","))
+        wr.println(gdR.toArray.mkString(","))
+        wr.println(ldgdR.toArray.mkString(","))
+        wr.close()
+        val wb = new PrintWriter("target/" + i + "b.txt")
+        wb.println(emtree.mkString(","))
+        wb.println(ldemtree.mkString(","))
+        wb.println(gdtree.mkString(","))
+        wb.println(ldgdtree.mkString(","))
+        wb.close()
+        val w = new PrintWriter(new FileWriter("target/lgl.txt", true))
+        w.println(Array(emlgl, ldemlgl, gdlgl, ldgdlgl).mkString(","))
+        w.close()
+        val wx = new PrintWriter(new FileWriter("target/iteration.txt", true))
+        wx.println(Array(emit, ldemit).mkString(","))
+        wx.close()
+      }
+      catch {
+        case e: Throwable => println("at " + i + ":: " + e)
+      }
       /*val phytree = ModelTree.fromString("(hg18:0.00392848,panTro2:0.00334377,gorGor1:0.00779322);")
       val phyR = DenseMatrix((-0.996772, 0.185242, 0.642592, 0.168938),
         (0.153957, -0.989008, 0.253607, 0.581444),
@@ -105,6 +112,7 @@ class MainTest extends FunSuite {
       */
     }
   }
+}
   /*test("em&gd"){
     val cols = Maf.readMaf("src/test/resources/fdur/hoge33.maf",1000).toParArray
     val nh = ModelTree.fromFile("src/test/resources/fdur/hoge33.nh")
@@ -116,7 +124,7 @@ class MainTest extends FunSuite {
     println(gdpara)
   }*/
   /*test("fdur.nh && fdur.maf"){
-i    val nh = "src/test/resources/fdur/fdur.nh"
+    val nh = "src/test/resources/fdur/fdur.nh"
     val maf = "src/test/resources/fdur/fdur.maf"
     val oribranch = ModelTree.fromFile(nh).branches
     val pi = DenseVector(0.23137857635453807, 0.28408070157281884, 0.27729375318455474, 0.20724696888808836)
@@ -173,5 +181,4 @@ i    val nh = "src/test/resources/fdur/fdur.nh"
       f.saveas("target/R.png")
     }
   }*/
-}
-*/
+
