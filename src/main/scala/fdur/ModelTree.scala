@@ -44,6 +44,26 @@ case class ModelRoot(children:List[ModelChild]) extends ModelParent with Primiti
     ModelRoot(newch.reverse)
   }
 
+  def simpleForm: ModelRoot = {
+    val n = children.length
+    require(n > 1)
+    if(n > 2) this
+    else{
+      val fst = children.head
+      val snd = children.last
+      (fst, snd) match {
+        case (ModelNode(fstch, fstt), ModelNode(sndch, sndt)) =>
+          ModelRoot(List(ModelNode(fstch, fstt + sndt)) ::: sndch)
+        case (ModelNode(fstch, fstt), ModelLeaf(name, sndt)) =>
+          ModelRoot(fstch ::: List(ModelLeaf(name, fstt + sndt)))
+        case (ModelLeaf(name, fstt), ModelNode(sndch, sndt)) =>
+          ModelRoot(List(ModelLeaf(name, fstt + sndt)) ::: sndch)
+        case (ModelLeaf(_, _), ModelLeaf(_, _)) =>
+          this
+      }
+    }
+  }
+
   def init: ModelRoot = {
     require(children.length > 1)
     val x = children.last

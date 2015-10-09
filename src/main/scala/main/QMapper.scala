@@ -7,8 +7,9 @@ import scala.util.parsing.combinator.JavaTokenParsers
 
 object QMapper {
   def main(args:Array[String]): Unit = {
+    //println(scala.collection.parallel.availableProcessors)
     //${al} ${nh} ${count} target/time/e/${SGE_TASK_ID}.time
-    val cols = Maf.readMaf(args(1), 1000).toParArray
+    val cols = Maf.readMaf(args(1),1000).toParArray
     val tree = ModelTree.fromFile(args(3))
     val out = new PrintWriter(args(4))
 
