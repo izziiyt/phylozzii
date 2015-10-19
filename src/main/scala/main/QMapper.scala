@@ -1,19 +1,15 @@
 package main
 
-import java.io.{File, FileReader, FileWriter, PrintWriter}
-import breeze.linalg.{DenseMatrix, DenseVector}
+import java.io._
 import fdur._
-import scala.util.parsing.combinator.JavaTokenParsers
 
 object QMapper {
   def main(args:Array[String]): Unit = {
     //println(scala.collection.parallel.availableProcessors)
     //${al} ${nh} ${count} target/time/e/${SGE_TASK_ID}.time
-    val cols = Maf.readMaf(args(1),1000).toParArray
+    val cols = Maf.readMaf(args(1),10000)
     val tree = ModelTree.fromFile(args(3))
-    val out = new PrintWriter(args(4))
-
-    try {
+    //val out = new BufferedWriter(new FileWriter(args(4)))
       args(0) match {
         case "em" =>
           val param = Parameters.fromFile(args(2))
@@ -27,7 +23,7 @@ object QMapper {
               val i = m._5 + x._5
               (ns, Ns, Fd, l, i)
           }
-          EMprinter(summed, out)
+          EMprinter(summed, args(4))
         case _ => Unit
         /* case "gd" =>
           val param = Parameters.readAsGD(args(2))
@@ -47,20 +43,20 @@ object QMapper {
       out.close()
     }*/
       }
-    }
-    finally{
-      out.close()
-    }
   }
 
-  protected def EMprinter(result:(VD,List[MD],List[VD],Double,Long),w:PrintWriter): Unit = {
-    w.println("ns: " + result._1.toArray.mkString("(", "\t", ")"))
-    w.print("Fd: ")
-    result._2.foreach(x => w.println(x.toArray.mkString("(", "\t", ")")))
-    w.print("Ns: ")
-    result._3.foreach(x => w.println(x.toArray.mkString("(", "\t", ")")))
-    w.println("lgl: " + result._4)
-    w.println("length: " + result._5)
+  protected def EMprinter(result:(VD,List[MD],List[VD],Double,Long),out:String): Unit = {
+    val w = new BufferedWriter(new FileWriter(out))
+    w.write("ns: " + result._1.toArray.mkString("(", ",", ")"))
+    w.newLine()
+    w.write("Fd: " + result._2.map(x => x.toArray.mkString("(", ",", ")")).mkString(","))
+    w.newLine()
+    w.write("Ns: " + result._3.map(x => x.toArray.mkString("(",",",")")).mkString(","))
+    w.newLine()
+    w.write("lgl: " + result._4)
+    w.newLine()
+    w.write("length: " + result._5)
+    w.close()
   }
 
   protected def GDprinter(result:(VD, MD, List[Double], Double),w:PrintWriter): Unit = {

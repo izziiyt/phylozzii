@@ -21,7 +21,7 @@ sealed trait ModelTrait {
   def b: Seq[Double]
 }
 
-sealed class Model(param:Parameters) extends ModelTrait {
+case class Model(param:Parameters) extends ModelTrait {
 
   //val ijList = (0 to 3).flatMap(i => (0 to 3).withFilter(j => j != i).map(j => (i,j)))
 
@@ -108,7 +108,7 @@ sealed class Model(param:Parameters) extends ModelTrait {
     else newtonRaphson(newL,u,v,loop + 1)
   }
 }
-
+/*
 object Model {
   def apply(param:Parameters) = new Model(param)
-}
+}*/

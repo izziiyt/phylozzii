@@ -3,24 +3,27 @@ package fdur
 import alignment.Base
 import breeze.linalg.{diag, DenseMatrix, DenseVector}
 import breeze.optimize.{LBFGS, DiffFunction}
-import com.typesafe.scalalogging.LazyLogging
+//import com.typesafe.scalalogging.LazyLogging
 import main.{QReducer, QMapper}
 
+import scala.collection.GenSeq
 import scala.collection.parallel.mutable.ParArray
 
-object Optimizer extends LazyLogging {
+//object Optimizer extends LazyLogging {
+object Optimizer extends {
   type Column = Array[Base]
 
   def main(args: Array[String]): Unit = {
     val tree = ModelTree.fromFile(args(0))
-    val cols = Maf.readMaf(args(1), 10000).toParArray
+    val cols = Maf.readMaf(args(1), 10000)
+    //val cols = Maf.readMaf(args(1), 10000).toParArray
     val param = Parameters.fromFile(args(2))
     val (optbrnch, optparam, _, _) = ldem(args(3).toInt, tree, cols, param)
     QReducer.writeLine(tree.changeBranches(optbrnch).toString,args(4),false)
     QReducer.writeLine(optparam.toString,args(5),false)
   }
 
-  protected def emLike(itemax: Int, treex: ModelRoot, colsx: ParArray[List[Array[Base]]], paramx: Parameters,
+  protected def emLike(itemax: Int, treex: ModelRoot, colsx: GenSeq[List[Array[Base]]], paramx: Parameters,
              estepFunc:(ModelRoot,List[Column],Model) => (VD,List[MD],List[VD],Double,Long)):
   (List[Double], Parameters, Double, Int) = {
     var tree = treex
@@ -40,27 +43,27 @@ object Optimizer extends LazyLogging {
       tree = tree.changeBranches(br)
       param = pr
       if(i > 1 && currentlgl > lgl) {
-        logger.error("log likelihood decreased.")
+        //logger.error("log likelihood decreased.")
         converged = true
       }
       currentlgl = lgl
       i += 1
     }
-    logger.info("optimized_log_likelihood=" + currentlgl + " iteration=" + i)
+    //logger.info("optimized_log_likelihood=" + currentlgl + " iteration=" + i)
     val tmp = regularize(tree.branches, param)
     (tmp._1, tmp._2, currentlgl, i)
   }
 
-  def em(itemax: Int, treex: ModelRoot, colsx: ParArray[List[Array[Base]]], paramx: Parameters) =
+  def em(itemax: Int, treex: ModelRoot, colsx: GenSeq[List[Array[Base]]], paramx: Parameters) =
     emLike(itemax, treex, colsx, paramx, estep)
 
-  def ldem(itemax: Int, treex: ModelRoot, colsx: ParArray[List[Array[Base]]], paramx: Parameters) =
+  def ldem(itemax: Int, treex: ModelRoot, colsx: GenSeq[List[Array[Base]]], paramx: Parameters) =
     emLike(itemax, treex, colsx, paramx, ldestep)
 
-  protected def gdLike(maxit:Int, template:ModelRoot, cols:ParArray[List[Array[Base]]], iniparam:DenseVector[Double],
+  protected def gdLike(maxit:Int, template:ModelRoot, cols:GenSeq[List[Array[Base]]], iniparam:DenseVector[Double],
                         mapper:(ModelRoot,List[Array[Base]],Model) => (VD,MD,List[Double],Double)):
   (List[Double], Parameters, Double) = {
-    //val cols = Maf.readMaf(maf, 1000).toParArray
+    //val cols = Maf.readMaf(maf, 1000).toGenSeq
     //val template = ModelTree.fromFile(nh)
 
     val f = new DiffFunction[VD] {
@@ -85,10 +88,10 @@ object Optimizer extends LazyLogging {
     (tmp._1, tmp._2, -lgl)
   }
 
-  def gd(maxit:Int, template:ModelRoot, cols:ParArray[List[Array[Base]]], iniparam:DenseVector[Double]) =
+  def gd(maxit:Int, template:ModelRoot, cols:GenSeq[List[Array[Base]]], iniparam:DenseVector[Double]) =
     gdLike(maxit, template, cols, iniparam, gradMap)
 
-  def ldgd(maxit:Int, template:ModelRoot, cols:ParArray[List[Array[Base]]], iniparam:DenseVector[Double]) =
+  def ldgd(maxit:Int, template:ModelRoot, cols:GenSeq[List[Array[Base]]], iniparam:DenseVector[Double]) =
     gdLike(maxit, template, cols, iniparam, ldgradMap)
 
   protected def mkreg(p: Parameters) = {
@@ -109,7 +112,7 @@ object Optimizer extends LazyLogging {
   def ldestep(pr:ModelRoot,cols:List[Column],model:Model): (VD,List[MD],List[VD],Double,Long) =
     LDTree.suffStat(pr,model,cols)
 
-  def mstep(suffs: ParArray[(VD, List[MD], List[VD], Double, Long)],model:Model, branches:List[Double]):
+  def mstep(suffs: GenSeq[(VD, List[MD], List[VD], Double, Long)],model:Model, branches:List[Double]):
   (Double, List[Double], Parameters) = {
     val (rootns, ns, fd, lgl, n):(VD, List[MD], List[VD], Double, Long) = suffs.reduce
     {
@@ -144,7 +147,7 @@ object Optimizer extends LazyLogging {
     (pi,b,br,likelihood)
   }
 
-  protected def gradReduce(grads:ParArray[(VD,MD,List[Double],Double)],breg:MD,pireg:MD)
+  protected def gradReduce(grads:GenSeq[(VD,MD,List[Double],Double)],breg:MD,pireg:MD)
   : (Double,VD) = {
     val (pi, b, br, lgl): (VD, MD, List[Double], Double) = grads.reduce {
       (x, y) =>

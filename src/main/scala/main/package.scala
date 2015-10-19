@@ -7,13 +7,13 @@ package object main {
   trait SuffStatParser extends JavaTokenParsers {
     def ns: Parser[DenseVector[Double]] = "ns:" ~> densevector
 
-    def doubleArray: Parser[Array[Double]] = rep(floatingPointNumber) ^^ { case xs => xs.map(_.toDouble).toArray }
+    def doubleArray: Parser[Array[Double]] = repsep(floatingPointNumber,",") ^^ { case xs => xs.map(_.toDouble).toArray }
 
     def densevector: Parser[DenseVector[Double]] = "(" ~> doubleArray <~ ")" ^^ { case xs => DenseVector(xs) }
 
-    def Ns: Parser[List[DenseVector[Double]]] = "Ns:" ~> rep(densevector)
+    def Ns: Parser[List[DenseVector[Double]]] = "Ns:" ~> repsep(densevector,",")
 
-    def Fd: Parser[List[DenseMatrix[Double]]] = "Fd:" ~> rep(densematrix(4, 4))
+    def Fd: Parser[List[DenseMatrix[Double]]] = "Fd:" ~> repsep(densematrix(4, 4),",")
 
     def densematrix(n: Int, m: Int): Parser[DenseMatrix[Double]] = "(" ~> doubleArray <~ ")" ^^ { case xs => new DenseMatrix[Double](n, m, xs) }
 
@@ -28,9 +28,9 @@ package object main {
 
     def b: Parser[DenseMatrix[Double]] = "b:" ~> densematrix(4, 4)
 
-    def branch: Parser[List[Double]] = "branch: (" ~> rep(floatingPointNumber) <~ ")" ^^ { case xs => xs.map(_.toDouble) }
+    //def branch: Parser[List[Double]] = "branch: (" ~> repsep(floatingPointNumber, "") <~ ")" ^^ { case xs => xs.map(_.toDouble) }
 
-    def gradient: Parser[(VD, MD, List[Double], Double)] =
-      pi ~ b ~ branch ~ lgl ^^ { case x ~ y ~ z ~ w => (x, y, z, w) }
+   // def gradient: Parser[(VD, MD, List[Double], Double)] =
+   //   pi ~ b ~ branch ~ lgl ^^ { case x ~ y ~ z ~ w => (x, y, z, w) }
   }
 }

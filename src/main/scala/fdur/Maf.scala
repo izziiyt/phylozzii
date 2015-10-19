@@ -6,7 +6,7 @@ import scala.io.Source
 import alignment.Base
 
 object Maf {
-  def readMaf(mf:String, per:Int):Array[List[Array[Base]]] = {
+  def readMaf(mf:String, per:Int): Array[List[Array[Base]]] = {
     val it = MafUnitIterator.fromMSA(mf)
     val totalunit = it.reduceLeft{(n,u) => n + u}
     val bases = totalunit.seqs

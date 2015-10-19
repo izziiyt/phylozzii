@@ -8,10 +8,14 @@ object Counter {
   def main(args:Array[String]):Unit = {
     val f = new File(args(0))
     val counts = Array.fill[Long](5)(0)
-    val s = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(f))))
+    val s =
+      if(f.getName.endsWith(".gz"))
+        new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(f))))
+      else
+        new BufferedReader(new InputStreamReader(new FileInputStream(f)))
     var line = s.readLine()
     while(line != null){
-      if ( line.head == 's') {
+      if (line.length > 0 && line.head == 's') {
         val xs = line.split("\\s+")(6)
         xs.toCharArray.foreach(x => counts(Base.fromChar(x).toInt) += 1)
       }

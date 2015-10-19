@@ -1,10 +1,13 @@
 package fdur
 
-import java.io.{FileWriter, PrintWriter}
+import java.io._
 
 import breeze.linalg._
 import org.scalatest.FunSuite
 import breeze.plot._
+
+import scala.io.Source
+
 class MainTest extends FunSuite {
   val nh = ModelTree.fromFile("src/test/resources/fdur/hoge3.nh")
   val cols = Maf.readMaf("src/test/resources/fdur/tmp.maf", 1000).toParArray
@@ -44,6 +47,7 @@ class MainTest extends FunSuite {
     assert(myparam.pi == DenseVector(0.28909961301778464, 0.3172888658504728, 0.14012353506358088, 0.2534879860681617))
     assert(mytree == List(0.03235316347212327, 0.0944956917371125, 0.08804007060600447))
   }*/
+  /*
   test("EM and GD ver 3") {
     val nh = ModelTree.fromFile("src/test/resources/fdur/fdur.nh")
     val cols = Maf.readMaf("src/test/resources/fdur/fdur.maf", 1000).toParArray
@@ -110,6 +114,17 @@ class MainTest extends FunSuite {
       p2.ylabel = "value"
       f.saveas("target/" + n + ".png")
       */
+    }
+  }*/
+  test("hoge"){
+    val files = new File("/home/yuto/huga/phylonh").listFiles()
+    for(f <- files){
+      val s = Source.fromFile(f)
+      val x = s.getLines().fold("")(_ + _)
+      val tree = ModelTree.fromString(x)
+      val w = new PrintWriter("target/phylonh/" + f.getName)
+      w.println(tree.branches.mkString(","))
+      w.close()
     }
   }
 }

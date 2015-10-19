@@ -8,7 +8,7 @@ import breeze.numerics.{log, exp}
 import scala.io.Source
 import scala.util.parsing.combinator.JavaTokenParsers
 
-sealed class Parameters(val Bvec:VD,val pi:VD){
+case class Parameters(val Bvec:VD,val pi:VD){
   require(Bvec.length == 6)
   require(pi.length == 4)
 
@@ -38,7 +38,7 @@ sealed class Parameters(val Bvec:VD,val pi:VD){
 }
 
 object Parameters extends ParameterParser{
-  def apply(Bvec:VD,pi:VD) = new Parameters(Bvec,pi)
+  //def apply(Bvec:VD,pi:VD) = new Parameters(Bvec,pi)
 
   def apply(v:VD) = {
     require(v.length == 10)

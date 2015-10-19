@@ -21,7 +21,7 @@ class QTest extends FunSuite{
     x.close()
     for(_ <- 0 to 100) {
       QMapper.main(Array("em", maf, param, nh, "tmp/suffstat/hoge.txt"))
-      QReducer.main(Array("em", "tmp/suffstat", param, nh, "tmp/lgl.txt"))
+      QReducer.main(Array("em", "tmp/suffstat", param, nh))
     }
     PostProcess.main(Array("em",param,nh))
     val parameter = Parameters.fromFile(param)
