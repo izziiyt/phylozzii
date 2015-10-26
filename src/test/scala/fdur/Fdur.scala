@@ -6,7 +6,7 @@ import org.scalatest.FunSuite
 import breeze.linalg._
 
 class FdurTest extends FunSuite{
-  test("fdur"){
+ /* test("fdur"){
     val nh = ModelTree.fromFile("src/test/resources/fdur/fdur.nh")
     val cols = Maf.readMaf("src/test/resources/fdur/fdur.maf",1000).toParArray
     val pi = DenseVector(0.23137857635453807, 0.28408070157281884, 0.27729375318455474, 0.20724696888808836)
@@ -45,5 +45,5 @@ class FdurTest extends FunSuite{
     p3.title = "mutation rate"
     f.saveas("target/R.png")
     */
-  }
+  }*/
 }

@@ -1,7 +1,9 @@
 package fdur
 
+import java.io.PrintWriter
+
 import scala.annotation.tailrec
-import scala.collection.mutable.ListBuffer
+import scala.collection.mutable.{ArrayBuffer, ListBuffer}
 import scala.io.Source
 import alignment.Base
 
@@ -12,6 +14,25 @@ object Maf {
     val bases = totalunit.seqs
     val tmp = div(bases,per)
     tmp
+  }
+
+  def convert(mf:String,spmf:String,per:Int,species:Int): Unit = {
+    val it = MafUnitIterator.fromMSA(mf)
+    val w = new PrintWriter(spmf)
+    var tmp = MafUnit.zero(species)
+    while(it.hasNext){
+      tmp = tmp + it.next()
+      while(tmp.length > per){
+        val (x,y) = tmp.sliceAt(per)
+        w.println(x.seqs.map(z => z.mkString("")).reduce(_ + "," + _))
+        tmp = y
+      }
+    }
+
+    if(tmp.length > 0){
+      w.println(tmp.seqs.map(z => z.mkString("")).reduce(_ + "," + _))
+    }
+    w.close()
   }
 
   def div(seqs:List[Array[Base]],size:Int):Array[List[Array[Base]]] = {
@@ -28,14 +49,21 @@ object Maf {
 
 }
 
-class MafUnit(val seqs:List[Array[Base]],val lengthes:List[Int]){
-  require(seqs.forall(_.length == seqs.head.length))
-  def +(that:MafUnit) = new MafUnit((seqs,that.seqs).zipped.map(_ ++ _),(lengthes,that.lengthes).zipped.map(_ + _))
+class MafUnit(val seqs:List[Array[Base]],val length:Int){
+  def +(that:MafUnit) = new MafUnit((seqs, that.seqs).zipped.map(_ ++ _), length + that.length)
+  def sliceAt(n: Int) = (
+    new MafUnit(seqs.map(_.take(n)), n),
+    new MafUnit(seqs.map(_.drop(n)), length - n)
+    )
 }
 
 
 object MafUnit {
-  def apply(seq:List[String],lengthes:List[Int]) = new MafUnit(seq.map(xs => xs.toCharArray.map(x => Base.fromChar(x))),lengthes)
+  def apply(seq:List[String]) = {
+    require(seq.forall(_.length == seq.head.length))
+    new MafUnit(seq.map(xs => xs.toCharArray.map(x => Base.fromChar(x))),seq.head.length)
+  }
+  def zero(n: Int) = new MafUnit(List.fill[Array[Base]](n)(Array()),0)
 }
 
 class MafUnitIterator private (file:String,sep:String = """\p{javaWhitespace}+""") extends Iterator[MafUnit] {
@@ -57,15 +85,15 @@ class MafUnitIterator private (file:String,sep:String = """\p{javaWhitespace}+""
     if(s.isEmpty) return None
     val buf = new ListBuffer[String]
     val buf2 = new ListBuffer[Int]
-    for(line <- lines;if line != "" && !line.startsWith("#")){
+    for(line <- lines; if line != "" && !line.startsWith("#")){
       val p = line.split(sep)
       p(0) match{
         case "s" => buf += p(6); buf2 += p(5).toInt
-        case "a" => if(buf.nonEmpty) return Some(MafUnit(buf.toList,buf2.toList))
+        case "a" => if(buf.nonEmpty) return Some(MafUnit(buf.toList))
         case _ => Unit
       }
     }
-    if(buf.nonEmpty && buf2.nonEmpty) Some(MafUnit(buf.toList,buf2.toList))
+    if(buf.nonEmpty && buf2.nonEmpty) Some(MafUnit(buf.toList))
     else{
       s.close()
       None

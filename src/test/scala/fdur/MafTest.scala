@@ -21,7 +21,7 @@ class MafTest extends FunSuite {
     (xs2,ys2).zipped.foreach((as,bs) => f(as,bs))
   }*/
 
-  test("readMaf") {
+  /*test("readMaf") {
     Counter.main(Array("src/test/resources/fdur/mafGz/test1.maf.gz"))
     /*val files = new File("src/test/resources/fdur/mafGz").listFiles()
 
@@ -40,5 +40,9 @@ class MafTest extends FunSuite {
       }
     }
     println(counts.mkString(" "))*/
+  }*/
+
+  test("convert"){
+    Maf.convert("/home/yuto/result.txt","target/result.sp.txt",512,100)
   }
 }

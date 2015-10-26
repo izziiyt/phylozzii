@@ -8,7 +8,7 @@ import breeze.plot._
 
 import scala.io.Source
 
-class MainTest extends FunSuite {
+/*class MainTest extends FunSuite {
   val nh = ModelTree.fromFile("src/test/resources/fdur/hoge3.nh")
   val cols = Maf.readMaf("src/test/resources/fdur/tmp.maf", 1000).toParArray
   val param = Parameters.fromFile("src/test/resources/fdur/testparam.txt")
@@ -127,7 +127,7 @@ class MainTest extends FunSuite {
       w.close()
     }
   }
-}
+}*/
 /*test("em&gd"){
     val cols = Maf.readMaf("src/test/resources/fdur/hoge33.maf",1000).toParArray
     val nh = ModelTree.fromFile("src/test/resources/fdur/hoge33.nh")
