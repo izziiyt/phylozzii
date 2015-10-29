@@ -66,6 +66,7 @@ class EEATest extends FunSuite with LDTreeUtilTrait{
     val b = DenseVector(4,5,6)
     val c = diag(a) * DenseMatrix.ones[Int](3,3) * diag(b)
     assert(c == DenseMatrix((4,5,6),(8,10,12),(12,15,18)))
+    assert(a * b.t == DenseMatrix((4,5,6),(8,10,12),(12,15,18)))
 }
 
   test("inside && outside"){

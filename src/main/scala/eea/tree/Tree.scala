@@ -139,29 +139,29 @@ trait LDChild extends LDTree with PrimitiveChild{
     val tmp = (exp(x) - exp(y)) / (x - y); if(tmp.isNaN) exp(x) else tmp
   }
 
-  protected def thisBls(fromPar:Array[VL],fromParD:Array[VL]): Array[Double] = {
-    def f(as:Array[VL],bs:Array[VL],dlt:MD):Array[Double] = (as,bs).zipped.map {
-      (a, b) =>
-        val tmp = diag(a.value) * DenseMatrix.ones[Double](4,4) * diag(b.value)
-        val reg = sum(tmp)
-        sum(tmp :* dlt) / (if(reg == 0.0) 1.0 else reg)
+  protected def thisBls(lgl: Array[Double]): Array[Double] = {
+    def f(as:Array[VL],bs:Array[VL],dlt:MD):Array[Double] = (as,bs,lgl).zipped.map {
+      (a, b, l) =>
+        val tmp = a.value * b.value.t
+        //val tmp = diag(a.value) * DenseMatrix.ones[Double](4,4) * diag(b.value)
+        sum(tmp :* dlt) / l
     }
     val ax = f(alphaD, beta, dltA)
     val bx = f(alpha, betaD, dltB)
     (ax, bx).zipped.map(_ + _)
   }
 
-  def bls(fromPar:Array[VL], fromParD:Array[VL]): Array[Double]
+  def bls(lgl:Array[Double]):Array[Double]
 }
 
 trait LDParent extends LDTree with PrimitiveParent {
   def leafList: List[LDLeaf] = children.foldLeft(Nil:List[LDLeaf])((n,x) => x.leafList ::: n)
   override def children: List[LDChild]
   def toList: List[LDTree] = this :: children.foldLeft(Nil:List[LDTree])((n,x) => x.toList ::: n)
-  def bls: Array[Double] = {
+  def bls(lgl:Array[Double]): Array[Double] = {
     require(beta.nonEmpty && betaD.nonEmpty)
     val n = beta.length
-    children.foldLeft(Array.fill[Double](n)(0.0))((m,x) => (m,x.bls(beta, betaD)).zipped.map(_ + _))
+    children.foldLeft(Array.fill[Double](n)(0.0))((m,x) => (m,x.bls(lgl)).zipped.map(_ + _))
   }
 }
 
@@ -169,20 +169,22 @@ case class LDLeaf(name:String, t:Double, trans:ML, transD:ML, alpha:Array[VL], a
                 betaD:Array[VL], model:Model) extends LDChild with PrimitiveLeaf{
   def toList:List[LDTree] = this :: Nil
   def leafList = this :: Nil
-  def bls(fromPar:Array[VL],fromParD:Array[VL]) = thisBls(fromPar,fromParD)
+  def bls(lgl:Array[Double]) = thisBls(lgl)
 }
 
 case class LDNode(children:List[LDChild], t:Double, trans:ML, transD:ML,alpha:Array[VL], alphaD:Array[VL],
                 beta:Array[VL], betaD:Array[VL], model:Model) extends LDChild with LDParent with PrimitiveNode {
-  def bls(fromPar:Array[VL],fromParD:Array[VL]) = {
-    (super.bls, thisBls(fromPar,fromParD)).zipped.map(_ + _)
-  }
+  override def bls(lgl:Array[Double]) = (super.bls(lgl), thisBls(lgl)).zipped.map(_ + _)
 }
 
 case class LDRoot(children:List[LDChild], trans:ML, transD:ML, alpha:Array[VL], alphaD:Array[VL],
                 beta:Array[VL], betaD:Array[VL], model:Model) extends PrimitiveRoot with LDParent{
   override def leafList = super.leafList.reverse
   override def toList = super.toList.reverse
+  def bls: Array[Double] = {
+    val lgl = alpha.map(a => a.value.t * model.pi)
+    super.bls(lgl)
+  }
 }
 
 object LDLeaf extends LDTreeUtilTrait{
