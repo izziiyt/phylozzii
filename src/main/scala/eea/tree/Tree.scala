@@ -109,11 +109,18 @@ object LDTree extends LDTreeUtilTrait {
     outside(afterIn)
   }
 
+  // probablistic Barnch Length Score, sum of expected preserved time on all branches.
   def bls(tr:ModelRoot,model:Model,columns:List[Array[Base]],target:String): Array[Double] = {
     val root = inout(tr,model,columns,target)
     root.bls
   }
-
+  /* probablistic Branch Length Score, sum of expected preserved time on branches which are
+  ancestors of target species.Branch Length Score in Ancestory.
+   */
+  def blsa(tr:ModelRoot,model:Model,columns:List[Array[Base]],target:String): Array[Double] = {
+    val root = inout(tr,model,columns,target)
+    root.blsa
+  }
 }
 
 trait LDChild extends LDTree with PrimitiveChild{
@@ -139,7 +146,7 @@ trait LDChild extends LDTree with PrimitiveChild{
     val tmp = (exp(x) - exp(y)) / (x - y); if(tmp.isNaN) exp(x) else tmp
   }
 
-  protected def thisBls(lgl: Array[Double]): Array[Double] = {
+  /*protected def thisBls(lgl: Array[Double]): Array[Double] = {
     def f(as:Array[VL],bs:Array[VL],dlt:MD):Array[Double] = (as,bs,lgl).zipped.map {
       (a, b, l) =>
         val tmp = a.value * b.value.t
@@ -149,9 +156,29 @@ trait LDChild extends LDTree with PrimitiveChild{
     val ax = f(alphaD, beta, dltA)
     val bx = f(alpha, betaD, dltB)
     (ax, bx).zipped.map(_ + _)
-  }
+  }*/
+
+  protected def innerBls(lgl:Array[Double],as:Array[VL],bs:Array[VL],dlt:MD):Array[Double] =
+    (as,bs,lgl).zipped.map {
+      (a, b, l) =>
+        val tmp = a.value * b.value.t
+        sum(tmp :* dlt) / l
+    }
+
+  /*protected def thisBlsa(lgl: Array[Double]): Array[Double] = {
+    def f(as:Array[VL],bs:Array[VL],dlt:MD):Array[Double] = (as,bs,lgl).zipped.map {
+      (a, b, l) =>
+        val tmp = a.value * b.value.t
+        //val tmp = diag(a.value) * DenseMatrix.ones[Double](4,4) * diag(b.value)
+        sum(tmp :* dlt) / l
+    }
+    f(alphaD, beta, dltA)
+    //val bx = f(alpha, betaD, dltB)
+    //(ax, bx).zipped.map(_ + _)
+  }*/
 
   def bls(lgl:Array[Double]):Array[Double]
+  def blsa(lgl:Array[Double]):Array[Double]
 }
 
 trait LDParent extends LDTree with PrimitiveParent {
@@ -163,18 +190,36 @@ trait LDParent extends LDTree with PrimitiveParent {
     val n = beta.length
     children.foldLeft(Array.fill[Double](n)(0.0))((m,x) => (m,x.bls(lgl)).zipped.map(_ + _))
   }
+  def blsa(lgl:Array[Double]): Array[Double] = {
+    require(beta.nonEmpty && betaD.nonEmpty)
+    val n = beta.length
+    children.foldLeft(Array.fill[Double](n)(0.0))((m,x) => (m,x.blsa(lgl)).zipped.map(_ + _))
+  }
 }
 
 case class LDLeaf(name:String, t:Double, trans:ML, transD:ML, alpha:Array[VL], alphaD:Array[VL], beta:Array[VL],
                 betaD:Array[VL], model:Model) extends LDChild with PrimitiveLeaf{
   def toList:List[LDTree] = this :: Nil
   def leafList = this :: Nil
-  def bls(lgl:Array[Double]) = thisBls(lgl)
+  def bls(lgl:Array[Double]) =
+    (innerBls(lgl,alphaD, beta, dltA),innerBls(lgl,alpha, betaD, dltB)).zipped.map(_ + _)
+  def blsa(lgl:Array[Double]) =
+    innerBls(lgl, alphaD, beta, dltA)
 }
 
 case class LDNode(children:List[LDChild], t:Double, trans:ML, transD:ML,alpha:Array[VL], alphaD:Array[VL],
                 beta:Array[VL], betaD:Array[VL], model:Model) extends LDChild with LDParent with PrimitiveNode {
-  override def bls(lgl:Array[Double]) = (super.bls(lgl), thisBls(lgl)).zipped.map(_ + _)
+  override def bls(lgl:Array[Double]) = {
+    val ax = innerBls(lgl,alphaD, beta, dltA)
+    val bx = innerBls(lgl,alpha, betaD, dltB)
+    (super.bls(lgl), ax, bx).zipped.map(_ + _ + _)
+  }
+  //override def blsa(lgl:Array[Double]) = (super.bls(lgl), thisBlsa(lgl)).zipped.map(_ + _)
+  override def blsa(lgl:Array[Double]) = {
+    val ax = innerBls(lgl,alphaD, beta, dltA)
+    (super.blsa(lgl), ax).zipped.map(_ + _)
+  }
+
 }
 
 case class LDRoot(children:List[LDChild], trans:ML, transD:ML, alpha:Array[VL], alphaD:Array[VL],
@@ -184,6 +229,10 @@ case class LDRoot(children:List[LDChild], trans:ML, transD:ML, alpha:Array[VL], 
   def bls: Array[Double] = {
     val lgl = alpha.map(a => a.value.t * model.pi)
     super.bls(lgl)
+  }
+  def blsa: Array[Double] = {
+    val lgl = alpha.map(a => a.value.t * model.pi)
+    super.blsa(lgl)
   }
 }
 

@@ -8,7 +8,8 @@ import org.scalatest.FunSuite
 import alignment.Base.{A,C,G,T,N}
 import alignment.Base
 class MafTest extends FunSuite {
-  /*test("readmaf") {
+  test("readmaf") {
+    //println("hoge.huga".split('.').mkString(","))
     def f(xs:List[Array[Base]],ys:List[Array[Base]]):Unit = assert((xs,ys).zipped.forall((x,y) => x sameElements y))
     val xs1 = Maf.readMaf("src/test/resources/fdur/test1.maf", 10)
     val ys1 = List(Array[Base](C, A, G, C, A, C, T, T), Array[Base](C, A, G, G, A, G, T, T), Array[Base](C, T, G, G, T, C, G, G))
@@ -19,7 +20,7 @@ class MafTest extends FunSuite {
       List(Array[Base](G,C,A,C,T,T,A,A,T), Array[Base](G,G,A,G,T,T,N,N,T), Array[Base](G,G,T,C,G,G,N,N,G))
     )
     (xs2,ys2).zipped.foreach((as,bs) => f(as,bs))
-  }*/
+  }
 
   /*test("readMaf") {
     Counter.main(Array("src/test/resources/fdur/mafGz/test1.maf.gz"))
@@ -42,7 +43,7 @@ class MafTest extends FunSuite {
     println(counts.mkString(" "))*/
   }*/
 
-  test("convert"){
+  /*test("convert"){
     Maf.convert("/home/yuto/result.txt","target/result.sp.txt",512,100)
-  }
+  }*/
 }

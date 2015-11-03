@@ -12,7 +12,7 @@ libraryDependencies  ++= Seq(
   //"com.typesafe.scala-logging" % "scala-logging-slf4j_2.10" % "2.1.2",
   //"ch.qos.logback" % "logback-classic" % "1.1.3",
   "izzii" %% "biutil" % "0.1",
-  ("org.apache.spark" %% "spark-core" % "1.5.1").
+  ("org.apache.spark" % "spark-core_2.10" % "1.5.1").
     exclude("org.mortbay.jetty", "servlet-api").
     exclude("com.google.guava","guava").
     exclude("org.apache.hadoop","hadoop-yarn-api").
@@ -23,6 +23,8 @@ libraryDependencies  ++= Seq(
     exclude("com.esotericsoftware.minlog", "minlog"),
     "com.esotericsoftware.kryo" % "kryo" % "2.24.0"
 )
+
+//scalacOptions += "-feature"
 
 resolvers ++= Seq(
   "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/",
@@ -36,14 +38,14 @@ assemblyMergeStrategy in assembly := {
   case PathList(ps @ _*) if Assembly.isReadme(ps.last) || Assembly.isLicenseFile(ps.last) =>
     MergeStrategy.rename
   case PathList("META-INF", xs @ _*) =>
-    (xs map {_.toLowerCase}) match {
+    xs map {_.toLowerCase} match {
       case ("manifest.mf" :: Nil) | ("index.list" :: Nil) | ("dependencies" :: Nil) =>
         MergeStrategy.discard
-      case ps @ (x :: xs) if ps.last.endsWith(".sf") || ps.last.endsWith(".dsa") =>
+      case ps @ (y :: ys) if ps.last.endsWith(".sf") || ps.last.endsWith(".dsa") =>
         MergeStrategy.discard
-      case "plexus" :: xs =>
+      case "plexus" :: ys =>
         MergeStrategy.discard
-      case "services" :: xs =>
+      case "services" :: ys =>
         MergeStrategy.filterDistinctLines
       case ("spring.schemas" :: Nil) | ("spring.handlers" :: Nil) =>
         MergeStrategy.filterDistinctLines

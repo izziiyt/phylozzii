@@ -4,12 +4,10 @@ import breeze.linalg.{DenseMatrix, DenseVector}
 import breeze.math.LogDouble
 import breeze.math.LogDouble._
 
-import scala.annotation.tailrec
-import scala.math._
-import scala.util.Random
-
 package object fdur {
   import alignment.Base
+  import scala.language.reflectiveCalls
+  import scala.language.implicitConversions
 
   type VD = DenseVector[Double]
   type MD = DenseMatrix[Double]
