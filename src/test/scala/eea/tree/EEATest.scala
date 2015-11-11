@@ -3,17 +3,30 @@ package eea.tree
 import alignment.Base._
 import alignment.Base
 import breeze.linalg.{diag, DenseMatrix, DenseVector}
-import breeze.numerics.log
-import fdur.Parameters
+import fdur.{Model, ModelTree, Maf, Parameters}
 import org.scalatest.FunSuite
 
 class EEATest extends FunSuite with LDTreeUtilTrait{
 
-  test("BLSer"){
-    main.BLSer.main(Array("src/test/resources/eea/blstest.maf",
+  /*test("BLSer"){
+    main.BLSer.main(Array("src/test/resources/eea/output.maf",
       "src/test/resources/eea/blstest.nh",
-      "src/test/resources/eea/blstest.param"))
+      "src/test/resources/eea/blstest.param",
+    "hg19","target/result.wig",
+    "src/test/resources/hg19.100way.nh"))
+  }*/
 
+  test("mkCols"){
+    val mu = Maf.MafUnitIterator.fromMSA("src/test/resources/eea/huga3.maf")
+    val tree = ModelTree.fromFile("src/test/resources/eea/huga3.nh")
+    val cols = mu.map{
+      x =>
+        main.BLSer.mkCol(x,tree.names,"hg19")
+    }
+    //cols.foreach(x => x.foreach(y => println(y.mkString(""))))
+    val model = Model(Parameters.fromFile("src/test/resources/eea/blstest.param"))
+    val hoge = cols.map(c => LDTree.bls(tree,model,c,"hg19"))
+    hoge.foreach(x => println(x.mkString(",")))
   }
 
   test("confound"){
@@ -68,14 +81,22 @@ class EEATest extends FunSuite with LDTreeUtilTrait{
     (ldtree.toList,ians).zipped.foreach{(x,y) => assert(x.alphaD.head.value == y)}
     (ldtree.toList,oans).zipped.foreach{(x,y) => assert(x.betaD.head.value == y)}
   }
-  test("hugahuga"){
-    val model = fdur.Model(Parameters(DenseVector(0.3,0.1,0.1,0.2,0.2,0.1),
+
+  test("inside&outside2"){
+    val model = fdur.Model(Parameters(DenseVector(0.3,0.2,0.1,0.4,0.5,0.9),
       DenseVector(1.0,2.0,3.0,4.0)))
-    val tree = fdur.ModelTree.fromFile("src/test/resources/eea/hoge3.nh")
-    val cols = fdur.Maf.readMaf("src/test/resources/fdur/small.maf",512)
-    //val cols = Array[List[Array[Base]]](List(Array(Base.C),Array(Base.G),Array(Base.T)))
-    val results = cols.map(c => LDTree.bls(tree,model,c,"hg18"))
-    println(results.head.mkString(","))
+    val tree = fdur.ModelTree.fromFile("src/test/resources/eea/hoge5.nh")
+    val cols: List[Array[Base]] = List(Array(Base.C),Array(Base.C),Array(Base.C),Array(Base.C),Array(Base.C))
+    val target = "alpha"
+    val ldtree = LDTree.inout(tree,model,cols,target)
+    val fldtree = fdur.LDTree.inout(tree,model,cols)
+    (ldtree.toList,fldtree.toList).zipped.foreach((e,f) => assert(e.alpha.head == f.alpha.head))
+    //ldtree.toList.foreach(e => println(e.alpha.head.toArray.map(_.value).mkString(",")))
+    val x = LDTree.bls(tree,model,cols,"alpha")
+    //println(x.mkString(","))
+    //println(tree.branches.sum)
+    //(ldtree.toList,fldtree.toList).zipped.foreach((e,f) => assert(e.beta.head == f.beta.head))
+
   }
 
 }

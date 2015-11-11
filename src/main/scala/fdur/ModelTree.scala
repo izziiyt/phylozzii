@@ -18,17 +18,34 @@ object ModelTree extends NHParser{
 trait ModelParent extends PrimitiveParent {
   override def children: List[ModelChild]
   def mappedMCL[T](f: ModelChild => List[T]): List[T] = children.foldLeft(Nil:List[T]){(n,x) => f(x) ::: n}
-  def leafList = mappedMCL(_ leafList)
+  def leafList = mappedMCL(_.leafList)
 }
 
 trait ModelChild extends PrimitiveChild {
-  def changeBranches(branches:List[Double]): (ModelChild, List[Double])
   def leafList: List[ModelLeaf]
   def init: ModelChild
+  def changeBranches(branches:List[Double]): (ModelChild, List[Double])
+  def changeNames(names:List[String]): (ModelChild, List[String])
 }
 
 case class ModelRoot(children:List[ModelChild]) extends ModelParent with PrimitiveRoot{
   override def leafList: List[ModelLeaf] = super.leafList.reverse
+
+  def changeNames(names: List[String]): ModelRoot = {
+    @tailrec
+    def innerChangeNames(ch: List[ModelChild], ns: List[String], result: List[ModelChild]):
+    (List[ModelChild], List[String]) = {
+      if (ch == Nil) (result, ns)
+      else {
+        val (newch, newbr) = ch.head.changeNames(ns)
+        innerChangeNames(ch.tail, newbr, newch :: result)
+      }
+    }
+    val (newch, newbr) = innerChangeNames(children, names, Nil)
+    if (newbr.nonEmpty) sys.error("BAD branches")
+    ModelRoot(newch.reverse)
+  }
+
   def changeBranches(branches: List[Double]):ModelRoot = {
     @tailrec
     def innerChangeBranches(ch: List[ModelChild], br: List[Double], result: List[ModelChild]):
@@ -40,7 +57,7 @@ case class ModelRoot(children:List[ModelChild]) extends ModelParent with Primiti
       }
     }
     val (newch,newbr) = innerChangeBranches(children, branches, Nil)
-    if(newbr.nonEmpty) sys.error("BAD branches")
+    if (newbr.nonEmpty) sys.error("BAD branches")
     ModelRoot(newch.reverse)
   }
 
@@ -83,6 +100,7 @@ case class ModelRoot(children:List[ModelChild]) extends ModelParent with Primiti
 }
 
 case class ModelNode(children:List[ModelChild],t:Double) extends ModelChild with ModelParent with PrimitiveNode {
+
   def changeBranches(branches: List[Double]):(ModelNode,List[Double]) = {
     @tailrec
     def innerChangeBranches(ch: List[ModelChild], br: List[Double], result: List[ModelChild]):
@@ -95,6 +113,20 @@ case class ModelNode(children:List[ModelChild],t:Double) extends ModelChild with
     }
     val (newch,newbr) = innerChangeBranches(children, branches, Nil)
     (ModelNode(newch.reverse, newbr.head), newbr.tail)
+  }
+
+  def changeNames(branches: List[String]):(ModelNode,List[String]) = {
+    @tailrec
+    def innerChangeNames(ch: List[ModelChild], ns: List[String], result: List[ModelChild]):
+    (List[ModelChild], List[String]) = {
+      if (ch == Nil) (result, ns)
+      else {
+        val (newch,newns) = ch.head.changeNames(ns)
+        innerChangeNames(ch.tail, newns, newch :: result)
+      }
+    }
+    val (newch,newns) = innerChangeNames(children, branches, Nil)
+    (ModelNode(newch.reverse, t), newns)
   }
 
   def init: ModelChild = {
@@ -118,7 +150,9 @@ case class ModelNode(children:List[ModelChild],t:Double) extends ModelChild with
 
 case class ModelLeaf(name:String,t:Double) extends ModelChild with PrimitiveLeaf {
   def leafList: List[ModelLeaf] = this :: Nil
-  def changeBranches(branches:List[Double]) = (ModelLeaf(name,branches.head),branches.tail)
+  def changeBranches(branches:List[Double]): (ModelLeaf, List[Double]) = (ModelLeaf(name,branches.head),branches.tail)
+  def changeNames(names:List[String]):(ModelLeaf, List[String]) = (ModelLeaf(names.head,t), names.tail)
+
   def init = {
     sys.error("LeafInitCalledError")
     null

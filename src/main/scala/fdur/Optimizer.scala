@@ -164,7 +164,7 @@ object Optimizer extends {
     (-lgl, -DenseVector.vertcat(bgrad,pigrad,brgrad))
   }
 
-  def regularize(brnc:List[Double],param:Parameters): (List[Double],Parameters) = {
+  def regularize(brnc:List[Double], param:Parameters): (List[Double],Parameters) = {
     val model = Model(param)
     val summ = - (0 to 3).foldLeft(0.0){(x,i) => x + model.pi(i) * model.R(i,i)}
     val br = brnc map (_ * summ)
