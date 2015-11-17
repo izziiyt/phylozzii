@@ -1,6 +1,7 @@
 package fdur
 
 import java.io.FileReader
+
 import scala.annotation.tailrec
 import scala.util.parsing.combinator.JavaTokenParsers
 
@@ -14,14 +15,18 @@ object ModelTree extends NHParser{
   }
 }
 
-
 trait ModelParent extends PrimitiveParent {
   override def children: List[ModelChild]
   def mappedMCL[T](f: ModelChild => List[T]): List[T] = children.foldLeft(Nil:List[T]){(n,x) => f(x) ::: n}
   def leafList = mappedMCL(_.leafList)
+  def anclen(target: String):Double = {
+    val tmp = children.foldLeft(0.0){(n,x) => n + x.anclen(target)}
+    if(tmp == 0.0) 0.0 else tmp + t
+  }
 }
 
 trait ModelChild extends PrimitiveChild {
+  def anclen(target: String):Double
   def leafList: List[ModelLeaf]
   def init: ModelChild
   def changeBranches(branches:List[Double]): (ModelChild, List[Double])
@@ -30,7 +35,6 @@ trait ModelChild extends PrimitiveChild {
 
 case class ModelRoot(children:List[ModelChild]) extends ModelParent with PrimitiveRoot{
   override def leafList: List[ModelLeaf] = super.leafList.reverse
-
   def changeNames(names: List[String]): ModelRoot = {
     @tailrec
     def innerChangeNames(ch: List[ModelChild], ns: List[String], result: List[ModelChild]):
@@ -149,6 +153,7 @@ case class ModelNode(children:List[ModelChild],t:Double) extends ModelChild with
 }
 
 case class ModelLeaf(name:String,t:Double) extends ModelChild with PrimitiveLeaf {
+  def anclen(target: String):Double = if(name == target) t else 0.0
   def leafList: List[ModelLeaf] = this :: Nil
   def changeBranches(branches:List[Double]): (ModelLeaf, List[Double]) = (ModelLeaf(name,branches.head),branches.tail)
   def changeNames(names:List[String]):(ModelLeaf, List[String]) = (ModelLeaf(names.head,t), names.tail)

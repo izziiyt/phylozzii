@@ -1,9 +1,6 @@
 package fdur
 
-import java.io.PrintWriter
-
 import org.scalatest.FunSuite
-import breeze.linalg._
 
 class FdurTest extends FunSuite{
 
@@ -15,8 +12,9 @@ class FdurTest extends FunSuite{
     val summ1 = - (0 to 3).foldLeft(0.0){(x,i) => x + model.pi(i) * model.R(i,i)}
     //val br = brnc map (_ * summ)
     val br = nh1.branches.map(_ * summ1)
-    println(nh1.changeBranches(br))
-    val tmp = (br, nh2.branches).zipped.map{(x,y) => x / y}
+    println(nh1.changeBranches(br).branches.mkString(","))
+    println(nh2.branches.mkString(","))
+    //val tmp = (br, nh2.branches).zipped.map{(x,y) => x / y}
     //println(tmp.mkString(","))
     //println(nh1.changeBranches(tmp))
   }

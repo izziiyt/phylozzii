@@ -44,10 +44,11 @@ class TreeTest extends FunSuite {
       (br,newbr).zipped.foreach((x,y) => assert(x == y))
     }
   }
+
   test("init"){
     var tree = ModelTree.fromFile("src/test/resources/fdur/fdur.nh")
     for(i <- 0 to 40){
-      println(tree)
+      //println(tree)
       tree = tree.init
     }
   }

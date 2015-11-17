@@ -67,8 +67,11 @@ object Maf {
     )
 
     val lines = s.getLines()
+
     protected var nextOne: Option[MafUnit] = nexti()
+
     def hasNext = nextOne.isDefined
+
     def next(): MafUnit = {
       if (!hasNext) sys.error("Nothing in next.")
       else {
@@ -79,14 +82,14 @@ object Maf {
     }
 
     def nexti(): Option[MafUnit] = {
-      if (s.isEmpty) return None
       val buf = new ListBuffer[MafLine]()
+      if (s.isEmpty) return None
       for (line <- lines; if line != "" && !line.startsWith("#"); p = line.split(sep)) {
         p(0) match {
-          case "s" => buf += MafLine.fromString(p)
+          case "s" =>
+            buf += MafLine.fromString(p)
           case "a" if buf.nonEmpty =>
             val tmp = Some(MafUnit(buf.toList))
-            buf.clear()
             return tmp
           case _ => Unit
         }
@@ -109,8 +112,7 @@ object Maf {
   object MafLine {
     def fromString(xs: Seq[String]) = {
       val names = xs(1).split('.')
-      MafLine(names(0), if (names.length == 2) names(1) else "",
-        xs(2).toLong, xs(4), xs(6).toCharArray.map(Base.fromChar))
+      MafLine(names(0), if (names.length == 2) names(1) else "", xs(2).toLong, xs(4), xs(6).toCharArray.map(Base.fromChar))
     }
   }
 

@@ -30,27 +30,30 @@ trait LDTree extends PrimitiveTree{
 
 object LDTree extends LDTreeUtilTrait {
   @tailrec
-  protected def innerIn(ch: List[ModelChild], cols: List[Array[Base]], result: List[LDChild], model:Model,target:String):
+  protected def innerIn(ch: List[ModelChild], cols: List[Array[Base]], result: List[LDChild], model:Model,
+                        target:String, targetColumn:Array[Base]):
   (List[LDChild], List[Array[Base]]) = {
     if (ch == Nil)
       (result.reverse, cols)
     else {
-      val (newTree,newCols) = inside(ch.head,model,cols,target)
-      innerIn(ch.tail, newCols, newTree :: result, model,target)
+      val (newTree,newCols) = inside(ch.head,model,cols,target,targetColumn)
+      innerIn(ch.tail, newCols, newTree :: result, model,target,targetColumn)
     }
   }
 
-  protected def inside(tr: ModelChild, model: Model, columns: List[Array[Base]],target:String): (LDChild, List[Array[Base]]) =
+  protected def inside(tr: ModelChild, model: Model, columns: List[Array[Base]], target:String, targetColumn: Array[Base]):
+  (LDChild, List[Array[Base]]) =
     tr match {
       case ModelLeaf(name,t) =>
-        (LDLeaf.inside(name,t,columns.head,model,name == target),columns.tail)
+        (LDLeaf.inside(name, t, columns.head, model, name == target, targetColumn),columns.tail)
       case ModelNode(ch,t) =>
-        val tmp = innerIn(ch,columns,Nil,model,target)
+        val tmp = innerIn(ch,columns,Nil,model,target,targetColumn)
         (LDNode.inside(tmp._1,t,model),tmp._2)
     }
 
   def inside(tr: ModelRoot, model: Model, columns: List[Array[Base]], target:String): LDRoot = {
-    val (newCh,newCols) = innerIn(tr.children,columns,Nil,model,target)
+    val targetColumn: Array[Base] = if(target.startsWith("hg1")) columns.head else columns.last
+    val (newCh,newCols) = innerIn(tr.children,columns,Nil,model,target,targetColumn)
     if(newCols.nonEmpty) sys.error("Bad Columns")
     LDRoot.inside(newCh,model)
   }
@@ -111,15 +114,17 @@ object LDTree extends LDTreeUtilTrait {
 
   // probablistic Barnch Length Score, sum of expected preserved time on all branches.
   def bls(tr:ModelRoot, model:Model, columns:List[Array[Base]], target:String): Array[Double] = {
-    val root = inout(tr,model,columns,target)
-    root.bls
+    val root = inout(tr, model, columns, target)
+    val reg = tr.branches.sum
+    root.bls.map(_ / reg)
   }
   /* probablistic Branch Length Score, sum of expected preserved time on branches which are
   ancestors of target species.Branch Length Score in Ancestory.
    */
   def blsa(tr:ModelRoot,model:Model,columns:List[Array[Base]],target:String): Array[Double] = {
     val root = inout(tr,model,columns,target)
-    root.blsa
+    val reg = tr.anclen(target)
+    root.blsa.map(_ / reg)
   }
 }
 
@@ -146,18 +151,6 @@ trait LDChild extends LDTree with PrimitiveChild{
     val tmp = (exp(x) - exp(y)) / (x - y); if(tmp.isNaN) exp(x) else tmp
   }
 
-  /*protected def thisBls(lgl: Array[Double]): Array[Double] = {
-    def f(as:Array[VL],bs:Array[VL],dlt:MD):Array[Double] = (as,bs,lgl).zipped.map {
-      (a, b, l) =>
-        val tmp = a.value * b.value.t
-        //val tmp = diag(a.value) * DenseMatrix.ones[Double](4,4) * diag(b.value)
-        sum(tmp :* dlt) / l
-    }
-    val ax = f(alphaD, beta, dltA)
-    val bx = f(alpha, betaD, dltB)
-    (ax, bx).zipped.map(_ + _)
-  }*/
-
   protected def innerBls(lgl:Array[Double],as:Array[VL],bs:Array[VL],dlt:MD):Array[Double] =
     (as,bs,lgl).zipped.map {
       (a, b, l) =>
@@ -165,19 +158,9 @@ trait LDChild extends LDTree with PrimitiveChild{
         sum(tmp :* dlt) / l
     }
 
-  /*protected def thisBlsa(lgl: Array[Double]): Array[Double] = {
-    def f(as:Array[VL],bs:Array[VL],dlt:MD):Array[Double] = (as,bs,lgl).zipped.map {
-      (a, b, l) =>
-        val tmp = a.value * b.value.t
-        //val tmp = diag(a.value) * DenseMatrix.ones[Double](4,4) * diag(b.value)
-        sum(tmp :* dlt) / l
-    }
-    f(alphaD, beta, dltA)
-    //val bx = f(alpha, betaD, dltB)
-    //(ax, bx).zipped.map(_ + _)
-  }*/
-
   def bls(lgl:Array[Double]):Array[Double]
+
+  //bls for ancestory
   def blsa(lgl:Array[Double]):Array[Double]
 }
 
@@ -237,8 +220,8 @@ case class LDRoot(children:List[LDChild], trans:ML, transD:ML, alpha:Array[VL], 
 }
 
 object LDLeaf extends LDTreeUtilTrait{
-  def inside(name:String,t:Double,column:Array[Base],m:Model,isTarget:Boolean):LDLeaf = {
-    val alpha = mkAlpha(column)
+  def inside(name:String,t:Double,column:Array[Base],m:Model,isTarget:Boolean,targetColumn: Array[Base]):LDLeaf = {
+    val alpha = mkAlpha(column, targetColumn)
     val alphaD = if(isTarget) alpha else Array.fill(alpha.length)(DenseVector.zeros[Double](4).toLogDouble)
     val trans = mkTrans(t,m)
     val transD = DenseMatrix.zeros[Double](4,4).toLogDouble
@@ -246,14 +229,18 @@ object LDLeaf extends LDTreeUtilTrait{
     new LDLeaf(name,t,trans,transD,alpha,alphaD,null,null,m)
   }
 
-  protected def mkAlpha(column:Array[Base]): Array[VL] = column.map{
-    case Base.N =>
-      DenseVector.zeros[Double](4).toLogDouble
-      //DenseVector.ones[LogDouble](4)
-    case x =>
+  protected def mkAlpha(column: Array[Base], targetColmun: Array[Base]): Array[VL] =
+    (column, targetColmun).zipped.map{
+    case (Base.N, tgt) =>
+      val tmp = DenseVector.ones[LogDouble](4)
+      tmp(tgt.toInt) = LogDoubleZero
+      tmp
+    case (x, _) =>
       val tmp = DenseVector.zeros[Double](4)
       tmp(x.toInt) = 1.0
       tmp.toLogDouble
+    case _ =>
+      sys.error("mkAlpha error.")
   }
 }
 
@@ -282,17 +269,22 @@ object LDRoot extends LDTreeUtilTrait{
 }
 
 trait LDTreeUtilTrait {
-  def mkAlpha(fromChildren:List[Array[VL]]):Array[VL] =
+  def mkAlpha(fromChildren:List[Array[VL]]): Array[VL] =
     fromChildren.reduceLeft{(ns,xs) => (ns,xs).zipped.map(_ :* _)}
-  def mkAlphaD(fromChildren:List[Array[VL]],fromChildrenD:List[Array[VL]]):Array[VL] = {
-    val tmp:List[List[Array[VL]]] = mkConfound(fromChildren,fromChildrenD)
-    tmp.map(mkAlpha).reduce((n,x) => (n,x).zipped.map(_ + _))
+  def mkAlphaD(fromChildren:List[Array[VL]],fromChildrenD:List[Array[VL]]): Array[VL] = {
+    //val tmp:List[List[Array[VL]]] = mkConfound(fromChildren,fromChildrenD)
+    //tmp.map(mkAlpha).reduce((n,x) => (n,x).zipped.map(_ + _))
+    mkConfound(fromChildren, fromChildrenD).foldLeft(
+      Array.fill(fromChildren.length)(DenseVector.zeros[Double](4).toLogDouble)
+    ){
+      (n, x) => (n, x).zipped.map(_ + _)
+    }
   }
   def mkTrans(ti:Double,mi:Model):ML = {
     val tmp: DenseMatrix[Double] = mi.u * diag(exp(mi.lambda * ti)).*(mi.ui)
     tmp.toLogDouble
   }
-  def mkConfound[T](base:List[T],confounder:List[T]) = {
+  def mkConfound[T](base:List[T],confounder:List[T]): List[List[T]] = {
     @tailrec
     def f(i:List[T], t:List[T], b:List[T], result:List[List[T]]):List[List[T]] = {
       if(b.isEmpty)

@@ -57,3 +57,10 @@ assemblyMergeStrategy in assembly := {
 test in assembly := {}
 
 testOptions in Test := Seq(Tests.Filter(s => s.endsWith("Test")))
+
+scalacOptions ++= Seq(
+  "-feature",
+  "-optimize",
+  "-language:reflectiveCalls",
+  "-language:implicitConversions"
+)

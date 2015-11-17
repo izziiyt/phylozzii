@@ -8,24 +8,32 @@ import org.scalatest.FunSuite
 
 class EEATest extends FunSuite with LDTreeUtilTrait{
 
-  /*test("BLSer"){
-    main.BLSer.main(Array("src/test/resources/eea/output.maf",
+  test("BLSer"){
+    /*main.BLSer.main(Array("/home/yuto/tmp/chr21.maf.gz",
       "src/test/resources/eea/blstest.nh",
       "src/test/resources/eea/blstest.param",
     "hg19","target/result.wig",
-    "src/test/resources/hg19.100way.nh"))
-  }*/
+    "-blsa",
+    "src/test/resources/hg19.100way.nh"))*/
+    main.BLSer.main(Array("src/test/resources/bigbig.maf",
+      "src/test/resources/eea/blstest.nh",
+      "src/test/resources/eea/blstest.param",
+      "hg19","target/result.wig",
+      "-blsa",
+      "src/test/resources/hg19.100way.nh"))
+  }
 
-  test("mkCols"){
+  /*test("mkCols"){
     val mu = Maf.MafUnitIterator.fromMSA("src/test/resources/eea/huga3.maf")
     val tree = ModelTree.fromFile("src/test/resources/eea/huga3.nh")
     val cols = mu.map{
       x =>
         main.BLSer.mkCol(x,tree.names,"hg19")
-    }
+    }.toArray
     //cols.foreach(x => x.foreach(y => println(y.mkString(""))))
     val model = Model(Parameters.fromFile("src/test/resources/eea/blstest.param"))
     val hoge = cols.map(c => LDTree.bls(tree,model,c,"hg19"))
+    val huga = cols.map(c => LDTree.blsa(tree,model,c,"hg19"))
     hoge.foreach(x => println(x.mkString(",")))
   }
 
@@ -98,5 +106,5 @@ class EEATest extends FunSuite with LDTreeUtilTrait{
     //(ldtree.toList,fldtree.toList).zipped.foreach((e,f) => assert(e.beta.head == f.beta.head))
 
   }
-
+*/
 }

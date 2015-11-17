@@ -1,9 +1,9 @@
 ##maf version=1 program=Bio++
 #
 a score=-168419
-s hg19.chr21            16091775  6 +  48129895 T--ACA----GA
-s panTro4.chr21          1176540  6 +  32799110 T--ACA----GG
-s gorGor3.chr21          2969955  6 +  35451371 T--ACA----GA
+s hg19.chr21            16091775  8 +  48129895 AA--AAA----AAA
+s panTro4.chr21          1176540  8 +  32799110 TT--ACA----GAN
+s gorGor3.chr21          2969955  7 +  35451371 T---ACA----GNN
 
 a score=156767
 s hg19.chr21            16091781 7 +  48129895 TGGTCC-T
@@ -18,4 +18,3 @@ s gorGor3.chr21          2969968 12 +  35451371 GAAC-TAGA-----------------------
 a score=520024
 s hg19.chr21             16091800 12 +  48129895 CT-ATAATA--TGAT
 s panTro4.chr21           1176565 12 +  32799110 CT-ATAATA--TGAT
-
