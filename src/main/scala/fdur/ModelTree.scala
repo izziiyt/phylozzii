@@ -1,7 +1,6 @@
 package fdur
 
 import java.io.FileReader
-
 import scala.annotation.tailrec
 import scala.util.parsing.combinator.JavaTokenParsers
 

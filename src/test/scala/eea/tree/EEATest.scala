@@ -1,9 +1,5 @@
 package eea.tree
 
-import alignment.Base._
-import alignment.Base
-import breeze.linalg.{diag, DenseMatrix, DenseVector}
-import fdur.{Model, ModelTree, Maf, Parameters}
 import org.scalatest.FunSuite
 
 class EEATest extends FunSuite with LDTreeUtilTrait{
@@ -15,11 +11,21 @@ class EEATest extends FunSuite with LDTreeUtilTrait{
     "hg19","target/result.wig",
     "-blsa",
     "src/test/resources/hg19.100way.nh"))*/
-    main.BLSer.main(Array("src/test/resources/bigbig.maf",
+    /*main.BLSer.main(Array(
+      "src/test/resources/big.maf.gz",
       "src/test/resources/eea/blstest.nh",
       "src/test/resources/eea/blstest.param",
-      "hg19","target/result.wig",
+      "hg19",
+      "target/result.wig.gz",
       "-blsa",
+      "src/test/resources/hg19.100way.nh"))*/
+    main.BLSer.main(Array(
+      "src/test/resources/hoge.maf",
+      "src/test/resources/eea/blstest.nh",
+      "src/test/resources/eea/blstest.param",
+      "hg19",
+      "target/result.wig.gz",
+      "-bls",
       "src/test/resources/hg19.100way.nh"))
   }
 

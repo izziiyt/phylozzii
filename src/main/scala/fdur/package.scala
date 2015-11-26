@@ -5,9 +5,8 @@ import breeze.math.LogDouble
 import breeze.math.LogDouble._
 
 package object fdur {
-  import alignment.Base
-  import scala.language.reflectiveCalls
-  import scala.language.implicitConversions
+  //import scala.language.reflectiveCalls
+  //import scala.language.implicitConversions
 
   type VD = DenseVector[Double]
   type MD = DenseMatrix[Double]

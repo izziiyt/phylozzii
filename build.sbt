@@ -11,7 +11,7 @@ libraryDependencies  ++= Seq(
   //"org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4",
   //"com.typesafe.scala-logging" % "scala-logging-slf4j_2.10" % "2.1.2",
   //"ch.qos.logback" % "logback-classic" % "1.1.3",
-  "izzii" %% "biutil" % "0.1",
+  "izzii" %% "biutil" % "1.0.0",
   ("org.apache.spark" % "spark-core_2.10" % "1.5.1").
     exclude("org.mortbay.jetty", "servlet-api").
     exclude("com.google.guava","guava").

@@ -4,8 +4,9 @@ import java.io.{BufferedWriter, File, FileWriter}
 import breeze.linalg.{DenseVector,DenseMatrix}
 import org.apache.spark.{AccumulatorParam, SparkConf, SparkContext, Logging}
 import fdur._
+import biformat.Maf.readMaf
 
-object SparkEM extends  Logging{
+object SparkEM extends Logging{
 
   import util.doubleEqual
 
@@ -22,13 +23,25 @@ object SparkEM extends  Logging{
     var param = Parameters.fromFile(pf)
     var tree = ModelTree.fromFile(tf)
     //val cols = sc.textFile(args(0)).map{x => x.split(",").map{_.toCharArray.map(Base.fromChar)}.toList}.cache()
-    val cols = sc.parallelize(Maf.readMaf(mf,jobsize)).cache()
+    val cols = sc.parallelize(readMaf(mf, jobsize)).cache()
     var i = 1
     var f = true
+
     val piw = new BufferedWriter(new FileWriter("pi.log"))
     val bw = new BufferedWriter(new FileWriter("b.log"))
     val branchw = new BufferedWriter(new FileWriter("branch.log"))
     val lglw = new BufferedWriter(new FileWriter("lgl.log"))
+
+    def logging(pi:VD, Bvec: VD, br: List[Double], lgl: Double) = {
+      piw.write(pi.toArray.mkString(","))
+      piw.newLine()
+      bw.write(Bvec.toArray.mkString(","))
+      bw.newLine()
+      branchw.write(br.mkString(","))
+      branchw.newLine()
+      lglw.write(lgl.toString)
+      lglw.newLine()
+    }
 
     try {
       while (i <= maxit && f) {
@@ -46,20 +59,15 @@ object SparkEM extends  Logging{
         val (newbr, newpr) = model.mstep(x.ns / n, x.Ns.map(_ / n), x.Fd.map(_ / n), tree.branches)
         f = !isConverged(tree.branches, newbr, param.pi, newpr.pi, DenseVector(param.Bvec.toArray), newpr.Bvec)
         val (rbr, rpr) = Optimizer.regularize(newbr, newpr)
-        piw.write(rpr.pi.toArray.mkString(","))
-        piw.newLine()
-        bw.write(rpr.Bvec.toArray.mkString(","))
-        bw.newLine()
-        branchw.write(rbr.mkString(","))
-        branchw.newLine()
-        lglw.write(x.lgl.toString)
-        lglw.newLine()
+
+        logging(rpr.pi, rpr.Bvec, rbr, x.lgl)
+
         param = if(constFreq) Parameters(newpr.Bvec, param.pi) else newpr
         tree = tree.changeBranches(newbr)
         i += 1
       }
     }catch {
-      case e: Throwable => e
+      case e: Throwable => sys.error(e.toString)
     }finally {
       piw.close()
       bw.close()
@@ -68,9 +76,9 @@ object SparkEM extends  Logging{
     }
     logInfo(if(f) "Iteration number reached upper limit." else "Parameters are converged.")
     val (rbr, rpr) = Optimizer.regularize(tree.branches,param)
-    println("pi\t" + param.pi.toArray.mkString(","))
-    println("b\t" + param.Bvec.toArray.mkString(","))
-    println("tree\t" + tree.toString)
+    println("pi\t" + rpr.pi.toArray.mkString(","))
+    println("b\t" + rpr.Bvec.toArray.mkString(","))
+    println("tree\t" + tree.changeBranches(rbr))
   }
 
   def isConverged(br:List[Double], newbr: List[Double],

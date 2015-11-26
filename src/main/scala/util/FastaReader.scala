@@ -75,8 +75,8 @@ class ExonFastaReader(val cdntbl: CodonTable) extends FastaReader{
   }
 
   def check(i: Int, xs: Array[DNA]): Boolean = {
-    val fst = xs.find(x => ! x(i - 2).isN).get(i - 2)
-    val snd = xs.find(x => ! x(i - 1).isN).get(i - 1)
+    val fst = xs.find(x => ! x(i - 2).nonNuc).get(i - 2)
+    val snd = xs.find(x => ! x(i - 1).nonNuc).get(i - 1)
     xs.forall(x => x(i - 2) == fst && x(i - 1) == snd)
   }
 
@@ -100,13 +100,13 @@ class ExonFastaReader(val cdntbl: CodonTable) extends FastaReader{
           val n = dnas.head.length
           require(dnas.forall(x => x.length == n))
           for (i <- 2 until n by 3) {
-            val fst = chosen.find(!_(i - 2).isN).get(i - 2)
-            val snd = chosen.find(!_(i - 1).isN).get(i - 1)
+            val fst = chosen.find(!_(i - 2).nonNuc).get(i - 2)
+            val snd = chosen.find(!_(i - 1).nonNuc).get(i - 1)
             lazy val is4fold = ((fst == Base.A || fst == Base.T) && snd == Base.C) ||
               ((fst == Base.C || fst == Base.G) && snd != Base.A)
-            if (!fst.isN && !snd.isN && is4fold &&
-              chosen.forall { x => x(i - 2) == fst || x(i - 2).isN } &&
-              chosen.forall { x => x(i - 1) == snd || x(i - 1).isN }) {
+            if (!fst.nonNuc && !snd.nonNuc && is4fold &&
+              chosen.forall { x => x(i - 2) == fst || x(i - 2).nonNuc } &&
+              chosen.forall { x => x(i - 1) == snd || x(i - 1).nonNuc }) {
               val thds = dnas.map(_(i))
               (buffer, thds).zipped.foreach((b, x) => b += x)
             }

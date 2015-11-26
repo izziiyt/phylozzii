@@ -234,7 +234,7 @@ object LDLeaf extends LDTreeUtilTrait{
   }
 
   protected def mkAlpha(column:Array[Base]): Array[VL] = column.map{
-    case Base.N =>
+    case x if x.nonNuc =>
       DenseVector.ones[LogDouble](4)
     case x =>
       val tmp = DenseVector.zeros[Double](4)

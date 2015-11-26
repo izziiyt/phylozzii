@@ -2,12 +2,13 @@ package main
 
 import java.io._
 import fdur._
+import biformat.Maf.readMaf
 
 object QMapper {
   def main(args:Array[String]): Unit = {
     //println(scala.collection.parallel.availableProcessors)
     //${al} ${nh} ${count} target/time/e/${SGE_TASK_ID}.time
-    val cols = Maf.readMaf(args(1),10000)
+    val cols = readMaf(args(1),10000)
     val tree = ModelTree.fromFile(args(3))
     //val out = new BufferedWriter(new FileWriter(args(4)))
       args(0) match {

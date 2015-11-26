@@ -3,9 +3,8 @@ package fdur
 import alignment.Base
 import breeze.linalg.{diag, DenseMatrix, DenseVector}
 import breeze.optimize.{LBFGS, DiffFunction}
-//import com.typesafe.scalalogging.LazyLogging
 import main.{QReducer, QMapper}
-
+import biformat.Maf._
 import scala.collection.GenSeq
 import scala.collection.parallel.mutable.ParArray
 
@@ -15,7 +14,7 @@ object Optimizer extends {
 
   def main(args: Array[String]): Unit = {
     val tree = ModelTree.fromFile(args(0))
-    val cols = Maf.readMaf(args(1), 10000)
+    val cols = readMaf(args(1), 10000)
     //val cols = Maf.readMaf(args(1), 10000).toParArray
     val param = Parameters.fromFile(args(2))
     val (optbrnch, optparam, _, _) = ldem(args(3).toInt, tree, cols, param)

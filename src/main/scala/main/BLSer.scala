@@ -1,20 +1,23 @@
 package main
 
-import java.io.{FileWriter, BufferedWriter}
-
+import java.io._
+import java.util.zip.GZIPOutputStream
 import alignment.Base
 import fdur._
-import fdur.Maf._
-
+import biformat.Maf._
 import scala.annotation.tailrec
-import scala.collection.mutable.ArrayBuffer
 
 object BLSer {
+  /**
+    *
+    * @param args
+    */
   def main(args:Array[String]):Unit = {
-    val its = MafUnitIterator.fromMSA(args(0))
-    val model = Model(Parameters.fromFile(args(2)))
     val target = args(3)
-    val out = new BufferedWriter(new FileWriter(args(4)))
+    val in = biformat.bigSource(args(0))
+    val its = MafIterator.fromMSA(in, target).merge(10240)
+    val model = Model(Parameters.fromFile(args(2)))
+    val out = new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(args(4)),1024 * 1024))
     val tree = {
       val tmp = ModelTree.fromFile(args(1))
       if (args.length == 7)
@@ -22,82 +25,71 @@ object BLSer {
       else
         tmp
     }
-    if(!tree.names.contains(target))
-      sys.error("newick formatted tree doesn't contain " + target + ".")
+
     try{
-      if(args(5) == "-bls") blsexe(its, tree, model, target, out)
-      else if(args(5) == "-blsa") blsaexe(its,tree,model,target,out)
-      else sys.error("Option -bls or -blsa is needed.")
+      if(!tree.names.contains(target))
+        sys.error("newick formatted tree doesn't contain " + target + ".")
+      blsexe(its,tree,model,target,out,args(5) == "-blsa")
     }
-    catch{case e: Throwable => sys.error(e.toString)}
-    finally{out.close()}
+    catch{case e: Throwable => e.printStackTrace()}
+    finally{
+      in.close()
+      out.close()}
   }
 
-  def mkCol(mu:MafUnit, names:List[String],target: String): List[Array[Base]] = {
-    def getWithIndices(xs:Array[Base], indices:Array[Int]): Array[Base] = indices.map(xs(_))
+  protected def mkCol(mu:MafUnit, names:List[String],target: String): (List[Array[Base]], Array[Int]) = {
+    def f(xs:Array[Base], indices:Array[Int]): Array[Base] = indices.map(xs(_))
 
-    val targetX = mu.lines.find(_.name == target).get
-    if(targetX.strand == "-") sys.error("error -")
-    val targetSeq = targetX.seq
-    val indices = targetSeq.zipWithIndex.withFilter{case (b,_) => !b.isN}.map(_._2)
+    val targetX = mu.lines(target)
+    if(targetX.strand == "-") sys.error("Error: target strand is -.")
+    val indices = targetX.seq.zipWithIndex.withFilter{case (b,_) => !b.nonNuc}.map(_._2)
     val n = indices.length
-    if(n == 0) Nil
-    else names.map{
-      name =>
-        val tmp = mu.lines.find(_.name == name)
-        if(tmp.isDefined) getWithIndices(tmp.get.seq, indices) else Array.fill[Base](n)(Base.N)
-    }
+    val tmp =
+      if(n == 0) Nil
+      else names.map{
+        mu.lines.get(_) match {
+          case Some(x) => f(x.seq, indices)
+          case None => Array.fill[Base](n)(Base.N)
+        }
+      }
+    (tmp, indices)
   }
-
-  def blsexe(its: MafUnitIterator, tree: ModelRoot, model: Model, target: String, out: BufferedWriter): Unit = {
-    val reg = tree.branches.sum
-    out.write("## Branch Length Score in the tree. Target species is " + target + ".")
-    out.newLine()
+  /**
+    *
+    * */
+  protected def blsexe(its: MafIterator, tree: ModelRoot, model: Model, target: String, out: Writer, blsa: Boolean): Unit = {
+    if(blsa) out.write("## Branch Length Score in the ancestory of " + target + ".\n")
+    else out.write("## Branch Length Score in the tree. Target species is " + target + ".\n")
     its.foreach{
       it =>
-        val cols = dev(mkCol(it, tree.names, target), 10000)
+        val (preCols, indices) = mkCol(it.Dremoved, tree.names, target)
+        val cols = dev(preCols, 1024)
         if(cols.nonEmpty) {
-          val hg19 = it.lines.find(_.name == target).get
-          val bls = cols.flatMap(col => eea.tree.LDTree.bls(tree, model, col, target))
-          out.write("fixedStep chrom=" + hg19.subname + " start=" + hg19.start + " step=1")
-          out.newLine()
-          bls.foreach { b => out.write((b / reg).toString); out.newLine() }
-          out.newLine()
+          val hg19 = it.lines(target)
+          val bls =
+            if(blsa) cols flatMap (eea.tree.LDTree.blsa(tree, model, _, target))
+            else     cols flatMap (eea.tree.LDTree.bls(tree, model, _, target))
+          out.write("variableStep\tchrom=" + hg19.subname + "\n")
+          (bls, indices).zipped.foreach { (b, i) => out.write((i + it.start) + "\t" + b.toString + "\n")}
+          out.write("\n")
         }
     }
   }
-
-  protected def dev[T](xs:List[Array[T]],n: Int): Array[List[Array[T]]] = {
-    if(xs == Nil) Array[List[Array[T]]]()
+  /**
+    * Devide xs to n-length bins, # of bins is undefinded.
+    * */
+  protected def dev[T](xs: List[Array[T]], n: Int): Array[List[Array[T]]] = {
     @tailrec
-    def f(current: List[Array[T]], result: ArrayBuffer[List[Array[T]]] = new ArrayBuffer[List[Array[T]]]()):
-    ArrayBuffer[List[Array[T]]] = {
-      if(current.head.length < n) result :+ current
+    def f(current: List[Array[T]], result: List[List[Array[T]]] = Nil):
+    List[List[Array[T]]] = {
+      if(current == Nil || current.head.isEmpty) result.reverse
+      else if(current.head.length < n) (current :: result).reverse
       else{
         val (x, y) = current.map(_.splitAt(n)).unzip
-        f(y, result :+ x)
+        f(y, x :: result)
       }
     }
     f(xs).toArray
   }
 
-  protected var i = 0
-
-  def blsaexe(its: MafUnitIterator, tree: ModelRoot, model: Model, target: String, out: BufferedWriter): Unit = {
-    val reg = tree.branches.sum
-    out.write("## Branch Length Score in the ancestory of " + target + ".")
-    out.newLine()
-    its.foreach {
-      it =>
-        val cols = dev(mkCol(it, tree.names, target), 10000)
-        if (cols.nonEmpty) {
-          val hg19 = it.lines.find(_.name == target).get
-          val blsa = cols.flatMap{col => eea.tree.LDTree.blsa(tree, model, col, target)}
-          out.write("fixedStep chrom=" + hg19.subname + " start=" + hg19.start + " step=1")
-          out.newLine()
-          blsa.foreach { b => out.write((b / reg).toString); out.newLine() }
-          out.newLine()
-        }
-    }
-  }
 }
