@@ -10,7 +10,7 @@ s panTro4.chr21          1176546 7 -  32799110 TGGTCC-T
 s gorGor3.chr21          2969961 7 +  35451371 CGGTCC-T
 
 a score=518037
-s hg19.chr21            16091789 12 +  48129895 -AAC-TAGA-----------------------CCCT
+s hg19.chr21            16091789 11 +  48129895 -AAC-TAGA-----------------------CCCT
 s panTro4.chr21          1176553 12 +  32799110 GAAC-TAGA-----------------------CCCT
 s gorGor3.chr21          2969968 12 +  35451371 GAAC-TAGA-----------------------CCCT
 

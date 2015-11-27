@@ -1,9 +1,8 @@
-package fdur
-
-import breeze.linalg.{diag, sum, DenseMatrix, DenseVector}
-import util.doubleEqual
-import org.scalatest.FunSuite
 import alignment.Base
+import breeze.linalg.{DenseMatrix, DenseVector, diag, sum}
+import fdur._
+import org.scalatest.FunSuite
+import util._
 
 import scala.util.Random
 
@@ -42,14 +41,6 @@ class TreeTest extends FunSuite {
       val newt = t.changeBranches(br)
       val newbr = newt.branches
       (br,newbr).zipped.foreach((x,y) => assert(x == y))
-    }
-  }
-
-  test("init"){
-    var tree = ModelTree.fromFile("src/test/resources/fdur/fdur.nh")
-    for(i <- 0 to 40){
-      //println(tree)
-      tree = tree.init
     }
   }
 
@@ -137,7 +128,6 @@ class TreeTest extends FunSuite {
     val b = Array(0.15, 0.25, 0.1, 0.13, 0.07, 0.3)
     val param = Parameters(DenseVector(b), DenseVector(pi))
     val cols = List(Array[Base](Base.A), Array[Base](Base.C),Array[Base](Base.C), Array[Base](Base.G),Array[Base](Base.N))
-    //val cols = List(Array[Base](Base.A), Array[Base](Base.A),Array[Base](Base.C), Array[Base](Base.A),Array[Base](Base.C))
     val root = Tree.inout(templateTree, Model(param), cols)
     val ldroot = LDTree.inout(templateTree, Model(param), cols)
     for (_ <- 0 until 100) {
@@ -148,8 +138,6 @@ class TreeTest extends FunSuite {
         val root1 = Tree.inout(tree1, Model(param), cols)
         val root2 = Tree.inout(tree2, Model(param), cols)
         val diffCal = (root1.loglikelihood, root2.loglikelihood).zipped.map((x, y) => (x - y) / (2.0 * h))
-        //(root.diffWithT(j), diffCal).zipped.foreach((x,y) => println("branches length : " + x + " " + y))
-        //(ldroot.diffWithT(j), diffCal).zipped.foreach((x,y) => println("branches length : " + x + " " + y))
         (root.diffWithT(j), diffCal).zipped.foreach{(x,y) => assert(doubleEqual(x, y, 1.0E-5))}
         (ldroot.diffWithT(j), diffCal).zipped.foreach{(x,y) => assert(doubleEqual(x, y, 1.0E-5))}
       }
@@ -161,9 +149,6 @@ class TreeTest extends FunSuite {
         val root1 = Tree.inout(templateTree, Model(param1), cols)
         val root2 = Tree.inout(templateTree, Model(param2), cols)
         val diffCal = (root1.loglikelihood, root2.loglikelihood).zipped.map((x, y) => (x - y) / (2.0 * h))
-        //(root.diffWithPi, diffCal).zipped.foreach((x,y) => println("pi : " + x(j) + " " + y))
-
-        //(ldroot.diffWithPi, root.diffWithPi).zipped.foreach((x,y) => println("pi : " + x(j) + " " + y(j)))
         (root.diffWithPi, diffCal).zipped.foreach((x,y) => assert(doubleEqual(x(j), y, 1.0E-4)))
         (ldroot.diffWithPi, diffCal).zipped.foreach((x,y) => assert(doubleEqual(x(j), y, 1.0E-4)))
       }
@@ -176,8 +161,6 @@ class TreeTest extends FunSuite {
         val root1 = Tree.inout(templateTree, Model(param1), cols)
         val root2 = Tree.inout(templateTree, Model(param2), cols)
         val diffCal = (root1.loglikelihood, root2.loglikelihood).zipped.map((x, y) => (x - y) / (2.0 * h))
-        //(root.diffWithB, diffCal).zipped.foreach((x,y) => println("rate : " + x(s,t) + " " + y))
-        //(ldroot.diffWithB, diffCal).zipped.foreach((x,y) => println("rate : " + x(s,t) + " " + y))
         (root.diffWithB, diffCal).zipped.foreach((x,y) => assert(doubleEqual(x(s,t), y, 1.0E-4)))
         (ldroot.diffWithB, diffCal).zipped.foreach((x,y) => assert(doubleEqual(x(s,t), y, 1.0E-4)))
         j += 1

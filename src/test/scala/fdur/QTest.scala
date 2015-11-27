@@ -11,11 +11,11 @@ import java.nio.file.Paths.get
 class QTest extends FunSuite{
   implicit def toPath (filename: String) = get(filename)
 
-  val nh = "src/test/resources/fdur/hoge3.nh"
+  val nh = "src/test/resources/fdur/test3.nh"
   val maf = "src/test/resources/fdur/tmp.maf"
   val param = "src/test/resources/fdur/param.txt"
   test("QMapper"){
-    copy ("src/test/resources/fdur/hoge3.nh.bu", "src/test/resources/fdur/hoge3.nh", REPLACE_EXISTING)
+    copy ("src/test/resources/fdur/test3.nh.bu", "src/test/resources/fdur/test3.nh", REPLACE_EXISTING)
     copy ("src/test/resources/fdur/.param.txt", "src/test/resources/fdur/param.txt", REPLACE_EXISTING)
     val x  = new PrintWriter("tmp/lgl.txt")
     x.close()

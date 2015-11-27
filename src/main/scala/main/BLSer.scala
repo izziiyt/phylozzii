@@ -4,9 +4,12 @@ import java.io._
 import java.util.zip.GZIPOutputStream
 import alignment.Base
 import fdur._
-import biformat.Maf._
+import biformat.{MafIterator,MafUnit}
 import scala.annotation.tailrec
 
+/**
+  * Main class for caluculating probablistic bls score and it on target ancestory
+  */
 object BLSer {
   /**
     *

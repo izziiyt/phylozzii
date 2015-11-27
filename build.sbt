@@ -1,8 +1,7 @@
-
-//import sbt.Keys._
 scalaVersion := "2.10.5"
 version := "0.1.0"
 name := "fdur"
+
 libraryDependencies  ++= Seq(
   "org.scalatest" % "scalatest_2.10" % "2.1.3" % "test",
   "org.scalanlp" %% "breeze" % "0.11.2",
@@ -20,8 +19,7 @@ libraryDependencies  ++= Seq(
     exclude("commons-collections", "commons-collections").
     exclude("commons-logging", "commons-logging").
     exclude("org.spark-project.spark", "unused").
-    exclude("com.esotericsoftware.minlog", "minlog"),
-    "com.esotericsoftware.kryo" % "kryo" % "2.24.0"
+    exclude("com.esotericsoftware.minlog", "minlog")
 )
 
 //scalacOptions += "-feature"

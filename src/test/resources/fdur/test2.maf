@@ -1,9 +1,0 @@
-##maf version=1 scoring=zero
-a score=0.000000
-s alpha 0   19   +   8   CAGCACTT
-s beta  0   19   +   8   CAGGAGTT
-s gamma 0   19   +   8   CTGGTCGG
-a score=0.3434344343
-s alpha 0   19   +   11   CAGCACTTAAT
-s beta  0   19   +   11   CAGGAGTT--T
-s gamma 0   19   +   11   CTGGTCGG--G
