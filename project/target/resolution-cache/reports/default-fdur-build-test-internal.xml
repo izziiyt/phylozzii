@@ -9,7 +9,7 @@
 		extra-sbtVersion="0.13"
 		conf="test-internal"
 		confs="compile, runtime, test, provided, optional, compile-internal, runtime-internal, test-internal, plugin, sources, docs, pom, scala-tool"
-		date="20151103074004"/>
+		date="20151127184130"/>
 	<dependencies>
 		<module organisation="org.scala-sbt" name="sbt">
 			<revision name="0.13.9" status="release" pubdate="20150810202742" resolver="sbt-chain" artresolver="sbt-chain" downloaded="false" searched="false" default="false" conf="compile, default(compile)" position="7">
@@ -60,11 +60,11 @@
 				<metadata-artifact status="no" details="" size="1758" time="0" location="/home/yuto/.ivy2/cache/org.scala-sbt/compiler-interface/ivy-0.13.9.xml" searched="false" origin-is-local="false" origin-location="http://repo.typesafe.com/typesafe/ivy-releases/org.scala-sbt/compiler-interface/0.13.9/ivys/ivy.xml"/>
 				<caller organisation="org.scala-sbt" name="sbt" conf="compile" rev="0.13.9" rev-constraint-default="0.13.9" rev-constraint-dynamic="0.13.9" callerrev="0.13.9"/>
 				<artifacts>
-					<artifact name="compiler-interface-src" type="jar" ext="jar" extra-component="compiler-interface-src" status="no" details="" size="30391" time="0" location="/home/yuto/.ivy2/cache/org.scala-sbt/compiler-interface/jars/compiler-interface-src-0.13.9.jar">
-						<origin-location is-local="false" location="http://repo.typesafe.com/typesafe/ivy-releases/org.scala-sbt/compiler-interface/0.13.9/jars/compiler-interface-src.jar"/>
-					</artifact>
 					<artifact name="compiler-interface-bin" type="jar" ext="jar" extra-component="compiler-interface-bin_2.10.5" status="no" details="" size="241943" time="0" location="/home/yuto/.ivy2/cache/org.scala-sbt/compiler-interface/jars/compiler-interface-bin-0.13.9.jar">
 						<origin-location is-local="false" location="http://repo.typesafe.com/typesafe/ivy-releases/org.scala-sbt/compiler-interface/0.13.9/jars/compiler-interface-bin.jar"/>
+					</artifact>
+					<artifact name="compiler-interface-src" type="jar" ext="jar" extra-component="compiler-interface-src" status="no" details="" size="30391" time="0" location="/home/yuto/.ivy2/cache/org.scala-sbt/compiler-interface/jars/compiler-interface-src-0.13.9.jar">
+						<origin-location is-local="false" location="http://repo.typesafe.com/typesafe/ivy-releases/org.scala-sbt/compiler-interface/0.13.9/jars/compiler-interface-src.jar"/>
 					</artifact>
 				</artifacts>
 			</revision>
