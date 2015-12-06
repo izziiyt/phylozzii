@@ -1,23 +1,17 @@
-package fdur
-
+import fdur.{Model, ModelTree, Parameters}
 import org.scalatest.FunSuite
 
 class FdurTest extends FunSuite{
 
-  test("compare"){
+  /*test("compare"){
     val nh1 = ModelTree.fromFile("src/test/resources/result.nh")
     val nh2 = ModelTree.fromFile("src/test/resources/hg19.100way.nh")
     val model = Model(Parameters.fromFile("src/test/resources/eea/blstest.param"))
     val summ = - (0 to 3).foldLeft(0.0){(x,i) => x + model.R(i,i)}
     val summ1 = - (0 to 3).foldLeft(0.0){(x,i) => x + model.pi(i) * model.R(i,i)}
-    //val br = brnc map (_ * summ)
     val br = nh1.branches.map(_ * summ1)
-    println(nh1.changeBranches(br).branches.mkString(","))
-    println(nh2.branches.mkString(","))
-    //val tmp = (br, nh2.branches).zipped.map{(x,y) => x / y}
-    //println(tmp.mkString(","))
-    //println(nh1.changeBranches(tmp))
-  }
+    println((br,nh2.branches).zipped.map(_ - _).mkString(","))
+  }*/
  /* test("fdur"){
     val nh = ModelTree.fromFile("src/test/resources/fdur/fdur.nh")
     val cols = Maf.readMaf("src/test/resources/fdur/fdur.maf",1000).toParArray

@@ -12,17 +12,16 @@ import scala.io.Source
 class EEATest extends FunSuite with LDTreeUtilTrait{
 
   test("BLSer"){
-    val out = "target/result.wig.gz"
+    val prefix = "target/result"
     val compare = "src/test/resources/eea/blsertest.wig.gz"
     main.BLSer.main(Array(
       "src/test/resources/eea/test3.maf",
       "src/test/resources/eea/blstest.nh",
       "src/test/resources/eea/blstest.param",
       "hg19",
-      out,
-      "-bls",
+      prefix,
       "src/test/resources/hg19.100way.nh"))
-    val s1 = Source.fromInputStream(new GZIPInputStream(new FileInputStream(out)))
+    val s1 = Source.fromInputStream(new GZIPInputStream(new FileInputStream(prefix + ".bls.wig.gz")))
     val s2 = Source.fromInputStream(new GZIPInputStream(new FileInputStream(compare)))
     assert(s1.getLines().reduce(_+_) == s2.getLines().reduce(_+_))
     s1.close()

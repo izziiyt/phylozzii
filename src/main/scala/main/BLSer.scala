@@ -20,11 +20,12 @@ object BLSer {
     val in = biformat.bigSource(args(0))
     val its = MafIterator.fromMSA(in, target).merge(10240)
     val model = Model(Parameters.fromFile(args(2)))
-    val out = new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(args(4)),1024 * 1024))
+    val outbls = new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(args(4) + ".bls.wig.gz"),1024 * 1024))
+    val outblsa = new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(args(4) + ".blsa.wig.gz"),1024 * 1024))
     val tree = {
       val tmp = ModelTree.fromFile(args(1))
-      if (args.length == 7)
-        tmp.changeNames(ModelTree.fromFile(args(6)).names)
+      if (args.length == 6)
+        tmp.changeNames(ModelTree.fromFile(args(5)).names)
       else
         tmp
     }
@@ -32,12 +33,14 @@ object BLSer {
     try{
       if(!tree.names.contains(target))
         sys.error("newick formatted tree doesn't contain " + target + ".")
-      blsexe(its,tree,model,target,out,args(5) == "-blsa")
+      blsexe(its,tree,model,target,outbls,outblsa)
     }
     catch{case e: Throwable => e.printStackTrace()}
     finally{
       in.close()
-      out.close()}
+      outbls.close()
+      outblsa.close()
+    }
   }
 
   protected def mkCol(mu:MafUnit, names:List[String],target: String): (List[Array[Base]], Array[Int]) = {
@@ -57,25 +60,29 @@ object BLSer {
       }
     (tmp, indices)
   }
-  /**
-    *
-    * */
-  protected def blsexe(its: MafIterator, tree: ModelRoot, model: Model, target: String, out: Writer, blsa: Boolean): Unit = {
-    if(blsa) out.write("## Branch Length Score in the ancestory of " + target + ".\n")
-    else out.write("## Branch Length Score in the tree. Target species is " + target + ".\n")
+
+  protected def blsexe(its: MafIterator, tree: ModelRoot, model: Model, target: String, outbls: Writer, outblsa: Writer): Unit = {
+    outblsa.write("## Branch Length Score in the ancestory of " + target + ".\n")
+    outbls.write("## Branch Length Score in the tree. Target species is " + target + ".\n")
     its.foreach{
       it =>
         val (preCols, indices) = mkCol(it.Dremoved, tree.names, target)
         val cols = dev(preCols, 1024)
         if(cols.nonEmpty) {
           val hg19 = it.lines(target)
-          val bls =
-            if(blsa) cols flatMap (eea.tree.LDTree.blsa(tree, model, _, target))
-            else     cols flatMap (eea.tree.LDTree.bls(tree, model, _, target))
-          out.write("variableStep\tchrom=" + hg19.subname + "\n")
-          (bls, indices).zipped.foreach { (b, i) => out.write((i + it.start) + "\t" + b.toString + "\n")}
-          out.write("\n")
+          val (bls, blsa) = cols.foldLeft((Array[Double](),Array[Double]())){
+            (n, x) =>
+              val (b, ba) = eea.tree.LDTree.bls(tree, model, x, target)
+              (n._1 ++ b, n._2 ++ ba)
+          }
+          f(bls, indices.map(_+ it.start), hg19.subname, outbls)
+          f(blsa, indices.map(_+ it.start), hg19.subname, outblsa)
         }
+    }
+    def f(bls: Array[Double], indices: Array[Long], chrom: String, w:Writer): Unit ={
+      w.write("variableStep\tchrom=" + chrom + "\n")
+      (bls, indices).zipped.foreach {(b, i) => w.write(i + "\t" + b.toString + "\n")}
+      w.write("\n")
     }
   }
   /**

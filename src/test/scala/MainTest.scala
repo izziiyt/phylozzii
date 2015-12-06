@@ -1,19 +1,15 @@
-package fdur
-
-import java.io._
-
+/*
+import biformat.Maf
 import breeze.linalg._
+import fdur.{ModelTree, Optimizer, Parameters}
 import org.scalatest.FunSuite
-import breeze.plot._
 
-import scala.io.Source
-
-/*class MainTest extends FunSuite {
+class MainTest extends FunSuite {
   val nh = ModelTree.fromFile("src/test/resources/fdur/test3.nh")
-  val cols = Maf.readMaf("src/test/resources/fdur/tmp.maf", 1000).toParArray
+  val cols = Maf.readMaf("src/test/resources/fdur/tmp.maf", 1000)
   val param = Parameters.fromFile("src/test/resources/fdur/testparam.txt")
   val gdparam = param.asGD
-  /*test("EM") {
+  test("EM") {
     val (mytree, myparam, lgl, it) = Optimizer.em(100, nh, cols, param)
     assert(lgl == -262.56426106867326)
     assert(it == 23)
@@ -46,7 +42,8 @@ import scala.io.Source
       0.40951634630331124, 3.442054332750641, 1.1933709819026477))
     assert(myparam.pi == DenseVector(0.28909961301778464, 0.3172888658504728, 0.14012353506358088, 0.2534879860681617))
     assert(mytree == List(0.03235316347212327, 0.0944956917371125, 0.08804007060600447))
-  }*/
+  }
+}*/
   /*
   test("EM and GD ver 3") {
     val nh = ModelTree.fromFile("src/test/resources/fdur/fdur.nh")
@@ -115,7 +112,7 @@ import scala.io.Source
       f.saveas("target/" + n + ".png")
       */
     }
-  }*/
+  }
   test("hoge"){
     val files = new File("/home/yuto/huga/phylonh").listFiles()
     for(f <- files){
@@ -127,8 +124,8 @@ import scala.io.Source
       w.close()
     }
   }
-}*/
-/*test("em&gd"){
+}
+test("em&gd"){
     val cols = Maf.readMaf("src/test/resources/fdur/hoge33.maf",1000).toParArray
     val nh = ModelTree.fromFile("src/test/resources/fdur/hoge33.nh")
     val (emtree, empara) = Optimizer.em(1000,nh,cols,param)

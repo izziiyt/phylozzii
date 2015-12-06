@@ -135,20 +135,21 @@ object LDTree extends LDTreeUtilTrait {
     * @param target target species name
     * @return
     */
-  def bls(tr:ModelRoot, model:Model, columns:List[Array[Base]], target:String): Array[Double] = {
+  def bls(tr:ModelRoot, model:Model, columns:List[Array[Base]], target:String): (Array[Double], Array[Double]) = {
     val root = inout(tr, model, columns, target)
-    val reg = tr.branches.sum
-    root.bls.map(_ / reg)
+    val regbls = tr.branches.sum
+    val regblsa = tr.anclen(target)
+    (root.bls.map(_ / regbls),root.blsa.map(_ / regblsa))
   }
   /**
     *  probablistic Branch Length Score, sum of expected preserved time on branches which are
     *  ancestors of target species.Branch Length Score in Ancestory.
    */
-  def blsa(tr:ModelRoot,model:Model,columns:List[Array[Base]],target:String): Array[Double] = {
+  /*def blsa(tr:ModelRoot,model:Model,columns:List[Array[Base]],target:String): Array[Double] = {
     val root = inout(tr,model,columns,target)
     val reg = tr.anclen(target)
     root.blsa.map(_ / reg)
-  }
+  }*/
 }
 
 trait LDChild extends LDTree with PrimitiveChild{

@@ -108,26 +108,6 @@ object LDTree extends LDTreeUtilTrait {
 trait LDChild extends LDTree with PrimitiveChild{
   def model:Model
 
-  //protected def ld(d:Double): LogDouble = new LogDouble(log(d))
-
-/*  lazy val f: Array[Array[MD]] = {
-    def l(start:Int,end:Int,from:Int,to:Int,u:Int,v:Int):Double = {
-      def k(x:Double,y:Double):Double = {val tmp = (exp(x) - exp(y)) / (x - y); if(tmp.isNaN) exp(x) else tmp}
-      model.u(end, u) * model.ui(u, to) * model.u(from, v) *
-        model.ui(v, start) * k(t * model.lambda(u), t * model.lambda(v))
-    }
-    Array.tabulate(4){ end =>
-      Array.tabulate(4){ start =>
-        val tmp = for (from <- 0 to 3; to <- 0 to 3) yield {
-          (0 to 3).foldLeft(0.0){(n,u) => n +
-            (0 to 3).foldLeft(0.0){(m,v) => m + l(start, end, from, to, u, v)}}
-        }
-        new DenseMatrix[Double](4, 4, tmp.toArray) / trans(end, start).value
-      }
-    }
-  }
-  */
-
   lazy val f: Array[Array[MD]] = {
     def l(start:Int,end:Int,from:Int,to:Int,u:Int,v:Int):Double = {
       def k(x:Double,y:Double):Double = {val tmp = (exp(x) - exp(y)) / (x - y); if(tmp.isNaN) exp(x) else tmp}
@@ -268,13 +248,6 @@ trait LDTreeUtilTrait {
     val tmp: DenseMatrix[Double] = mi.u * diag(exp(mi.lambda * ti)).*(mi.ui)
     tmp.toLogDouble
   }
- /* def mkPost(alpha:Array[VL],beta:Array[VL], trans:ML,likelihood:Array[LogDouble]): Array[MD] = {
-    def f(a: VL, b: VL, l:LogDouble): ML = {
-      val tmp = for (i <- 0 to 3; j <- 0 to 3) yield a(i) * b(j) * trans(i, j) / l
-      new DenseMatrix[LogDouble](4,4,tmp.toArray)
-    }
-    (alpha,beta,likelihood).zipped.map((a,b,l) => f(a,b,l).value)
-  }*/
   def mkPost(alpha:Array[VL],beta:Array[VL], trans:ML,likelihood:Array[LogDouble]): Array[MD] = {
     def f(a: VL, b: VL, l:LogDouble): MD = {
       val p = DenseMatrix.zeros[Double](4, 4)
