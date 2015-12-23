@@ -5,3 +5,9 @@ target/
 .idea_modules/
 *.stackdump
 tmp/
+project/target/
+*.class
+*.iml
+*.ipr
+*.iws
+out

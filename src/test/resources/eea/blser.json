@@ -1,0 +1,14 @@
+{
+  "program": "pbls",
+  "parameter": {
+    "maf": "src/test/resources/eea/test3.maf",
+    "newick": "src/test/resources/eea/blstest.nh",
+    "param": "src/test/resources/eea/blstest.param",
+    "target": "hg19",
+    "output-prefix": "target/result"
+  },
+  "option": {
+    "name-newick": "src/test/resources/hg19.100way.nh",
+    "buff-size": 1048576
+  }
+}
