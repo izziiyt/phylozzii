@@ -11,3 +11,17 @@ project/target/
 *.ipr
 *.iws
 out
+# Created by .ignore support plugin (hsz.mobi)
+### Scala template
+*.log
+
+# sbt specific
+.cache
+dist/*
+lib_managed/
+src_managed/
+project/boot/
+project/plugins/project/
+
+project/project
+project/target
