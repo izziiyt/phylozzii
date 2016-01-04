@@ -6,24 +6,19 @@ import org.apache.spark.{AccumulatorParam, SparkConf, SparkContext, Logging}
 import fdur._
 import biformat.Maf.readMaf
 
-object SparkEM extends Logging{
+object SparkFdur extends Logging{
 
   import util.doubleEqual
 
-  implicit def name2file(f:String): File  = new File(f)
+  def sparkem(mf: File, pf: File, tf: File, maxit: Int, jobsize: Int = 512, constFreq: Boolean = false): Unit ={
 
-  def main(args: Array[String]): Unit = {
-    exe(args(0), args(1), args(2), args(3).toInt, args(4).toInt, args.length >= 6 && args(5) == "-constFreq")
-  }
-
-  def exe(mf: String, pf: String, tf: String, maxit: Int, jobsize: Int = 512, constFreq: Boolean = false): Unit ={
     val sparkConf = new SparkConf().setAppName("SparkEM")
     //sparkConf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
     val sc = new SparkContext(sparkConf)
     var param = Parameters.fromFile(pf)
     var tree = ModelTree.fromFile(tf)
     //val cols = sc.textFile(args(0)).map{x => x.split(",").map{_.toCharArray.map(Base.fromChar)}.toList}.cache()
-    val cols = sc.parallelize(readMaf(mf, jobsize)).cache()
+    val cols = sc.parallelize(readMaf(mf.getPath, jobsize)).cache()
     var i = 1
     var f = true
 
@@ -79,6 +74,8 @@ object SparkEM extends Logging{
     println("pi\t" + rpr.pi.toArray.mkString(","))
     println("b\t" + rpr.Bvec.toArray.mkString(","))
     println("tree\t" + tree.changeBranches(rbr))
+
+
   }
 
   def isConverged(br:List[Double], newbr: List[Double],

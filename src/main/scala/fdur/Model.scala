@@ -90,8 +90,6 @@ case class Model(param:Parameters) extends ModelTrait {
   }
 
   protected def calcNewParameter(u:List[Double],v:List[Double]):DenseVector[Double] = {
-    //println(u)
-    //println(v)
     if(u.exists(_ < 0) || u.sum <= 0) throw new Exception
     val lmd:Double = (u,v).zipped.collect{case (i,j) if i >= 0 => i - j}.max
     val nlmd = newtonRaphson(lmd,u,v)
@@ -108,7 +106,3 @@ case class Model(param:Parameters) extends ModelTrait {
     else newtonRaphson(newL,u,v,loop + 1)
   }
 }
-/*
-object Model {
-  def apply(param:Parameters) = new Model(param)
-}*/

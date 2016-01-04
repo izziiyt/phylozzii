@@ -1,9 +1,13 @@
-/*
-import biformat.Maf
-import breeze.linalg._
-import fdur.{ModelTree, Optimizer, Parameters}
-import org.scalatest.FunSuite
 
+import org.scalatest.FunSuite
+import main.Main
+class MainTest extends FunSuite {
+  test("hoge"){
+  Main.main(Array("--help"))
+   // Main.main(Array("fdur","fdur-spark","--newick","src/test/resources/test.nh","--param","src/test/resources/test.param","--maf","src/test/resources/test.maf"))
+  }
+}
+/*
 class MainTest extends FunSuite {
   val nh = ModelTree.fromFile("src/test/resources/fdur/test3.nh")
   val cols = Maf.readMaf("src/test/resources/fdur/tmp.maf", 1000)

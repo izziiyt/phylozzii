@@ -11,7 +11,7 @@ import scala.io.Source
 
 class EEATest extends FunSuite with LDTreeUtilTrait{
 
-  test("BLSer"){
+  /*test("BLSer"){
     val prefix = "target/result"
     val compare = "src/test/resources/eea/blsertest.wig.gz"
     main.BLSer.main(Array(
@@ -26,7 +26,7 @@ class EEATest extends FunSuite with LDTreeUtilTrait{
     assert(s1.getLines().reduce(_+_) == s2.getLines().reduce(_+_))
     s1.close()
     s2.close()
-  }
+  }*/
 
   test("confound"){
     val x = List(1,2,3)

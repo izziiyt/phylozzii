@@ -1,6 +1,6 @@
 package fdur
 
-import java.io.FileReader
+import java.io.{File, FileReader}
 
 import breeze.linalg.{sum, DenseVector}
 import breeze.numerics.{log, exp}
@@ -54,7 +54,9 @@ object Parameters extends ParameterParser{
     DenseVector(xs)
   }
 
-  def fromFile(fin:String):Parameters = {
+  def fromFile(fin: String): Parameters = fromFile(new File(fin))
+
+  def fromFile(fin: File):Parameters = {
     val reader = new FileReader(fin)
     val tmp = parseAll(parameters,reader).get
     reader.close()

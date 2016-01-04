@@ -3,23 +3,21 @@ package fdur
 import alignment.Base
 import breeze.linalg.{diag, DenseMatrix, DenseVector}
 import breeze.optimize.{LBFGS, DiffFunction}
-import main.{QReducer, QMapper}
 import biformat.Maf._
+import main.SGEFdur
 import scala.collection.GenSeq
-import scala.collection.parallel.mutable.ParArray
+import java.io.File
 
-//object Optimizer extends LazyLogging {
 object Optimizer extends {
   type Column = Array[Base]
 
-  def main(args: Array[String]): Unit = {
-    val tree = ModelTree.fromFile(args(0))
-    val cols = readMaf(args(1), 10000)
-    //val cols = Maf.readMaf(args(1), 10000).toParArray
-    val param = Parameters.fromFile(args(2))
-    val (optbrnch, optparam, _, _) = ldem(args(3).toInt, tree, cols, param)
-    QReducer.writeLine(tree.changeBranches(optbrnch).toString,args(4),false)
-    QReducer.writeLine(optparam.toString,args(5),false)
+  def main(nh: File,maf: File, pf: File, im: Int, onh: File, opf: File): Unit = {
+    val tree = ModelTree.fromFile(nh)
+    val cols = readMaf(maf.getName, 10000)
+    val param = Parameters.fromFile(pf)
+    val (optbrnch, optparam, _, _) = ldem(im, tree, cols, param)
+    SGEFdur.writeLine(tree.changeBranches(optbrnch).toString, onh,false)
+    SGEFdur.writeLine(optparam.toString, opf, false)
   }
 
   protected def emLike(itemax: Int, treex: ModelRoot, colsx: GenSeq[List[Array[Base]]], paramx: Parameters,

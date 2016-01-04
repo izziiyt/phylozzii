@@ -1,11 +1,14 @@
 package fdur
 
-import java.io.FileReader
+import java.io.{File, FileReader}
 import scala.annotation.tailrec
 import scala.util.parsing.combinator.JavaTokenParsers
 
 object ModelTree extends NHParser{
-  def fromFile(nhFile:String):ModelRoot = {
+
+  def fromFile(nhFile:String):ModelRoot = fromFile(new File(nhFile))
+
+  def fromFile(nhFile:File):ModelRoot = {
     val reader = new FileReader(nhFile)
     parseAll(tree,reader).get
   }

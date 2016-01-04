@@ -1,4 +1,3 @@
-import main.Entrop
 import org.scalatest.FunSuite
 
 /**
@@ -7,6 +6,6 @@ import org.scalatest.FunSuite
 class EnTest extends FunSuite{
   test("hogehoge"){
     val f = "/home/yuto/hoge.aln"
-    Entrop.main(Array(f))
+    main.Main.main(Array("entrop","al",f))
   }
 }

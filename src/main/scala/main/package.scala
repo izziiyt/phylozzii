@@ -5,8 +5,6 @@ import scala.util.parsing.combinator.JavaTokenParsers
 
 package object main {
   trait SuffStatParser extends JavaTokenParsers {
-    //def ns: Parser[DenseVector[Double]] = "ns:" ~> densevector
-
     def doubleArray: Parser[Array[Double]] = repsep(floatingPointNumber,",") ^^ { case xs => xs.map(_.toDouble).toArray }
 
     def densevector: Parser[DenseVector[Double]] = "(" ~> doubleArray <~ ")" ^^ { case xs => DenseVector(xs) }
@@ -28,10 +26,6 @@ package object main {
 
     def b: Parser[DenseMatrix[Double]] = "b:" ~> densematrix(4, 4)
 
-    //def branch: Parser[List[Double]] = "branch: (" ~> repsep(floatingPointNumber, "") <~ ")" ^^ { case xs => xs.map(_.toDouble) }
-
-   // def gradient: Parser[(VD, MD, List[Double], Double)] =
-   //   pi ~ b ~ branch ~ lgl ^^ { case x ~ y ~ z ~ w => (x, y, z, w) }
   }
 
 }

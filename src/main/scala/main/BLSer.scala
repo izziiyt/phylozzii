@@ -11,31 +11,29 @@ import scala.annotation.tailrec
   * Main class for caluculating probablistic bls score and it on target ancestory
   */
 object BLSer {
-  /**
-    *
-    * @param args
-    */
-  def main(args:Array[String]):Unit = {
-    val target = args(3)
-    val in = biformat.bigSource(args(0))
+
+  def blser(target: String, maf: File, newick: File, param: File, bls: File, blsa: File, nameFile: File): Unit = {
+    val in = biformat.bigSource(maf)
     val its = MafIterator.fromMSA(in, target).merge(10240)
-    val model = Model(Parameters.fromFile(args(2)))
-    val outbls = new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(args(4) + ".bls.wig.gz"),1024 * 1024))
-    val outblsa = new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(args(4) + ".blsa.wig.gz"),1024 * 1024))
+    val model = Model(Parameters.fromFile(param))
+    val outbls = new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(bls), 1024 * 1024))
+    val outblsa = new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(blsa), 1024 * 1024))
     val tree = {
-      val tmp = ModelTree.fromFile(args(1))
-      if (args.length == 6)
-        tmp.changeNames(ModelTree.fromFile(args(5)).names)
+      val tmp = ModelTree.fromFile(newick)
+      if (nameFile.exists())
+        tmp.changeNames(ModelTree.fromFile(nameFile).names)
       else
         tmp
     }
 
     try{
       if(!tree.names.contains(target))
-        sys.error("newick formatted tree doesn't contain " + target + ".")
+        throw new UnsupportedOperationException("newick formatted tree doesn't contain " + target + ".")
       blsexe(its,tree,model,target,outbls,outblsa)
     }
-    catch{case e: Throwable => e.printStackTrace()}
+    catch{
+      case e: Throwable => e.printStackTrace()
+    }
     finally{
       in.close()
       outbls.close()
@@ -47,7 +45,7 @@ object BLSer {
     def f(xs:Array[Base], indices:Array[Int]): Array[Base] = indices.map(xs(_))
 
     val targetX = mu.lines(target)
-    if(targetX.strand == "-") sys.error("Error: target strand is -.")
+    if(targetX.strand == "-") throw new UnsupportedOperationException("target strand is -.")
     val indices = targetX.seq.zipWithIndex.withFilter{case (b,_) => !b.nonNuc}.map(_._2)
     val n = indices.length
     val tmp =
