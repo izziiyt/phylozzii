@@ -3,9 +3,9 @@ import java.util.zip.GZIPInputStream
 
 import alignment.Base
 import breeze.linalg.{DenseMatrix, DenseVector, diag}
-import eea.tree.{LDTree, LDTreeUtilTrait}
 import fdur.Parameters
 import org.scalatest.FunSuite
+import pbls.{LDTreeUtilTrait, LDTree}
 
 import scala.io.Source
 

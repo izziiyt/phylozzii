@@ -1,12 +1,14 @@
-package fdur
+package main
+
+import java.io.File
 
 import alignment.Base
-import breeze.linalg.{diag, DenseMatrix, DenseVector}
-import breeze.optimize.{LBFGS, DiffFunction}
 import biformat.Maf._
-import main.SGEFdur
+import breeze.linalg.{DenseMatrix, DenseVector, diag}
+import breeze.optimize.{DiffFunction, LBFGS}
+import fdur._
+
 import scala.collection.GenSeq
-import java.io.File
 
 object Optimizer extends {
   type Column = Array[Base]

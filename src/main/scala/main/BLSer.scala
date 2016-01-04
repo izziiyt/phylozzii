@@ -70,7 +70,7 @@ object BLSer {
           val hg19 = it.lines(target)
           val (bls, blsa) = cols.foldLeft((Array[Double](),Array[Double]())){
             (n, x) =>
-              val (b, ba) = eea.tree.LDTree.bls(tree, model, x, target)
+              val (b, ba) = pbls.LDTree.bls(tree, model, x, target)
               (n._1 ++ b, n._2 ++ ba)
           }
           f(bls, indices.map(_+ it.start), hg19.subname, outbls)
