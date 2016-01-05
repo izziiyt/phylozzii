@@ -18,18 +18,20 @@ object Main {
 
       cmd("pbls") action { (_, c) => c.copy(mode = "pbls") } text
         "calculates probablistic branch length scores on a phylogenetic tree" children(
-        opt[File]("change-name") abbr "cn"valueName "<file>" action {
+        opt[File]("change-name") abbr "cn" valueName "<file>" optional() action {
           (x, c) => c.copy(nameNH = x)
         } text "to change scientific names to common names, and vice versa",
         newick,
         opt[File]('o', "out") abbr "o" required() valueName "<file>" action {
-          (x, c) => c.copy(targetDir = x)
+          (x, c) => c.copy(out = x)
         } text "a directory to put output files",
         param,
         opt[String]('t', "target") required() valueName "<string>" action {
           (x, c) => c.copy(target = x)
-        } text "name of target species",
-        maf
+        } text "target species",
+        arg[File]("<file>") required() action { (x, c) =>
+          c.copy(maf = x)
+        } text "input .maf file"
         )
 
       cmd("spark-fdur") action { (_, c) => c.copy(mode = "fdur") } text
@@ -78,7 +80,7 @@ object Main {
         "calculates entropies on alignmented DNA sequences" children (
         arg[File]("<file>") required() action { (x, c) =>
           c.copy(aln = x)
-        } text "input .al file"
+        } text "input .aln file"
         )
 
       cmd("sge-fdur-estep") abbr "sfe" action { (_, c) => c.copy(mode = "qe") } text
@@ -96,7 +98,7 @@ object Main {
       } text "how many iterates at most"
 
       def maf = arg[File]("<file>") required() action { (x, c) =>
-        c.copy(aln = x)
+        c.copy(maf = x)
       } text "input .maf file"
 
       def newick = opt[File]("newick") abbr "nh" required() valueName "<file>" action {
@@ -116,7 +118,11 @@ object Main {
           case "fdur" =>
             sparkem(conf.maf, conf.param, conf.nh, conf.maxit, conf.partition, conf.constFreq)
           case "pbls" =>
-            blser(conf.target, conf.maf, conf.nh, conf.param, conf.bls, conf.blsa, conf.nameNH)
+            println(args.mkString(" "))
+            val prefix = conf.maf.getName.split('.').head
+            val bls = new File(conf.out.getPath + "/" + prefix + ".bls.wig.gz")
+            val blsa = new File(conf.out.getPath + "/" + prefix + ".blsa.wig.gz")
+            blser(conf.target, conf.maf, conf.nh, conf.param, bls, blsa, conf.nameNH)
           case "wh" if conf.out.getName == "." =>
             wighist(conf.wig, conf.bed, conf.target)
           case "wh" =>
@@ -150,7 +156,6 @@ case class Conf(mode: String = "pbls", maf: File = new File("."), tgtDir: File =
                 maxit: Int = 200, partition: Int = 512, constFreq: Boolean = false, nameNH: File = new File("."),
                 bed: File = new File("."), wig: File = new File("."), aln: File = new File("."),
                 spark: Boolean = false, out: File = new File(".")) {
-  lazy val bls = new File(targetDir + "/" + prefix + ".bls.wig.gz")
-  lazy val blsa = new File(targetDir + "/" + prefix + ".blsa.wig.gz")
+
 }
 

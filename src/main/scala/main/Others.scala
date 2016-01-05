@@ -1,13 +1,11 @@
 package main
 
 import java.io._
-import java.util.zip.GZIPInputStream
 import alignment.Base
 import biformat.{WigIterator, BedIterator}
 import breeze.linalg.DenseVector
 import breeze.numerics._
 import breeze.plot._
-
 import scala.io.Source
 
 object Others{
@@ -16,9 +14,10 @@ object Others{
     val wigs = biformat.bigSource(wig)
     try {
       val bedit = BedIterator.fromSource(beds).filter(_.chr == chr)
-      val wigit = if(bed.isFile) WigIterator.fromSource(wigs).filterWithBed(bedit) else  WigIterator.fromSource(wigs)
+      val wigit = if(bed.isFile) WigIterator.fromSource(wigs).filterWithBed(bedit) else WigIterator.fromSource(wigs)
       out.println(wigit.hist(1000, 1).mkString(","))
     }
+    catch{case e: Throwable => e.getStackTrace}
     finally {
       beds.close()
       wigs.close()
@@ -27,23 +26,18 @@ object Others{
 
   def counter(f: File, out: PrintStream = System.out):Unit = {
     val counts = Array.fill[Long](5)(0)
-    val s =
-      if(f.getName.endsWith(".gz"))
-        new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(f))))
-      else
-        new BufferedReader(new InputStreamReader(new FileInputStream(f)))
-    var line = s.readLine()
-    while(line != null){
+    val s = biformat.bigSource(f)
+    for(line <- s.getLines){
       if (line.length > 0 && line.head == 's') {
         val xs = line.split("\\s+")(6)
         xs.toCharArray.foreach(x => counts(Base.fromChar(x).toInt) += 1)
       }
-      line = s.readLine()
     }
     out.println(counts.mkString("\t"))
   }
 
   def entrop(inf: File) {
+    println("entrop activates")
     val lines = Source.fromFile(inf).getLines().filter(l => !l.startsWith(">")).toArray
     val tlines = lines.head.indices.map(i => lines.map(_ (i)))
     val counts = tlines.map {
@@ -66,8 +60,8 @@ object Others{
     val f = Figure()
     f.visible = false
     val p = f.subplot(0)
-    val x:DenseVector[Double] = DenseVector(z.indices.map(_.toDouble).toArray)
-    val y:DenseVector[Double] = DenseVector(z)
+    val x = DenseVector(z.indices.map(_.toDouble).toArray)
+    val y = DenseVector(z)
     p += plot(x,y)
     val name = inf.getName.split('/').last.split('.').head
     p.title = name
