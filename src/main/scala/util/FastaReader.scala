@@ -1,6 +1,6 @@
 package util
 
-import java.io.PrintWriter
+import java.io.{File, PrintWriter}
 import fdur.ModelTree
 import alignment.{AminoAcid, Base}
 import alignment.{Codon, CodonTable}
@@ -80,12 +80,12 @@ class ExonFastaReader(val cdntbl: CodonTable) extends FastaReader{
     xs.forall(x => x(i - 2) == fst && x(i - 1) == snd)
   }
 
-  def filtered(nucf: String,aaf: String,ouf: String, selected:Set[Int], species:Seq[String]): Unit = {
+  def filtered(nucf: File,aaf: File,ouf: File, selected:Set[Int], species:Seq[String]): Unit = {
     val nucSource = Source.fromFile(nucf)
     val aaSource = Source.fromFile(aaf)
     val nucLines = nucSource.getLines()
     val aaLines = aaSource.getLines()
-    val lw = new PrintWriter("log.txt")
+    val lw = new PrintWriter("tmp/log.txt")
     val w = new PrintWriter(ouf)
     try {
       val buffer = Array.fill(species.length)(new ArrayBuffer[Base]())
@@ -140,29 +140,22 @@ class ExonFastaReader(val cdntbl: CodonTable) extends FastaReader{
 
 object FdFilter {
   /**
-    * detects 4d sites
-    *
-    * @param args
+    * detects 4d-degenetative sites
+    * @param nucf *knownNuc.fa
+    * @param aaf *knownAA.fa
+    * @param outf output file
+    * @param nh newick format file
+    * @param targetf file target species written for selecting 4d sites. 4d sites are defined as intersection of 4d sites of each species.
+    * @param codonf codon.table.txt
     */
-  def fdfilter(): Unit = {
-    /* *
-    * args(0): *knownNuc.fa
-    * args(1): *knownAA.fa
-    * args(2): "species" for selecting "4d sites". "4d sites" are defined as intersection of "4d sites" of each "species".
-    * args(3): *.nh
-    * args(4): codon.table.txt
-    * args(5): target file
-    * */
-    val nucf = args(0)
-    val aaf = args(1)
-    val (selected, species) = file2Indices(args(2),args(3))
-    val ouf = args(5)
-    val cdntbl = CodonTable.fromFile(args(4))
-    new ExonFastaReader(cdntbl).filtered(nucf, aaf, ouf, selected, species)
-    postFilter(ouf)
+  def fdfilter(nucf: File, aaf: File, outf: File, nh: File, targetf: File, codonf: File): Unit = {
+    val (selected, species) = file2Indices(targetf,nh)
+    val cdntbl = CodonTable.fromFile(codonf)
+    new ExonFastaReader(cdntbl).filtered(nucf, aaf, outf, selected, species)
+    postFilter(outf)
   }
 
-  def file2Indices(fi:String, nh:String): (Set[Int],Seq[String]) = {
+  def file2Indices(fi:File, nh:File): (Set[Int],Seq[String]) = {
     val sps = Source.fromFile(fi)
     try{
       val all = ModelTree.fromFile(nh).names
@@ -171,14 +164,14 @@ object FdFilter {
       (tmp, all)
     }
     catch{
-      case _: Throwable => sys.error("In file2Indices.")
+      case e: Throwable => sys.error(e.getStackTrace.toString)
     }
     finally{
       sps.close()
     }
   }
 
-  private def postFilter(fi:String):Unit = {
+  private def postFilter(fi: File):Unit = {
     val s = Source.fromFile(fi)
     val o = new PrintWriter("tmp.al")
     try {
