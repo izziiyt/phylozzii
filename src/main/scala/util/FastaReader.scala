@@ -139,8 +139,12 @@ class ExonFastaReader(val cdntbl: CodonTable) extends FastaReader{
 }
 
 object FdFilter {
-
-  def main(args:Array[String]): Unit = {
+  /**
+    * detects 4d sites
+    *
+    * @param args
+    */
+  def fdfilter(): Unit = {
     /* *
     * args(0): *knownNuc.fa
     * args(1): *knownAA.fa
@@ -158,7 +162,7 @@ object FdFilter {
     postFilter(ouf)
   }
 
-  def file2Indices(fi:String,nh:String): (Set[Int],Seq[String]) = {
+  def file2Indices(fi:String, nh:String): (Set[Int],Seq[String]) = {
     val sps = Source.fromFile(fi)
     try{
       val all = ModelTree.fromFile(nh).names

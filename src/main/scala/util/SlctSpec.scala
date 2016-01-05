@@ -1,4 +1,4 @@
-package util
+/*package util
 
 import java.io.{File, PrintWriter}
 
@@ -62,3 +62,4 @@ object SlctSpec {
     wr.close()
   }
 }
+*/

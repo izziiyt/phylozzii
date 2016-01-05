@@ -1,23 +1,10 @@
 import java.io.{File, PrintWriter, OutputStream}
-
-import alignment.Base
 import breeze.linalg.{DenseMatrix, DenseVector}
-
-import scala.io.Source
 import scala.math._
 
 package object util {
-  //val EPSILON = 0.00001
-  //.al file name to col alignments.
-  def getAlignments(al:String):Array[Array[Base]] = {
-    val source = Source.fromFile(al)
-    val lines = source.getLines()
-    val cols = lines.map(l => l.toCharArray.map(Base.fromChar)).toArray
-    source.close()
-    cols
-  }
 
-  def toTSV(arg:DenseVector[Double]):String = arg.foldLeft(""){(x,i) => x + "\t" + i}.toString.tail
+  def toTSV(arg:DenseVector[Double]):String = arg.toArray.mkString("\t")
 
   def doubleEqual(x:Double,y:Double,th:Double = 1.0E-14):Boolean = abs(x - y) < th
 
@@ -43,10 +30,11 @@ package object util {
     }
   }
 
-  def argmax[T](args:Seq[T],f:T => Double): T = {
-    var j = 0
-    var m = Double.NegativeInfinity
-    for(i <- args.indices;v = f(args(i));if v > m){m = v;j = i}
-    args(j)
-  }
+  def argmax[T](args:Seq[T], f:T => Double): T =
+    args.foldLeft(args.head, Double.NegativeInfinity){
+      case (m, a) =>
+        val tmp = f(a)
+        if(m._2 < tmp) (a, tmp) else m
+    }._1
+
 }

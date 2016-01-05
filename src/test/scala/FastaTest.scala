@@ -1,10 +1,5 @@
-import breeze.linalg.DenseVector
-import breeze.plot._
-import fdur.ModelTree
 import org.scalatest.FunSuite
 import util.FdFilter
-
-import scala.io.Source
 
 class FastaTest extends FunSuite {
   test("sample.aa and sample.nuc") {
