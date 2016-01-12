@@ -1,7 +1,7 @@
 
 import breeze.linalg.DenseVector
 import org.scalatest.FunSuite
-import main.Main
+
 class MainTest extends FunSuite {
 
   /*test("interpreter"){

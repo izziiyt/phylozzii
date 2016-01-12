@@ -29,9 +29,7 @@ object Main {
         opt[String]('t', "target") required() valueName "<string>" action {
           (x, c) => c.copy(target = x)
         } text "target species",
-        arg[File]("<file>") required() action { (x, c) =>
-          c.copy(maf = x)
-        } text "input .maf file"
+        maf
         )
 
       cmd("spark-fdur") action { (_, c) => c.copy(mode = "fdur") } text
@@ -51,21 +49,20 @@ object Main {
         maf
         )
 
-      cmd("wighist") action { (_, c) => c.copy(mode = "wh") } text
+      cmd("wighist") action { (_, c) => c.copy(mode = "wighist") } text
         "filters .wig file on the basis of information of .bed" children(
         opt[File]('b', "bed") optional() valueName "<file>" action {
           (x, c) =>
             c.copy(bed = x)
-            c.copy(out = new File(x.getName.split(".").head))
         } text ".bed file",
         opt[String]('c', "chr") required() valueName "<string>" action {
           (x, c) => c.copy(target = x)
         } text "required chromosome name",
-        opt[File]('o', "out") abbr "o" optional() valueName "<file>" action {
+        opt[File]('o', "out") optional() valueName "<file>" action {
           (x, c) => c.copy(out = x)
         } text s"output files, default is stdout",
-        arg[File]("<file>") required() action { (x, c) =>
-          c.copy(wig = x)
+        opt[File]('w',"wig") required() valueName "<file>" action {
+          (x, c) => c.copy(wig = x)
         } text "input .wig file"
         )
 
@@ -81,6 +78,16 @@ object Main {
         arg[File]("<file>") required() action { (x, c) =>
           c.copy(aln = x)
         } text "input .aln file"
+        )
+
+      cmd("bedchrsplit") action { (_, c) => c.copy(mode = "bedsplit") } text
+        "split bed file by chromosome" children (
+        opt[File]('o',"out") optional() valueName "<directory>" action {
+          (x, c) => c.copy(targetDir = x)
+        } text "output directory",
+        arg[File]("<file>") required() action { (x, c) =>
+          c.copy(bed = x)
+        } text "input .bed file"
         )
 
       cmd("sge-fdur-estep") abbr "sfe" action { (_, c) => c.copy(mode = "qe") } text
@@ -123,9 +130,9 @@ object Main {
             val bls = new File(conf.out.getPath + "/" + prefix + ".bls.wig.gz")
             val blsa = new File(conf.out.getPath + "/" + prefix + ".blsa.wig.gz")
             blser(conf.target, conf.maf, conf.nh, conf.param, bls, blsa, conf.nameNH)
-          case "wh" if conf.out.getName == "." =>
+          case "wighist" if conf.out.getName == "." =>
             wighist(conf.wig, conf.bed, conf.target)
-          case "wh" =>
+          case "wighist" =>
             val tmp = new PrintStream(conf.out)
             try wighist(conf.wig, conf.bed, conf.target, tmp)
             finally tmp.close()
@@ -141,6 +148,8 @@ object Main {
             qestep(conf.maf, conf.nh, conf.param, conf.out)
           case "qm" =>
             qmstep(conf.targetDir, conf.param, conf.nh, conf.constFreq)
+          case "bedsplit" =>
+            bedChrSplit(conf.bed,conf.targetDir)
           case _ =>
             throw new UnsupportedOperationException
         }
@@ -155,7 +164,5 @@ case class Conf(mode: String = "pbls", maf: File = new File("."), tgtDir: File =
                 isSciName: Boolean = false, prefix: String = "", sp: Boolean = false, nh: File = new File(""),
                 maxit: Int = 200, partition: Int = 512, constFreq: Boolean = false, nameNH: File = new File("."),
                 bed: File = new File("."), wig: File = new File("."), aln: File = new File("."),
-                spark: Boolean = false, out: File = new File(".")) {
-
-}
+                spark: Boolean = false, out: File = new File("."))
 
