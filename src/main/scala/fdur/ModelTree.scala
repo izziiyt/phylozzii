@@ -25,10 +25,26 @@ trait ModelParent extends PrimitiveParent {
     val tmp = children.foldLeft(0.0){(n,x) => n + x.anclen(target)}
     if(tmp == 0.0) 0.0 else tmp + t
   }
+  def anclenList(target: String): List[Double] = children.flatMap(_.anclenList(target))
+  def subTreeLenList(target: String): List[Double] = {
+    val (hd, tl) = children.foldLeft(0.0, Nil: List[Double]){
+      case ((nd, nl), ch) => ch match {
+        case ModelLeaf(name, t) =>
+          if (name == target) (nd, t :: Nil) else (nd + t, nl)
+        case node @ ModelNode(_,t) =>
+          node.subTreeLenList(target) match {
+            case h :: Nil => (nd + h + t, nl)
+            case hs => (nd + t, hs)
+          }
+      }
+    }
+    (if(tl.nonEmpty) hd + tl.head else hd) :: tl
+  }
 }
 
 trait ModelChild extends PrimitiveChild {
-  def anclen(target: String):Double
+  def anclen(target: String): Double
+  def anclenList(target: String): List[Double]
   def leafList: List[ModelLeaf]
   def init: ModelChild
   def changeBranches(branches:List[Double]): (ModelChild, List[Double])
@@ -36,7 +52,9 @@ trait ModelChild extends PrimitiveChild {
 }
 
 case class ModelRoot(children:List[ModelChild]) extends ModelParent with PrimitiveRoot{
+  override def subTreeLenList(target: String) = super.subTreeLenList(target).reverse
   override def leafList: List[ModelLeaf] = super.leafList.reverse
+  override def anclenList(target: String): List[Double] = super.anclenList(target).reverse
   def changeNames(names: List[String]): ModelRoot = {
     @tailrec
     def innerChangeNames(ch: List[ModelChild], ns: List[String], result: List[ModelChild]):
@@ -106,7 +124,10 @@ case class ModelRoot(children:List[ModelChild]) extends ModelParent with Primiti
 }
 
 case class ModelNode(children:List[ModelChild],t:Double) extends ModelChild with ModelParent with PrimitiveNode {
-
+  override def anclenList(target: String): List[Double] = {
+    val tmp = super.anclenList(target)
+    if(tmp.isEmpty) Nil else tmp.head + t :: tmp
+  }
   def changeBranches(branches: List[Double]):(ModelNode,List[Double]) = {
     @tailrec
     def innerChangeBranches(ch: List[ModelChild], br: List[Double], result: List[ModelChild]):
@@ -155,7 +176,8 @@ case class ModelNode(children:List[ModelChild],t:Double) extends ModelChild with
 }
 
 case class ModelLeaf(name:String,t:Double) extends ModelChild with PrimitiveLeaf {
-  def anclen(target: String):Double = if(name == target) t else 0.0
+  def anclen(target: String): Double = if(name == target) t else 0.0
+  def anclenList(target: String): List[Double] = if(name == target) t :: Nil else Nil
   def leafList: List[ModelLeaf] = this :: Nil
   def changeBranches(branches:List[Double]): (ModelLeaf, List[Double]) = (ModelLeaf(name,branches.head),branches.tail)
   def changeNames(names:List[String]):(ModelLeaf, List[String]) = (ModelLeaf(names.head,t), names.tail)

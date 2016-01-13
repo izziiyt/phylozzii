@@ -1,18 +1,16 @@
 import java.io.FileInputStream
 import java.util.zip.GZIPInputStream
-
 import alignment.Base
 import breeze.linalg.{DenseMatrix, DenseVector, diag}
 import fdur.Parameters
 import org.scalatest.FunSuite
 import pbls.{LDTreeUtilTrait, LDTree}
-
 import scala.io.Source
 
 class EEATest extends FunSuite with LDTreeUtilTrait{
 
   test("BLSer"){
-    val compare = "src/test/resources/eea/blsertest.wig.gz"
+   // val compare = "src/test/resources/eea/blsertest.wig.gz"
     main.Main.main(Array(
       "pbls",
       "-nh", "src/test/resources/eea/blstest.nh",

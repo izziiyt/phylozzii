@@ -4,11 +4,6 @@ import org.scalatest.FunSuite
 
 class MainTest extends FunSuite {
 
-  /*test("interpreter"){
-  Main.main(Array("--help"))
-   // Main.main(Array("fdur","fdur-spark","--newick","src/test/resources/test.nh","--param","src/test/resources/test.param","--maf","src/test/resources/test.maf"))
-  }*/
-
   import fdur._
   import biformat._
   import main._

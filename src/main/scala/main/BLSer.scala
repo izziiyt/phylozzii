@@ -6,26 +6,19 @@ import alignment.Base
 import fdur._
 import biformat.{MafIterator,MafUnit}
 import scala.annotation.tailrec
+import scala.collection.mutable.ArrayBuffer
 
-/**
-  * Main class for caluculating probablistic bls score and it on target ancestory
-  */
 object BLSer {
 
   def blser(target: String, maf: File, newick: File, param: File, bls: File, blsa: File, nameFile: File): Unit = {
     val in = biformat.bigSource(maf)
     val its = MafIterator.fromMSA(in, target).merge(10240)
     val model = Model(Parameters.fromFile(param))
-    val outbls = new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(bls), 1024 * 1024))
-    val outblsa = new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(blsa), 1024 * 1024))
-    val tree = {
-      val tmp = ModelTree.fromFile(newick)
-      if (nameFile.exists())
-        tmp.changeNames(ModelTree.fromFile(nameFile).names)
-      else
-        tmp
-    }
-
+    val outbls = new PrintWriter(new GZIPOutputStream(new FileOutputStream(bls), 1024 * 1024))
+    val outblsa = new PrintWriter(new GZIPOutputStream(new FileOutputStream(blsa), 1024 * 1024))
+    val tree =
+      if (nameFile.isFile) ModelTree.fromFile(newick).changeNames(ModelTree.fromFile(nameFile).names)
+      else ModelTree.fromFile(newick)
     try{
       if(!tree.names.contains(target))
         throw new UnsupportedOperationException("newick formatted tree doesn't contain " + target + ".")
@@ -59,16 +52,16 @@ object BLSer {
     (tmp, indices)
   }
 
-  protected def blsexe(its: MafIterator, tree: ModelRoot, model: Model, target: String, outbls: Writer, outblsa: Writer): Unit = {
-    outblsa.write("## Branch Length Score in the ancestory of " + target + ".\n")
-    outbls.write("## Branch Length Score in the tree. Target species is " + target + ".\n")
+  protected def blsexe(its: MafIterator, tree: ModelRoot, model: Model, target: String, outbls: PrintWriter, outblsa: PrintWriter): Unit = {
+    outblsa.println("## Branch Length Score in the ancestory of " + target + ".")
+    outbls.println("## Branch Length Score in the tree. Target species is " + target + ".")
     its.foreach{
       it =>
         val (preCols, indices) = mkCol(it.Dremoved, tree.names, target)
         val cols = dev(preCols, 1024)
         if(cols.nonEmpty) {
           val hg19 = it.lines(target)
-          val (bls, blsa) = cols.foldLeft((Array[Double](),Array[Double]())){
+          val (bls, blsa) = cols.foldLeft((ArrayBuffer[Double](),ArrayBuffer[Double]())){
             (n, x) =>
               val (b, ba) = pbls.LDTree.bls(tree, model, x, target)
               (n._1 ++ b, n._2 ++ ba)
@@ -77,10 +70,10 @@ object BLSer {
           f(blsa, indices.map(_+ it.start), hg19.subname, outblsa)
         }
     }
-    def f(bls: Array[Double], indices: Array[Long], chrom: String, w:Writer): Unit ={
-      w.write("variableStep\tchrom=" + chrom + "\n")
-      (bls, indices).zipped.foreach {(b, i) => w.write(i + "\t" + b.toString + "\n")}
-      w.write("\n")
+    def f(bls: ArrayBuffer[Double], indices: Array[Long], chrom: String, w:PrintWriter): Unit ={
+      w.println("variableStep\tchrom=" + chrom)
+      (bls, indices).zipped.foreach {(b, i) => w.println(i + "\t" + b.toString)}
+      w.println()
     }
   }
   /**

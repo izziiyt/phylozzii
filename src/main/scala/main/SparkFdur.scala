@@ -1,6 +1,7 @@
 package main
 
-import java.io.{BufferedWriter, File, FileWriter}
+import java.io._
+import biformat.MafIterator
 import breeze.linalg.{DenseVector,DenseMatrix}
 import org.apache.spark.{AccumulatorParam, SparkConf, SparkContext, Logging}
 import fdur._
@@ -10,33 +11,33 @@ object SparkFdur extends Logging{
 
   import util.doubleEqual
 
-  def sparkem(mf: File, pf: File, tf: File, maxit: Int, jobsize: Int = 512, constFreq: Boolean = false): Unit ={
+  def sparkem(mf: File, pf: File, tf: File, maxit: Int = 1000, onejobsize: Int = 512, constFreq: Boolean = false): Unit ={
 
     val sparkConf = new SparkConf().setAppName("SparkEM")
-    //sparkConf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
     val sc = new SparkContext(sparkConf)
-    var param = Parameters.fromFile(pf)
-    var tree = ModelTree.fromFile(tf)
-    //val cols = sc.textFile(args(0)).map{x => x.split(",").map{_.toCharArray.map(Base.fromChar)}.toList}.cache()
-    val cols = sc.parallelize(readMaf(mf.getPath, jobsize)).cache()
-    var i = 1
-    var f = true
 
-    val piw = new BufferedWriter(new FileWriter("pi.log"))
-    val bw = new BufferedWriter(new FileWriter("b.log"))
-    val branchw = new BufferedWriter(new FileWriter("branch.log"))
-    val lglw = new BufferedWriter(new FileWriter("lgl.log"))
+    val piw = new PrintWriter(new BufferedOutputStream(new FileOutputStream("pi.log")))
+    val bw = new PrintWriter(new BufferedOutputStream(new FileOutputStream("b.log")))
+    val branchw = new PrintWriter(new BufferedOutputStream(new FileOutputStream("branch.log")))
+    val lglw = new PrintWriter(new BufferedOutputStream(new FileOutputStream("lgl.log")))
 
     def logging(pi:VD, Bvec: VD, br: List[Double], lgl: Double) = {
-      piw.write(pi.toArray.mkString(","))
-      piw.newLine()
-      bw.write(Bvec.toArray.mkString(","))
-      bw.newLine()
-      branchw.write(br.mkString(","))
-      branchw.newLine()
-      lglw.write(lgl.toString)
-      lglw.newLine()
+      piw.println(pi.toArray.mkString(","))
+      bw.println(Bvec.toArray.mkString(","))
+      branchw.println(br.mkString(","))
+      lglw.println(lgl.toString)
     }
+
+    //def readMaf(mf: String, per: Int = 512): Array[List[Array[Base]]] = {
+    val source = biformat.bigSource(mf)
+    val its = MafIterator.fromMSA(source, "hg19")
+    val cols = sc.parallelize(its.merge(10000).its.map(_.seqs).toArray)
+
+    var i = 1
+    var f = true
+    var param = Parameters.fromFile(pf)
+    var tree = ModelTree.fromFile(tf)
+   // val cols = sc.parallelize(readMaf(mf.getPath, onejobsize)).cache()
 
     try {
       while (i <= maxit && f) {
@@ -47,7 +48,7 @@ object SparkFdur extends Logging{
           val tmpm = model
           Eresult.fromTuple(Optimizer.ldestep(tmpt, c, tmpm))
         }
-        val accum = sc.accumulator(Eresult.zero(tree.branches.length))(MyAccumulatorParam)
+        val accum = sc.accumulator(Eresult.zero(tree.branches.length))(FdurAccumulatorParam)
         mapped.foreach(x => accum += x)
         val x = accum.value
         val n = x.n.toDouble
@@ -62,7 +63,7 @@ object SparkFdur extends Logging{
         i += 1
       }
     }catch {
-      case e: Throwable => sys.error(e.toString)
+      case e: Throwable => e.printStackTrace()
     }finally {
       piw.close()
       bw.close()
@@ -70,12 +71,10 @@ object SparkFdur extends Logging{
       branchw.close()
     }
     logInfo(if(f) "Iteration number reached upper limit." else "Parameters are converged.")
-    val (rbr, rpr) = Optimizer.regularize(tree.branches,param)
+    val (rbr, rpr) = Optimizer.regularize(tree.branches, param)
     println("pi\t" + rpr.pi.toArray.mkString(","))
     println("b\t" + rpr.Bvec.toArray.mkString(","))
     println("tree\t" + tree.changeBranches(rbr))
-
-
   }
 
   def isConverged(br:List[Double], newbr: List[Double],
@@ -106,11 +105,7 @@ object Eresult{
   }
 }
 
-object MyAccumulatorParam extends AccumulatorParam[Eresult] {
-  def zero(initialValue: Eresult) : Eresult = {
-    Eresult.zero(initialValue.size)
-  }
-  def addInPlace(v1: Eresult, v2: Eresult): Eresult = {
-    v1 + v2
-  }
+object FdurAccumulatorParam extends AccumulatorParam[Eresult] {
+  def zero(initialValue: Eresult) : Eresult = Eresult.zero(initialValue.size)
+  def addInPlace(v1: Eresult, v2: Eresult): Eresult = v1 + v2
 }
