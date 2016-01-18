@@ -3,7 +3,8 @@ package main
 import java.io._
 import java.util.zip.GZIPOutputStream
 import alignment.Base
-import biformat.{BedLine, WigIterator, BedIterator}
+import biformat.{WigIterator, BedIterator}
+import biformat.BedIterator.BedLine
 import breeze.linalg.DenseVector
 import breeze.numerics._
 import breeze.plot._
@@ -96,7 +97,7 @@ object Others{
       val source = biformat.bigSource(odir + "/" + chr +  ".bed.gz")
       val pw = new PrintWriter(new GZIPOutputStream(new FileOutputStream(odir + "/" + chr +  ".tmp.bed.gz"), 1024 * 1024))
       try {
-        val tmp = BedIterator.fromSource(source).its.toList
+        val tmp = BedIterator.fromSource(source).toList
         f(tmp) foreach pw.println
         new File(odir + "/" + chr +  ".tmp.bed.gz").renameTo(new File(odir + "/" + chr +  ".bed.gz"))
       }

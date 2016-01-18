@@ -3,7 +3,8 @@ package main
 import java.io.File
 
 import alignment.Base
-import biformat.Maf._
+import biformat.MafIterator
+
 import breeze.linalg.{DenseMatrix, DenseVector, diag}
 import breeze.optimize.{DiffFunction, LBFGS}
 import fdur._
@@ -15,7 +16,9 @@ object Optimizer extends {
 
   def main(nh: File,maf: File, pf: File, im: Int, onh: File, opf: File): Unit = {
     val tree = ModelTree.fromFile(nh)
-    val cols = readMaf(maf.getName, 10000)
+    val source = biformat.bigSource(maf)
+    val its = MafIterator.fromSource(source, "hg19")
+    val cols = readMaf(its)
     val param = Parameters.fromFile(pf)
     val (optbrnch, optparam, _, _) = ldem(im, tree, cols, param)
     SGEFdur.writeLine(tree.changeBranches(optbrnch).toString, onh,false)

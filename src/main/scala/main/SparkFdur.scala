@@ -5,7 +5,6 @@ import biformat.MafIterator
 import breeze.linalg.{DenseVector,DenseMatrix}
 import org.apache.spark.{AccumulatorParam, SparkConf, SparkContext, Logging}
 import fdur._
-import biformat.Maf.readMaf
 
 object SparkFdur extends Logging{
 
@@ -30,8 +29,8 @@ object SparkFdur extends Logging{
 
     //def readMaf(mf: String, per: Int = 512): Array[List[Array[Base]]] = {
     val source = biformat.bigSource(mf)
-    val its = MafIterator.fromMSA(source, "hg19")
-    val cols = sc.parallelize(its.merge(10000).its.map(_.seqs).toArray)
+    val its = MafIterator.fromSource(source, "hg19")
+    val cols = sc.parallelize(readMaf(its))
 
     var i = 1
     var f = true

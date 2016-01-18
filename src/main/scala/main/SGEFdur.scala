@@ -1,7 +1,7 @@
 package main
 
 import java.io._
-import biformat.Maf._
+import biformat.{MafIterator,bigSource}
 import fdur._
 
 object SGEFdur extends SuffStatParser{
@@ -33,7 +33,9 @@ object SGEFdur extends SuffStatParser{
   def qestep(maf: File, nh: File, pf: File, out: File): Unit = {
     //println(scala.collection.parallel.availableProcessors)
     //${al} ${nh} ${count} target/time/e/${SGE_TASK_ID}.time
-    val cols = readMaf(maf.getName,10000)
+    val source = biformat.bigSource(maf)
+    val its = MafIterator.fromSource(source, "hg19")
+    val cols = readMaf(its)
     val tree = ModelTree.fromFile(nh)
     val param = Parameters.fromFile(pf)
     val results = cols.map { c => Optimizer.ldestep(tree, c, Model(param)) }

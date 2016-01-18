@@ -4,7 +4,8 @@ import java.io._
 import java.util.zip.GZIPOutputStream
 import alignment.Base
 import fdur._
-import biformat.{MafIterator,MafUnit}
+import biformat.MafIterator
+import biformat.MafIterator.MafUnit
 import scala.annotation.tailrec
 import scala.collection.mutable.ArrayBuffer
 
@@ -12,7 +13,7 @@ object BLSer {
 
   def blser(target: String, maf: File, newick: File, param: File, bls: File, blsa: File, nameFile: File): Unit = {
     val in = biformat.bigSource(maf)
-    val its = MafIterator.fromMSA(in, target).merge(10240)
+    val its = MafIterator.fromSource(in, target).merged(10240)
     val model = Model(Parameters.fromFile(param))
     val outbls = new PrintWriter(new GZIPOutputStream(new FileOutputStream(bls), 1024 * 1024))
     val outblsa = new PrintWriter(new GZIPOutputStream(new FileOutputStream(blsa), 1024 * 1024))

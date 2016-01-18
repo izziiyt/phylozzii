@@ -1,8 +1,12 @@
 import java.io.{PrintWriter, OutputStream}
 
+import alignment.Base
+import biformat.MafIterator
 import breeze.linalg.{DenseMatrix, DenseVector}
 import breeze.math.LogDouble
 import breeze.math.LogDouble._
+
+import scala.annotation.tailrec
 
 package object fdur {
   //import scala.language.reflectiveCalls
@@ -22,6 +26,25 @@ package object fdur {
     writer.println(txt + "\t" + (System.currentTimeMillis - start))
     writer.flush()
     result
+  }
+
+  def readMaf(it: MafIterator, per: Int = 512): Array[List[Array[Base]]] = {
+    val totalunit = it.reduceLeft { (n, u) => n + u }
+    val bases = totalunit.seqs
+    val tmp = div(bases, per)
+    tmp
+  }
+
+  def div[T](seqs: List[Array[T]], size: Int): Array[List[Array[T]]] = {
+    @tailrec
+    def f(xs: List[Array[T]], ys: List[List[Array[T]]], index: Int): Array[List[Array[T]]] = {
+      if (xs.head.isEmpty) ys.reverse.toArray
+      else {
+        val (target, reserve) = xs.map { x => x.splitAt(index) }.unzip
+        f(reserve, target :: ys, index)
+      }
+    }
+    f(seqs, Nil, size)
   }
 
   implicit def DenseMatrixDoubleExtra(x: DenseMatrix[Double]) = new {

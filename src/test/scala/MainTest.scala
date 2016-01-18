@@ -9,7 +9,7 @@ class MainTest extends FunSuite {
   import main._
   import util.doubleEqual
   val nh = ModelTree.fromFile("src/test/resources/fdur/test3.nh")
-  val cols = Maf.readMaf("src/test/resources/fdur/tmp.maf", 1000)
+  val cols = fdur.readMaf(MafIterator.fromSource(bigSource("src/test/resources/fdur/tmp.maf"),"hg19"), 1000)
   val param = Parameters.fromFile("src/test/resources/fdur/testparam.txt")
   val gdparam = param.asGD
 
