@@ -3,9 +3,10 @@ package main
 import java.io._
 import java.util.zip.GZIPOutputStream
 import alignment.Base
+import biformat.WigIterator.VariableStep
 import biformat.{WigIterator, BedIterator}
 import biformat.BedIterator.BedLine
-import breeze.linalg.DenseVector
+import breeze.linalg.{DenseMatrix, Matrix, DenseVector}
 import breeze.numerics._
 import breeze.plot._
 import scala.io.Source
@@ -118,6 +119,28 @@ object Others{
     farray.values.foreach(_.close())
     farray.keys.foreach(bedSort)
     farray.keys.foreach(bedRemoveOverlap)
+  }
+
+  def diff(blsf: File, blsaf: File, out: PrintWriter = System.out): Unit = {
+    val bls = biformat.bigSource(blsf)
+    val blsa = biformat.bigSource(blsaf)
+    val matrix = Array.fill[Array[Int]](1000)(Array.fill[Int](1000)(0))
+    val it = WigIterator.fromSource(bls, 1000)
+    val ait = WigIterator.fromSource(blsa, 1000)
+    while(it.hasNext && ait.hasNext){
+      (it.next(), ait.next()) match {
+        case (VariableStep(_,_,xlines), VariableStep(_,_,ylines)) =>
+          (xlines zip ylines) foreach {
+            case (x, y) =>
+              matrix((x._2 * 1000).toInt)((y._2 * 1000).toInt) += 1
+          }
+        case _ =>
+          throw new UnsupportedEncodingException
+      }
+    }
+    matrix.foreach(x => out.println(x.mkString(",")))
+    bls.close()
+    blsa.close()
   }
 
 }
