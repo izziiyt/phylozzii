@@ -3,46 +3,24 @@ package main
 import java.io._
 import java.util.zip.GZIPOutputStream
 import alignment.Base
-import biformat.WigIterator.VariableStep
+import biformat.WigIterator.{FixedStep, WigUnit, VariableStep}
 import biformat.{WigIterator, BedIterator}
 import biformat.BedIterator.BedLine
-import breeze.linalg.{DenseMatrix, Matrix, DenseVector}
+import breeze.linalg._
 import breeze.numerics._
 import breeze.plot._
 import scala.io.Source
 
 object Others{
-  def wighist(wig: File, bed: File, chr: String, out: PrintStream = System.out) {
-    println("wighist activates")
-    val wigs = biformat.bigSource(wig)
-    if(bed.isFile){
-      val beds = biformat.bigSource(bed)
-      try {
-        val bedit = BedIterator.fromSource(beds).filter(_.chr == chr)
-        val wigit = WigIterator.fromSource(wigs, 2048).filterWithBed(bedit)
-        out.println(wigit.hist(1000, 1).mkString(","))
-      }
-      catch{case e: Throwable => e.printStackTrace()}
-      finally {
-        beds.close()
-        wigs.close()
-      }
-    }
-    else{
-      try {
-        val wigit = WigIterator.fromSource(wigs, 2048)
-        out.println(wigit.hist(1000, 1).mkString(","))
-      }
-      catch{case e: Throwable => e.printStackTrace()}
-      finally {
-        wigs.close()
-      }
-    }
+  def wighist(wigs: Source, beds: Option[Source], chr: String, out: PrintStream = System.out) {
+    val bedit = beds map (b => BedIterator.fromSource(b).filter(_.chr == chr))
+    val preWigit = WigIterator.fromSource(wigs, 2048)
+    val wigit = bedit map preWigit.filterWithBed getOrElse preWigit
+    out.println(wigit.hist(1000, 1).mkString(","))
   }
 
-  def counter(f: File, out: PrintStream = System.out):Unit = {
+  def counter(s: Source, out: PrintStream = System.out):Unit = {
     val counts = Array.fill[Long](5)(0)
-    val s = biformat.bigSource(f)
     for(line <- s.getLines){
       if (line.length > 0 && line.head == 's') {
         val xs = line.split("\\s+")(6)
@@ -52,9 +30,8 @@ object Others{
     out.println(counts.mkString("\t"))
   }
 
-  def entrop(inf: File) {
-    println("entrop activates")
-    val lines = Source.fromFile(inf).getLines().filter(l => !l.startsWith(">")).toArray
+  def entrop(s: Source, name: String) {
+    val lines = s.getLines().filter(!_.startsWith(">")).toArray
     val tlines = lines.head.indices.map(i => lines.map(_ (i)))
     val counts = tlines.map {
       cols =>
@@ -79,49 +56,49 @@ object Others{
     val x = DenseVector(z.indices.map(_.toDouble).toArray)
     val y = DenseVector(z)
     p += plot(x,y)
-    val name = inf.getName.split('/').last.split('.').head
     p.title = name
     p.xlabel = "index"
     p.ylabel = "entropy"
     f.saveas("target/" + name + ".png")
   }
 
-  def bedChrSplit(inf: File, odir: File = new File(".")): Unit = {
+  def bedChrSplit(bedSource: Source, odir: File = new File(".")): Unit = {
     val farray = scala.collection.mutable.Map[String, PrintWriter]()
-    def mkpw(chr: String) = {
-      if(!farray.contains(chr)){
-        farray(chr) = new PrintWriter(new GZIPOutputStream(new FileOutputStream(odir + "/" + chr +  ".bed.gz"), 1024 * 1024))
-      }
+    def choosePrinter(chr: String): PrintWriter = {
+      farray(chr) =
+        if(farray.contains(chr)) farray(chr)
+        else new PrintWriter(new GZIPOutputStream(new FileOutputStream(odir + "/" + chr +  ".bed.gz"), 1024 * 1024))
       farray(chr)
     }
     def bedManage(chr: String, f: List[BedLine] => List[BedLine], name: String = ""): Unit = {
-      val source = biformat.bigSource(odir + "/" + chr +  ".bed.gz")
-      val pw = new PrintWriter(new GZIPOutputStream(new FileOutputStream(odir + "/" + chr +  ".tmp.bed.gz"), 1024 * 1024))
+      val bed = new File(odir + "/" + chr +  ".bed.gz")
+      val source = biformat.bigSource(bed)
+      val tmpbed = new File("/tmp/" + chr +  ".tmp.bed.gz")
+      //val tmpbed = new File(odir + "/" + chr +  ".tmp.bed.gz")
+      val printer = new PrintWriter(new GZIPOutputStream(new FileOutputStream(tmpbed), 1024 * 1024))
       try {
-        val tmp = BedIterator.fromSource(source).toList
-        f(tmp) foreach pw.println
-        new File(odir + "/" + chr +  ".tmp.bed.gz").renameTo(new File(odir + "/" + chr +  ".bed.gz"))
+        val bedList = BedIterator.fromSource(source).toList
+        f(bedList) foreach printer.println
       }
       finally {
         source.close()
-        pw.close()
+        printer.close()
+        tmpbed.renameTo(bed)
       }
     }
 
     def bedRemoveOverlap(chr: String) =
-      bedManage(chr, zs => zs.tail.foldLeft(zs.head :: Nil){(n, z) => if(n.head hasOverlap z) n else z :: n}.reverse)
+      bedManage(chr, zs => zs.tail.foldLeft(zs.head :: Nil){(ns, n) => if(ns.head hasOverlap n) ns else n :: ns}.reverse)
     def bedSort(chr: String): Unit = bedManage(chr, zs => zs.sortBy(_.start))
 
-    val source = biformat.bigSource(inf)
-    val bit = BedIterator.fromSource(source)
-    bit.foreach{it => mkpw(it.chr).println(it.toString())}
-    source.close()
+    val bit = BedIterator.fromSource(bedSource)
+    bit.foreach{it => choosePrinter(it.chr).println(it.toString())}
     farray.values.foreach(_.close())
     farray.keys.foreach(bedSort)
     farray.keys.foreach(bedRemoveOverlap)
   }
 
-  def diff(blsf: File, blsaf: File, out: PrintWriter = System.out): Unit = {
+  def diff(blsf: File, blsaf: File, out: PrintStream = System.out): Unit = {
     val bls = biformat.bigSource(blsf)
     val blsa = biformat.bigSource(blsaf)
     val matrix = Array.fill[Array[Int]](1000)(Array.fill[Int](1000)(0))
@@ -141,6 +118,34 @@ object Others{
     matrix.foreach(x => out.println(x.mkString(",")))
     bls.close()
     blsa.close()
+  }
+
+  def wigwig(ws1: Source, ws2: Source, of: PrintStream): Unit = {
+    of.println("index, first, second")
+    def printer(first: VariableStep, second: VariableStep): Unit = {
+      val start = max(first.start, second.start)
+      val end = min(first.end, second.end)
+      val x1 = first.lines.dropWhile(_._1 < start).takeWhile(_._1 < end)
+      val x2 = second.lines.dropWhile(_._1 < start).takeWhile(_._1 < end)
+      (x1 zip x2).foreach{case (x, y) => of.println("$x._1, $x._2, $y._2")}
+    }
+    val wi1 = WigIterator.fromSource(ws1)
+    val wi2 = WigIterator.fromSource(ws2)
+
+    var w1 = wi1.next()
+    var w2 = wi2.next()
+
+    while(wi1.hasNext && wi2.hasNext){
+      if (w1.start > w2.end) w2 = wi2.next()
+      else if (w1.end < w2.start) w1 = wi1.next()
+      else {
+        printer(w1.toVariableStep, w2.toVariableStep)
+        if(w1.end < w2.end) w1 = wi1.next()
+        else w2 = wi2.next()
+      }
+    }
+    if(w1.start <= w2.end && w1.end >= w2.start)
+      printer(w1.toVariableStep, w2.toVariableStep)
   }
 
 }
