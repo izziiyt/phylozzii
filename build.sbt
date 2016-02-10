@@ -1,7 +1,5 @@
-scalaVersion := "2.10.5"
 version := "0.2.0-SNAPSHOT"
 name := "fdur"
-organization := "izziiyt"
 
 lazy val root = project.in(file(".")).dependsOn(githubRepo)
 
