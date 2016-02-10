@@ -6,7 +6,7 @@ import java.io.File
   * Created by yuto on 15/12/17.
   */
 class EnTest extends FunSuite{
-  test("nontest"){
+  /*test("nontest"){
     val f = new File("src/test/resources/hg19.100way.izzii.nh")
     val tree = ModelTree.fromFile(f)
     val sum = tree.anclen("Human")
@@ -18,5 +18,5 @@ class EnTest extends FunSuite{
     println(tmp2.length)
     println(tree.anclenList("Human"))
     println(tmp2)
-  }
+  }*/
 }

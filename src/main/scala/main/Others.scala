@@ -3,7 +3,7 @@ package main
 import java.io._
 import java.util.zip.GZIPOutputStream
 import alignment.Base
-import biformat.WigIterator.{FixedStep, WigUnit, VariableStep}
+import biformat.WigIterator.VariableStep
 import biformat.{WigIterator, BedIterator}
 import biformat.BedIterator.BedLine
 import breeze.linalg._

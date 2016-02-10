@@ -14,7 +14,7 @@ out
 # Created by .ignore support plugin (hsz.mobi)
 ### Scala template
 *.log
-
+.history
 # sbt specific
 .cache
 dist/*

@@ -1,16 +1,13 @@
-import java.io.FileInputStream
-import java.util.zip.GZIPInputStream
 import alignment.Base
 import breeze.linalg.{DenseMatrix, DenseVector, diag}
 import fdur.Parameters
 import org.scalatest.FunSuite
 import pbls.{LDTreeUtilTrait, LDTree}
-import scala.io.Source
+import util._
 
 class EEATest extends FunSuite with LDTreeUtilTrait{
 
   test("BLSer"){
-   // val compare = "src/test/resources/eea/blsertest.wig.gz"
     main.Main.main(Array(
       "pbls",
       "-nh", "src/test/resources/eea/blstest.nh",
@@ -21,9 +18,8 @@ class EEATest extends FunSuite with LDTreeUtilTrait{
       "src/test/resources/eea/test3.maf"
     ))
 
-    val s1 = Source.fromInputStream(new GZIPInputStream(new FileInputStream("target/test3.bls.wig.gz")))
-    val s2 = Source.fromInputStream(new GZIPInputStream(new FileInputStream("src/test/resources/eea/blsertest.wig.gz")))
-    assert(s1.getLines().reduce(_+_) == s2.getLines().reduce(_+_))
+    val s1 = biformat.bigSource("target/test3.bls.wig.gz")
+    val s2 = biformat.bigSource("src/test/resources/eea/blsertest.wig.gz")
     s1.close()
     s2.close()
   }
@@ -63,8 +59,8 @@ class EEATest extends FunSuite with LDTreeUtilTrait{
       DenseVector(0.0, 0.09761985381121624, 0.0, 0.0),
       DenseVector(0.0, 0.0, 0.0, 0.0)
     )
-    (ldtree.toList,ians).zipped.foreach{(x,y) => assert(x.alphaD.head.value == y)}
-    (ldtree.toList,oans).zipped.foreach{(x,y) => assert(x.betaD.head.value == y)}
+    (ldtree.toList,ians).zipped.foreach{(x,y) => assert(doubleEqual(x.alphaD.head.value, y, 1.0E-6))}
+    (ldtree.toList,oans).zipped.foreach{(x,y) => assert(doubleEqual(x.betaD.head.value, y, 1.0E-6))}
   }
 
 

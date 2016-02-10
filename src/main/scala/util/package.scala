@@ -1,5 +1,5 @@
 import java.io.{File, PrintWriter, OutputStream}
-import breeze.linalg.{DenseMatrix, DenseVector}
+import breeze.linalg.{Tensor, DenseMatrix, DenseVector}
 import scala.math._
 
 package object util {
