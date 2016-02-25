@@ -7,7 +7,7 @@ import breeze.numerics.exp
 import scala.annotation.tailrec
 import breeze.math.LogDouble.SemiringLogDouble
 
-trait LDTree extends PrimitiveTree{
+sealed trait LDTree extends PrimitiveTree{
   type NsFd = (MD,VD)
   def alpha: Array[VL]
   def beta: Array[VL]
@@ -105,7 +105,7 @@ object LDTree extends LDTreeUtilTrait {
 
 }
 
-trait LDChild extends LDTree with PrimitiveChild{
+sealed trait LDChild extends LDTree with PrimitiveChild{
   def model:Model
 
   lazy val f: Array[Array[MD]] = {
@@ -150,7 +150,7 @@ trait LDChild extends LDTree with PrimitiveChild{
   def leafList:List[LDLeaf]
 }
 
-trait LDParent extends LDTree with PrimitiveParent {
+sealed trait LDParent extends LDTree with PrimitiveParent {
   def leafList: List[LDLeaf] = children.foldLeft(Nil:List[LDLeaf])((n,x) => x.leafList ::: n)
   override def children: List[LDChild]
   def toList: List[LDTree] = this :: children.foldLeft(Nil:List[LDTree])((n,x) => x.toList ::: n)
@@ -239,7 +239,7 @@ object LDRoot extends LDTreeUtilTrait{
   }
 }
 
-trait LDTreeUtilTrait {
+sealed trait LDTreeUtilTrait {
   def mkAlpha(fromChildren:List[Array[VL]]):Array[VL] =
     fromChildren.reduceLeft{(ns,xs) => (ns,xs).zipped.map(_ :* _)}
   def mkBeta(fromSib:List[Array[VL]],fromPar:Array[VL]):Array[VL] =

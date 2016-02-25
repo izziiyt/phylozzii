@@ -11,13 +11,13 @@ object Main extends App{
   import SGEFdur._
   import BLSer._
 
-  val parser = new OptionParser[Conf]("phylozzii.pbls/src/main/scala/phylozzii.pbls") {
-    head("core/src/main/scala/main", "0.2.0-SNAP_SHOT")
+  val parser = new OptionParser[Conf]("phylozzii") {
+    head("phylozzii", "0.2.0-SNAP_SHOT")
     help("help") abbr "h" text "prints this usage text"
     version("version") abbr "v" text "prints version information"
     opt[Unit]("yaml") abbr "yml" valueName "<file>" text "pending"
 
-    cmd("phylozzii.pbls/src/main/scala/phylozzii.pbls") action { (_, c) => c.copy(mode = "phylozzii.pbls/src/main/scala/phylozzii.pbls") } text
+    cmd("pbls") action { (_, c) => c.copy(mode = "pbls") } text
       "calculates probablistic branch length scores on a phylogenetic tree" children(
       opt[File]("change-name") abbr "cn" valueName "<file>" optional() action {
         (x, c) => c.copy(nameNH = x)
@@ -33,7 +33,7 @@ object Main extends App{
       maf
       )
 
-    cmd("spark-phylozzii.fdur") action { (_, c) => c.copy(mode = "fdur") } text
+    cmd("fdur") action { (_, c) => c.copy(mode = "fdur") } text
       "estimates parameters on a phylogenetic tree by EM maximum likelihood estimation" children(
       cbf,
       opt[Int]("maxit") abbr "mi" valueName "<integer>" action {
@@ -93,7 +93,7 @@ object Main extends App{
       } text "input .bed file"
       )
 
-    cmd("sge-phylozzii.fdur-estep") abbr "sfe" action { (_, c) => c.copy(mode = "qe") } text
+    cmd("sge-fdur-estep") abbr "sfe" action { (_, c) => c.copy(mode = "qe") } text
       "phylozzii.fdur's estep for runnig on SGE system" children (
       cbf,
       newick,
@@ -148,6 +148,7 @@ object Main extends App{
         case "wighist" =>
           val ws = biformat.bigSource(conf.input1)
           val bs = if(conf.input2.isFile) Some(biformat.bigSource(conf.input2)) else None
+          conf.out.createNewFile()
           val os = if(conf.out.isFile) f2stream(conf.out) else System.out
           try wighist(ws, bs, conf.opt1, os)
           finally {
@@ -158,14 +159,16 @@ object Main extends App{
         case "wigwig" =>
           val ws1 = biformat.bigSource(conf.input1)
           val ws2 = biformat.bigSource(conf.input2)
+          conf.out.createNewFile()
           val os = if(conf.out.isFile) f2stream(conf.out) else System.out
-          try wigwig(ws1, ws2, os)
+          try wigwigphyloP(ws1, ws2, os)
           finally {
             ws1.close()
             ws2.close()
             if(conf.out.isFile) os.close()
           }
         case "ct" =>
+          conf.out.createNewFile()
           val os = if(conf.out.isFile) new PrintStream(conf.out) else System.out
           val ms = biformat.bigSource(conf.input1)
           try counter(ms, os)

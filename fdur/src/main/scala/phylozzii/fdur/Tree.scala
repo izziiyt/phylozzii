@@ -6,7 +6,7 @@ import breeze.numerics.exp
 
 import scala.annotation.tailrec
 
-trait Tree extends PrimitiveTree{
+sealed trait Tree extends PrimitiveTree{
   type NsFd = (MD,VD)
   def alpha: Array[VD]
   def beta: Array[VD]
@@ -104,7 +104,7 @@ object Tree extends TreeUtilTrait {
 
 }
 
-trait Child extends Tree with PrimitiveChild{
+sealed trait Child extends Tree with PrimitiveChild{
   def model:Model
 
   lazy val f: Array[Array[MD]] = {
@@ -149,7 +149,7 @@ trait Child extends Tree with PrimitiveChild{
   def leafList:List[Leaf]
 }
 
-trait Parent extends Tree with PrimitiveParent {
+sealed trait Parent extends Tree with PrimitiveParent {
   def leafList:List[Leaf] = children.foldLeft(Nil:List[Leaf])((n,x) => x.leafList ::: n)
   override def children:List[Child]
   def toList:List[Tree] = this :: children.foldLeft(Nil:List[Tree])((n,x) => x.toList ::: n)
@@ -239,7 +239,7 @@ object Root extends TreeUtilTrait{
   }
 }
 
-trait TreeUtilTrait {
+sealed trait TreeUtilTrait {
   def mkAlpha(fromChildren:List[Array[VD]]):Array[VD] =
     fromChildren.reduceLeft{(ns,xs) => (ns,xs).zipped.map(_ :* _)}
   def mkBeta(fromSib:List[Array[VD]],fromPar:Array[VD]):Array[VD] =

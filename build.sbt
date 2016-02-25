@@ -2,6 +2,7 @@ lazy val commonSettings = Seq(
   organization := "izziiyt",
   version := "0.2.0-SNAPSHOT",
   scalaVersion := "2.10.5",
+  name := "phylozzii",
   libraryDependencies ++= Seq(
     "org.scalatest" %% "scalatest" % "2.1.3" % "test",
     "org.scalanlp" %% "breeze" % "0.11.2",
@@ -38,7 +39,15 @@ lazy val commonSettings = Seq(
 
   test in assembly := {},
 
-  assemblyJarName in assembly := "phylozzii" + version.value + ".jar",
+  assemblyJarName in assembly := name.value + "-" + version.value + ".jar",
+
+  //assemblyOutputPath in assembly := file("target/scala-2.10/"),
+
+  //assemblyPackageDependency in assembly ++= Seq(fdur,pbls,core),
+
+  //projectDependencies in assembly ++= Seq(fdur,pbls,core),
+
+  //mainClass in assembly := Some("phylozzii.core.Main"),
 
   testOptions in Test := Seq(Tests.Filter(s => s.endsWith("Test"))),
 
@@ -53,8 +62,7 @@ lazy val commonSettings = Seq(
 
 lazy val root = project.in(file(".")).settings(commonSettings: _*).
   dependsOn(biutil).
-  aggregate(fdur, pbls, core).
-  settings(aggregate in assembly := false)
+  aggregate(fdur, pbls, core)
 
 lazy val biutil = uri("git://github.com/izziiyt/biutil.git")
 
@@ -66,7 +74,7 @@ lazy val fdur = project.in(file("fdur")).settings(commonSettings: _*).
 
 lazy val pbls = project.in(file("pbls")).settings(commonSettings: _*).
   settings(
-    name := "phylozzii.pbls"
+    name := "pbls"
   ).
   dependsOn(biutil, fdur)
 

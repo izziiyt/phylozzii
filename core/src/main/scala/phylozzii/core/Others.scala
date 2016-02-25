@@ -73,7 +73,7 @@ object Others{
     def bedManage(chr: String, f: List[BedLine] => List[BedLine], name: String = ""): Unit = {
       val bed = new File(odir + "/" + chr +  ".bed.gz")
       val source = biformat.bigSource(bed)
-      val tmpbed = new File("/tmp/" + chr +  ".tmp.bed.gz")
+      val tmpbed = new File(s"/tmp/${chr}.tmp.bed.gz")
       //val tmpbed = new File(odir + "/" + chr +  ".tmp.bed.gz")
       val printer = new PrintWriter(new GZIPOutputStream(new FileOutputStream(tmpbed), 1024 * 1024))
       try {
@@ -120,15 +120,21 @@ object Others{
     blsa.close()
   }
 
-  def wigwig(ws1: Source, ws2: Source, of: PrintStream): Unit = {
-    of.println("index, first, second")
-    def printer(first: VariableStep, second: VariableStep): Unit = {
+  def wigwigphyloP(ws1: Source, ws2: Source, prnt: PrintStream): Unit = {
+    val SIZE = 100
+    val mat = DenseMatrix.zeros[Int](SIZE, SIZE)
+
+    def save(first: VariableStep, second: VariableStep): Unit = {
       val start = max(first.start, second.start)
       val end = min(first.end, second.end)
       val x1 = first.lines.dropWhile(_._1 < start).takeWhile(_._1 < end)
       val x2 = second.lines.dropWhile(_._1 < start).takeWhile(_._1 < end)
-      (x1 zip x2).foreach{case (x, y) => of.println("$x._1, $x._2, $y._2")}
+      (x1 zip x2).foreach{
+        case (x, y) =>
+          val y2 = ((if(y._2 < 0) max(-15.0, y._2) else min(15.0, y._2)) + 15.0) / 30.0
+          mat(min(99, (x._2 * SIZE).toInt), min(99, (y2 * SIZE).toInt)) += 1}
     }
+
     val wi1 = WigIterator.fromSource(ws1)
     val wi2 = WigIterator.fromSource(ws2)
 
@@ -139,13 +145,53 @@ object Others{
       if (w1.start > w2.end) w2 = wi2.next()
       else if (w1.end < w2.start) w1 = wi1.next()
       else {
-        printer(w1.toVariableStep, w2.toVariableStep)
+        save(w1.toVariableStep, w2.toVariableStep)
         if(w1.end < w2.end) w1 = wi1.next()
         else w2 = wi2.next()
       }
     }
-    if(w1.start <= w2.end && w1.end >= w2.start)
-      printer(w1.toVariableStep, w2.toVariableStep)
+    if(w1.start <= w2.end && w1.end >= w2.start) {
+      save(w1.toVariableStep, w2.toVariableStep)
+    }
+    for(i <- 0 until mat.rows){
+      prnt.println(mat(i, ::).t.toArray.mkString(","))
+    }
+  }
+
+
+    def wigwig(ws1: Source, ws2: Source, prnt: PrintStream): Unit = {
+    val SIZE = 100
+    val mat = DenseMatrix.zeros[Int](SIZE, SIZE)
+
+    def save(first: VariableStep, second: VariableStep): Unit = {
+      val start = max(first.start, second.start)
+      val end = min(first.end, second.end)
+      val x1 = first.lines.dropWhile(_._1 < start).takeWhile(_._1 < end)
+      val x2 = second.lines.dropWhile(_._1 < start).takeWhile(_._1 < end)
+      (x1 zip x2).foreach{case (x, y) => mat(min(99, (x._2 * SIZE).toInt), min(99, (y._2 * SIZE).toInt)) += 1}
+    }
+
+    val wi1 = WigIterator.fromSource(ws1)
+    val wi2 = WigIterator.fromSource(ws2)
+
+    var w1 = wi1.next()
+    var w2 = wi2.next()
+
+    while(wi1.hasNext && wi2.hasNext){
+      if (w1.start > w2.end) w2 = wi2.next()
+      else if (w1.end < w2.start) w1 = wi1.next()
+      else {
+        save(w1.toVariableStep, w2.toVariableStep)
+        if(w1.end < w2.end) w1 = wi1.next()
+        else w2 = wi2.next()
+      }
+    }
+    if(w1.start <= w2.end && w1.end >= w2.start) {
+      save(w1.toVariableStep, w2.toVariableStep)
+    }
+    for(i <- 0 until mat.rows){
+      prnt.println(mat(i, ::).t.toArray.mkString(","))
+    }
   }
 
 }

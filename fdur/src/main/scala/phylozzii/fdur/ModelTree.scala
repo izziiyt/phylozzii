@@ -17,7 +17,7 @@ object ModelTree extends NHParser{
   }
 }
 
-trait ModelParent extends PrimitiveParent {
+sealed trait ModelParent extends PrimitiveParent {
   override def children: List[ModelChild]
   def mappedMCL[T](f: ModelChild => List[T]): List[T] = children.foldLeft(Nil:List[T]){(n,x) => f(x) ::: n}
   def leafList = mappedMCL(_.leafList)
@@ -42,7 +42,7 @@ trait ModelParent extends PrimitiveParent {
   }
 }
 
-trait ModelChild extends PrimitiveChild {
+sealed trait ModelChild extends PrimitiveChild {
   def anclen(target: String): Double
   def anclenList(target: String): List[Double]
   def leafList: List[ModelLeaf]

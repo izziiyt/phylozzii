@@ -65,7 +65,7 @@ object Parameters extends ParameterParser{
   def fromString(txt:String):Parameters = parseAll(parameters,txt).get
 }
 
-sealed class ParameterParser extends JavaTokenParsers {
+sealed trait ParameterParser extends JavaTokenParsers {
   def vector: Parser[VD] =  "DenseVector("~> repsep(value,",") <~")"  ^^
     {case x => DenseVector(x.toArray)}
   def parameters: Parser[Parameters] = "Parameters("~> repsep(vector,",") <~")" ^^

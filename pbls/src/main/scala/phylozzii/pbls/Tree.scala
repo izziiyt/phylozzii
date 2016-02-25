@@ -13,7 +13,7 @@ import breeze.math.LogDouble.SemiringLogDouble
   * VL is DenseVector[LogDouble] defined at [[]].
   * ML is DenseMatrix[LogDouble] defined at [[]].
   */
-trait LDTree extends PrimitiveTree{
+sealed trait LDTree extends PrimitiveTree{
   /** inside variable*/
   def alpha: Array[VL]
   /** inside diagonal variable*/
@@ -152,7 +152,7 @@ object LDTree extends LDTreeUtilTrait {
   }*/
 }
 
-trait LDChild extends LDTree with PrimitiveChild{
+sealed trait LDChild extends LDTree with PrimitiveChild{
   def model:Model
 
   def toList:List[LDTree]
@@ -188,7 +188,7 @@ trait LDChild extends LDTree with PrimitiveChild{
   def blsa(lgl:Array[Double]):Array[Double]
 }
 
-trait LDParent extends LDTree with PrimitiveParent {
+sealed trait LDParent extends LDTree with PrimitiveParent {
   def leafList: List[LDLeaf] = children.foldLeft(Nil:List[LDLeaf])((n,x) => x.leafList ::: n)
   override def children: List[LDChild]
   def toList: List[LDTree] = this :: children.foldLeft(Nil:List[LDTree])((n,x) => x.toList ::: n)
