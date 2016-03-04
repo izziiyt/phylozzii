@@ -64,7 +64,7 @@ lazy val root = project.in(file(".")).settings(commonSettings: _*).
   dependsOn(biutil).
   aggregate(fdur, pbls, core)
 
-lazy val biutil = uri("git://github.com/izziiyt/biutil.git")
+lazy val biutil = uri("git://github.com/izziiyt/biutil.git#dev")
 
 lazy val fdur = project.in(file("fdur")).settings(commonSettings: _*).
   settings(

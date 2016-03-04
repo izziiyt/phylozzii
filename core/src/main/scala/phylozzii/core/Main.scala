@@ -26,11 +26,15 @@ object Main extends App{
       opt[File]('o', "out") abbr "o" required() valueName "<file>" action {
         (x, c) => c.copy(out = x)
       } text "a directory to put output files",
-      param,
+      opt[File]('p', "param") required() valueName "<file>" action {
+        (x, c) => c.copy(input2 = x)
+      } text "file parameter written",
       opt[String]('t', "target") required() valueName "<string>" action {
         (x, c) => c.copy(target = x)
       } text "target species",
-      maf
+      arg[File]("<file>") required() action { (x, c) =>
+        c.copy(input1 = x)
+      } text "input .maf file"
       )
 
     cmd("fdur") action { (_, c) => c.copy(mode = "fdur") } text
@@ -40,15 +44,19 @@ object Main extends App{
         (x, c) => c.copy(maxit = x)
       } text "how many iterates at most",
       newick,
-      param,
+      opt[File]('p', "param") required() valueName "<file>" action {
+        (x, c) => c.copy(input2 = x)
+      } text "file parameter written",
       opt[Int]('P', "partition") valueName "<integer>" action {
         (x, c) => c.copy(partition = x)
       } text "data partition size",
       opt[Unit]('s', "spark") required() action {
         (_, c) => c.copy(spark = true)
       } text "flag to use spark",
-      maf
-      )
+      arg[File]("<file>") required() action { (x, c) =>
+      c.copy(input1 = x)
+    } text "input .maf file"
+    )
 
     cmd("wighist") action { (_, c) => c.copy(mode = "wighist") } text
       "filters .wig file on the basis of information of .bed" children(
@@ -97,10 +105,15 @@ object Main extends App{
       "phylozzii.fdur's estep for runnig on SGE system" children (
       cbf,
       newick,
-      param,
+      opt[File]('p', "param") required() valueName "<file>" action {
+        (x, c) => c.copy(input2 = x)
+      } text "file parameter written",
       arg[File]("<file>") required() action { (x, c) =>
         c.copy(aln = x)
-      } text "input directory"
+      } text "input directory",
+        arg[File]("<file>") required() action { (x, c) =>
+        c.copy(input1 = x)
+      } text "input .maf file"
       )
 
     cmd("wigwig") action {(_,c) => c.copy(mode = "wigwig")} text
@@ -115,36 +128,71 @@ object Main extends App{
         c.copy(input2 = x)
       } text "second input .wig file"
       )
-
+    cmd("geneList") action {(_,c) => c.copy(mode = "geneList")} text
+      "print geneIDs" children (
+      opt[File]('o',"out") optional() valueName "<file>" action {
+        (x, c) => c.copy(out = x)
+      } text "output file",
+      opt[Double]("mi") optional() valueName "float" action { (x, c) =>
+        c.copy(double1 = x)
+      } text "minimum dbls score: default = 0.0",
+      opt[Double]("ma") optional() valueName "float" action { (x, c) =>
+        c.copy(double2 = x)
+      } text "maximum ebls score: default = 1.0",
+      arg[File]("<file>") required() action { (x, c) =>
+        c.copy(input1 = x)
+      } text "input .csv file"
+      )
+    cmd("cpsg") action {(_,c) => c.copy(mode = "cpsg")} text
+      "print chromosome, position, score and geneIDs" children (
+      opt[File]('o',"out") optional() valueName "<file>" action {
+        (x, c) => c.copy(out = x)
+      } text "output file",
+      arg[File]("<file>") required() action { (x, c) =>
+        c.copy(input1 = x)
+      } text "input .wig file",
+      arg[File]("<file>") required() action { (x, c) =>
+        c.copy(input2 = x)
+      } text "input .bed file"
+      )
+    cmd("bedSort") action {(_,c) => c.copy(mode = "bedSort")} text
+      "" children (
+      opt[File]('o',"out") optional() valueName "<file>" action {
+        (x, c) => c.copy(out = x)
+      } text "output file",
+      arg[File]("<file>") required() action { (x, c) =>
+        c.copy(input1 = x)
+      } text "input .bed file"
+      )
     def cbf = opt[Unit]("const-base-frequent") abbr "cbf" action {
       (_, c) => c.copy(constFreq = true)
     } text "how many iterates at most"
 
-    def maf = arg[File]("<file>") required() action { (x, c) =>
-      c.copy(maf = x)
+    /*    def maf = arg[File]("<file>") required() action { (x, c) =>
+    c.copy(maf = x)
     } text "input .maf file"
-
+    */
     def newick = opt[File]("newick") abbr "nh" required() valueName "<file>" action {
       (x, c) =>
         c.copy(nh = x)
     } text "required newick format file"
 
-    def param = opt[File]('p', "param") required() valueName "<file>" action {
+    /*def param = opt[File]('p', "param") required() valueName "<file>" action {
       (x, c) => c.copy(param = x)
     } text "file parameter written"
-
+*/
   }
 
   parser.parse(args, Conf()) match {
     case Some(conf) =>
       conf.mode match {
         case "fdur" =>
-          sparkem(conf.maf, conf.param, conf.nh, conf.maxit, conf.partition, conf.constFreq)
-        case "phylozzii.pbls/src/main/scala/phylozzii.pbls" =>
-          val prefix = conf.maf.getName.split('.').head
+          sparkem(conf.input1, conf.input2, conf.nh, conf.maxit, conf.partition, conf.constFreq)
+        case "pbls" =>
+          val prefix = conf.input1.getName.split('.').head
           val bls = new File(conf.out.getPath + "/" + prefix + ".bls.wig.gz")
           val blsa = new File(conf.out.getPath + "/" + prefix + ".blsa.wig.gz")
-          blser(conf.target, conf.maf, conf.nh, conf.param, bls, blsa, conf.nameNH)
+          blser(conf.target, conf.input1, conf.nh, conf.input2, bls, blsa, conf.nameNH)
         case "wighist" =>
           val ws = biformat.bigSource(conf.input1)
           val bs = if(conf.input2.isFile) Some(biformat.bigSource(conf.input2)) else None
@@ -182,12 +230,38 @@ object Main extends App{
           try entrop(as, name)
           finally as.close()
         case "qe" =>
-          qestep(conf.maf, conf.nh, conf.param, conf.out)
+          qestep(conf.input1, conf.nh, conf.input2, conf.out)
         case "qm" =>
-          qmstep(conf.targetDir, conf.param, conf.nh, conf.constFreq)
+          qmstep(conf.targetDir, conf.input2, conf.nh, conf.constFreq)
         case "bedsplit" =>
           val bedSource = biformat.bigSource(conf.input1)
           bedChrSplit(bedSource, conf.out)
+        case "geneList" =>
+          val inputSources = conf.input1.listFiles.map(biformat.bigSource)
+          val minimum = if(conf.double1 < 0.0) 0.0 else conf.double1
+          val maximum = if(conf.double2 < 0.0) 1.0 else conf.double2
+          val ps = if(conf.out.getName == ".") System.out else new PrintStream(conf.out)
+          geneList(inputSources, ps, minimum, maximum)
+          inputSources.foreach(_.close())
+          ps match {
+            case _:PrintStream => ps.close()
+            case _ =>
+          }
+        case "cpsg" =>
+          val inputSource = biformat.bigSource(conf.input1)
+          val referenceSource = biformat.bigSource(conf.input2)
+          val ps = if(conf.out.getName == ".") System.out else new PrintStream(conf.out)
+          cpsg(inputSource,referenceSource,ps)
+          inputSource.close()
+          referenceSource.close()
+          ps match {
+            case _:PrintStream => ps.close()
+            case _ =>
+          }
+        case "bedSort" =>
+          val ps = if(conf.out.getName == ".") System.out else new PrintStream(conf.out)
+          val bs = biformat.bigSource(conf.input1)
+          bedSort(bs, ps)
         case _ =>
           throw new UnsupportedOperationException
       }
@@ -198,10 +272,11 @@ object Main extends App{
     new PrintStream(new BufferedOutputStream(new FileOutputStream(f), 1024 * 1024))
 }
 
-case class Conf(mode: String = "", maf: File = new File("."), tgtDir: File = new File("."),
-                param: File = new File("."), targetDir: File = new File("."), target: String = "",
+case class Conf(mode: String = "",double1:Double = Double.MinValue,double2:Double = Double.MinValue,
+                targetDir: File = new File("."), target: String = "",
                 isSciName: Boolean = false, prefix: String = "", sp: Boolean = false, nh: File = new File(""),
                 maxit: Int = 200, partition: Int = 512, constFreq: Boolean = false, nameNH: File = new File("."),
                 bed: File = new File("."), wig: File = new File("."), aln: File = new File("."),
-                spark: Boolean = false, out: File = new File("."), input1: File = new File("."), input2: File = new File("."), opt1: String = "")
+                spark: Boolean = false, out: File = new File("."), input1: File = new File("."),
+                input2: File = new File("."), input3: File = new File("."), opt1: String = "")
 

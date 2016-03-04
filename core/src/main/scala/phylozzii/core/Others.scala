@@ -9,7 +9,12 @@ import biformat.BedIterator.BedLine
 import breeze.linalg._
 import breeze.numerics._
 import breeze.plot._
+import org.apache.commons.httpclient.HttpClient
+import org.apache.commons.httpclient.methods.PostMethod
+import org.apache.commons.httpclient.methods.multipart.{MultipartRequestEntity, FilePart, Part}
+import scala.collection.mutable.ArrayBuffer
 import scala.io.Source
+import scala.util.Sorting
 
 object Others{
   def wighist(wigs: Source, beds: Option[Source], chr: String, out: PrintStream = System.out) {
@@ -73,7 +78,7 @@ object Others{
     def bedManage(chr: String, f: List[BedLine] => List[BedLine], name: String = ""): Unit = {
       val bed = new File(odir + "/" + chr +  ".bed.gz")
       val source = biformat.bigSource(bed)
-      val tmpbed = new File(s"/tmp/${chr}.tmp.bed.gz")
+      val tmpbed = new File(s"/tmp/$chr.tmp.bed.gz")
       //val tmpbed = new File(odir + "/" + chr +  ".tmp.bed.gz")
       val printer = new PrintWriter(new GZIPOutputStream(new FileOutputStream(tmpbed), 1024 * 1024))
       try {
@@ -158,8 +163,7 @@ object Others{
     }
   }
 
-
-    def wigwig(ws1: Source, ws2: Source, prnt: PrintStream): Unit = {
+  def wigwig(ws1: Source, ws2: Source, prnt: PrintStream): Unit = {
     val SIZE = 100
     val mat = DenseMatrix.zeros[Int](SIZE, SIZE)
 
@@ -194,4 +198,76 @@ object Others{
     }
   }
 
+  def geneList(inputSources: Array[Source], ps: PrintStream, minimum: Double, maximum: Double) = {
+    def getIDs(line: String): Array[String] = line.split(",")(3).split(";")
+    val names = scala.collection.mutable.Set.empty[String]
+    inputSources.foreach{
+      _.getLines().
+        map(CPSG(_)).
+        dropWhile(_.score < minimum).
+        takeWhile(_.score < maximum).
+        foreach(x => x.gene.foreach(names += _))
+    }
+    names.toArray.foreach(ps.println)
+  }
+
+  /**
+    * prints a csv text in which a line contains chromosome, score, position and geneIDs.
+    * @param inputSource
+    * @param referenceSource
+    * @param ps
+    */
+  def cpsg(inputSource: Source, referenceSource: Source, ps: PrintStream) = {
+    def getID(bed: BedLine): Array[String] = bed.name.split(';')(1).split(',')
+    val inIt = WigIterator.fromSource(inputSource)
+    val refIt = BedIterator.fromSource(referenceSource)
+    var refunit = refIt.next()
+    var inunit = inIt.next()
+    val buf = new ArrayBuffer[CPSG]()
+    while (inIt.hasNext && refIt.hasNext) {
+      if (inunit.chrom != refunit.chr) {
+        refunit = refIt.next()
+      }
+      else {
+        if (refunit.end < inunit.start) {
+          refunit = refIt.next()
+        }
+        else if (refunit.start > inunit.end) {
+          inunit = inIt.next()
+        }
+        else {
+          val names = getID(refunit)
+          inunit.toVariableStep.lines.withFilter { case (x, _) => x < refunit.end && x > refunit.start }.
+            foreach { case (x, y) => buf += new CPSG(refunit.chr, x, y, names) }
+          if(refunit.end > inunit.end) refunit = refIt.next() else inunit = inIt.next()
+        }
+      }
+    }
+    if(inunit.chrom == refunit.chr) {
+      val names = getID(refunit)
+      inunit.toVariableStep.lines.withFilter { case (x, _) => x < refunit.end && x > refunit.start }.
+        foreach { case (x, y) => buf += new CPSG(refunit.chr, x, y, names) }
+    }
+    buf.toArray.sortWith((x,y) => x.score < y.score).foreach(ps.println)
+  }
+
+  def bedSort(inputSource: Source, ps: PrintStream): Unit ={
+    val bedar = BedIterator.fromSource(inputSource).toArray
+    Sorting.stableSort(bedar, (x:BedLine, y: BedLine) => x.end < y.end)
+    Sorting.stableSort(bedar, (x:BedLine, y: BedLine) => x.start < y.start)
+    Sorting.stableSort(bedar, (x:BedLine, y: BedLine) => x.chr < y.chr)
+    bedar foreach ps.println
+  }
+
+}
+
+case class CPSG(chr: String, pos: Long, score: Double, gene: Array[String]){
+  override def toString: String = s"${chr},${pos},${score}," + {if(gene.isEmpty) "N/A" else gene.mkString(";")}
+}
+
+object CPSG{
+  def apply(line: String): CPSG = {
+    val args = line.split(",")
+    new CPSG(args(0), args(1).toLong, args(2).toDouble, if(args(3) == "N/A") Array.empty[String] else args(3).split(";"))
+  }
 }

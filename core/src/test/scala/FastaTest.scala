@@ -1,5 +1,7 @@
 import org.scalatest.FunSuite
 
+import scala.annotation.tailrec
+
 class FastaTest extends FunSuite {
   /*implicit def s2f(s:String):File = new File(s)
   test("sample.aa and sample.nuc") {
@@ -13,4 +15,9 @@ class FastaTest extends FunSuite {
     //23 32 35
     //3 6 9 12 15 24 27 33 36 42 48 60 63 69 78 81 84 99 102 111 114 123
   }*/
+  test("hoge"){
+    @tailrec
+    def f(x:Double, n: Int):Double = if(n == 0) x else f(2 * x / (1 + x * x), n - 1)
+    println(f(0.0625, 5))
+  }
 }
