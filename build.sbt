@@ -82,7 +82,7 @@ lazy val core = project.in(file("core")).settings(commonSettings: _*).
   settings(
     name := "core",
     libraryDependencies  ++= Seq(
-      "com.github.scopt" %% "scopt" % "3.3.0",
+      "com.github.scopt" %% "scopt" % "3.4.0",
       //"org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4",
       //"com.typesafe.scala-logging" % "scala-logging-slf4j_2.10" % "2.1.2",
       //"ch.qos.logback" % "logback-classic" % "1.1.3",
