@@ -1,7 +1,6 @@
 import org.scalatest.FunSuite
 
 class HogeTest extends FunSuite{
-
   /*test("compare"){
     val nh1 = ModelTree.fromFile("src/test/resources/result.nh")
     val nh2 = ModelTree.fromFile("src/test/resources/hg19.100way.nh")

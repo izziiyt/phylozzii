@@ -2,16 +2,15 @@ package phylozzii.core
 
 import java.io._
 import java.util.zip.GZIPOutputStream
+
 import alignment.Base
 import biformat.WigIterator.VariableStep
-import biformat.{WigIterator, BedIterator}
+import biformat.{BedIterator, WigIterator}
 import biformat.BedIterator.BedLine
 import breeze.linalg._
 import breeze.numerics._
 import breeze.plot._
-import org.apache.commons.httpclient.HttpClient
-import org.apache.commons.httpclient.methods.PostMethod
-import org.apache.commons.httpclient.methods.multipart.{MultipartRequestEntity, FilePart, Part}
+
 import scala.collection.mutable.ArrayBuffer
 import scala.io.Source
 import scala.util.Sorting
@@ -198,57 +197,60 @@ object Others{
     }
   }
 
+  /**
+    * prints significant genes on an output stream
+    *
+    * @param inputSources
+    * @param ps
+    * @param minimum
+    * @param maximum
+    */
   def geneList(inputSources: Array[Source], ps: PrintStream, minimum: Double, maximum: Double) = {
-    def getIDs(line: String): Array[String] = line.split(",")(3).split(";")
     val names = scala.collection.mutable.Set.empty[String]
     inputSources.foreach{
       _.getLines().
-        map(CPSG(_)).
+        map(Enhancer(_)).
         dropWhile(_.score < minimum).
         takeWhile(_.score < maximum).
-        foreach(x => x.gene.foreach(names += _))
+        foreach(_.gene.foreach(_.names.foreach(names += _)))
     }
     names.toArray.foreach(ps.println)
   }
 
-  /**
-    * prints a csv text in which a line contains chromosome, score, position and geneIDs.
-    * @param inputSource
-    * @param referenceSource
-    * @param ps
-    */
-  def cpsg(inputSource: Source, referenceSource: Source, ps: PrintStream) = {
-    def getID(bed: BedLine): Array[String] = bed.name.split(';')(1).split(',')
-    val inIt = WigIterator.fromSource(inputSource)
-    val refIt = BedIterator.fromSource(referenceSource)
-    var refunit = refIt.next()
-    var inunit = inIt.next()
-    val buf = new ArrayBuffer[CPSG]()
-    while (inIt.hasNext && refIt.hasNext) {
-      if (inunit.chrom != refunit.chr) {
-        refunit = refIt.next()
+  def enhancers(inputSource: Source, referenceSource: Source, ps: PrintStream) = {
+    val enArray = BedIterator.fromSource(referenceSource).map(Enhancer(_)).toArray
+    val enIt =
+      enArray.sorted.
+      foldLeft(Nil: List[Enhancer]){
+      (zs,x) => if(zs.nonEmpty && zs.last == x) zs.head.merge(x) :: zs.tail else x :: zs
+    }.reverse.toIterator
+
+    val eblsIt = WigIterator.fromSource(inputSource)
+
+    var enunit = enIt.next()
+    var eblsunit = eblsIt.next()
+
+    val buf = new ArrayBuffer[Enhancer]()
+    val tmp = new ArrayBuffer[Double]()
+
+    while (eblsIt.hasNext && enIt.hasNext) {
+      if (eblsunit.chrom != enunit.chr || enunit.end <= eblsunit.start) {
+        if(tmp.nonEmpty) {
+          buf += enunit.withScore(tmp.sum / tmp.length)
+          tmp.clear()
+        }
+        enunit = enIt.next()
       }
       else {
-        if (refunit.end < inunit.start) {
-          refunit = refIt.next()
+        if (enunit.start < eblsunit.end) {
+          eblsunit.toVariableStep.lines.
+            withFilter { case (x, _) => x < enunit.end && x >= enunit.start }.
+            foreach { case (_, y) => tmp += y }
         }
-        else if (refunit.start > inunit.end) {
-          inunit = inIt.next()
-        }
-        else {
-          val names = getID(refunit)
-          inunit.toVariableStep.lines.withFilter { case (x, _) => x < refunit.end && x > refunit.start }.
-            foreach { case (x, y) => buf += new CPSG(refunit.chr, x, y, names) }
-          if(refunit.end > inunit.end) refunit = refIt.next() else inunit = inIt.next()
-        }
+        eblsunit = eblsIt.next()
       }
     }
-    if(inunit.chrom == refunit.chr) {
-      val names = getID(refunit)
-      inunit.toVariableStep.lines.withFilter { case (x, _) => x < refunit.end && x > refunit.start }.
-        foreach { case (x, y) => buf += new CPSG(refunit.chr, x, y, names) }
-    }
-    buf.toArray.sortWith((x,y) => x.score < y.score).foreach(ps.println)
+    buf.sortBy(_.score).foreach{ps.println}
   }
 
   def bedSort(inputSource: Source, ps: PrintStream): Unit ={
@@ -261,13 +263,45 @@ object Others{
 
 }
 
-case class CPSG(chr: String, pos: Long, score: Double, gene: Array[String]){
-  override def toString: String = s"${chr},${pos},${score}," + {if(gene.isEmpty) "N/A" else gene.mkString(";")}
+case class Enhancer(chr: String, start: Int, end: Int, gene: Array[Genes], score: Double) extends Ordered[Enhancer]{
+  def merge(that: Enhancer): Enhancer = Enhancer(chr, start, end, this.gene ++ that.gene, this.score + that.score)
+  override def compare(that: Enhancer): Int = {
+    def chr2int(str: String): Int = {
+      val suffix = str.diff("chr")
+      try suffix.toInt catch {case _:Exception => suffix.head.toInt + 99}
+    }
+    val tmp = chr2int(this.chr) - chr2int(that.chr)
+    if(tmp == 0) this.start - that.start
+    else tmp
+  }
+  def withScore(x: Double): Enhancer = Enhancer(chr, start, end, gene, x)
+  override def toString: String = s"$chr\t$start\t$end\t" + gene.mkString("~") + s"\t$score"
 }
 
-object CPSG{
-  def apply(line: String): CPSG = {
-    val args = line.split(",")
-    new CPSG(args(0), args(1).toLong, args(2).toDouble, if(args(3) == "N/A") Array.empty[String] else args(3).split(";"))
+object Enhancer{
+  val TSSLength = 401
+  val EnhancerLength = 1001
+  def apply(line: BedLine): Enhancer = {
+    require(line.blockCount == 2)
+    val start = line.start + line.blockStarts(if(line.blockSize.head == EnhancerLength) 0 else 1)
+    new Enhancer(line.chr, start.toInt, start.toInt + EnhancerLength, Array(Genes(line.name)), 0.0)
+  }
+
+  def apply(str: String): Enhancer = {
+    val args = str.split("""\p{javaWhitespace}""")
+    val genes = args(3).split("~").map(Genes(_))
+    new Enhancer(args.head, args(1).toInt, args(2).toInt, args(3).split("~").map(Genes(_)), args(4).toDouble)
+  }
+}
+
+case class Genes(names: Array[String], R: String, FDR: String){
+  override def toString: String = names.mkString(",") + s";$R;$FDR"
+}
+
+object Genes{
+  def apply(str: String): Genes = {
+    val args = str.split(";")
+    val initialIndex = if(args(0).startsWith("chr")) 1 else 0
+    Genes(args(initialIndex).split(","), args.init.last, args.last)
   }
 }

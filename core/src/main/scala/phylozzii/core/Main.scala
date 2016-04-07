@@ -1,6 +1,7 @@
 package phylozzii.core
 
 import java.io._
+
 import phylozzii.fdur.SGEFdur
 import phylozzii.pbls.BLSer
 import scopt.OptionParser
@@ -143,7 +144,7 @@ object Main extends App{
         c.copy(input1 = x)
       } text "input .csv file"
       )
-    cmd("cpsg") action {(_,c) => c.copy(mode = "cpsg")} text
+    cmd("enhancers") action {(_,c) => c.copy(mode = "enhancers")} text
       "print chromosome, position, score and geneIDs" children (
       opt[File]('o',"out") optional() valueName "<file>" action {
         (x, c) => c.copy(out = x)
@@ -247,11 +248,11 @@ object Main extends App{
             case _:PrintStream => ps.close()
             case _ =>
           }
-        case "cpsg" =>
+        case "enhancers" =>
           val inputSource = biformat.bigSource(conf.input1)
           val referenceSource = biformat.bigSource(conf.input2)
           val ps = if(conf.out.getName == ".") System.out else new PrintStream(conf.out)
-          cpsg(inputSource,referenceSource,ps)
+          enhancers(inputSource,referenceSource,ps)
           inputSource.close()
           referenceSource.close()
           ps match {
