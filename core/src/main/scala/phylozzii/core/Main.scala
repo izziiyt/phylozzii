@@ -124,6 +124,12 @@ object Main extends App{
       bed
       )
 
+    cmd("extract") action {(_,c) => c.copy(mode = "extenh")} text "" children(
+      out,
+      wig,
+      bed
+      )
+
     def cbf = opt[Unit]("const-base-frequent") abbr "cbf" action {
       (_, c) => c.copy(constFreq = true)
     } text "during parameter training, base frequency is not altered"
@@ -142,7 +148,7 @@ object Main extends App{
 
     def wig = arg[File]("<file>") required() action {
       (x, c) => c.copy(inputFiles = c.inputFiles :+ x)
-    } text "input .wig file"
+    }
 
     def bed = arg[File]("<file>") required() action {
       (x, c) => c.copy(inputFiles = c.inputFiles :+ x)
@@ -238,6 +244,18 @@ object Main extends App{
           val ps = if(conf.out.getName == ".") System.out else new PrintStream(conf.out)
           val bs = biformat.bigSource(conf.inputFiles.head)
           bedSort(bs, ps)
+
+        case "extenh" =>
+          val ps = if(conf.out.getName == ".") System.out else new PrintStream(conf.out)
+          val wig = biformat.bigSource(conf.inputFiles.head)
+          val enh = biformat.bigSource(conf.inputFiles(1))
+          extractEnhancers(enh, wig, ps)
+          ps match {
+            case _:PrintStream => ps.close()
+            case _ =>
+          }
+          wig.close()
+          enh.close()
       }
 
     case None => Unit

@@ -3,6 +3,7 @@ package phylozzii.core
 import java.io._
 import java.util.zip.GZIPOutputStream
 
+import biformat.Block
 import alignment.Base
 import biformat.WigIterator.VariableStep
 import biformat.{BedIterator, WigIterator}
@@ -13,6 +14,7 @@ import breeze.plot._
 
 import scala.collection.mutable.ArrayBuffer
 import scala.io.Source
+import scala.reflect.ClassTag
 import scala.util.Sorting
 
 object Others{
@@ -261,10 +263,50 @@ object Others{
     bedar foreach ps.println
   }
 
+  def extractEnhancers(inputSource: Source, eblsSource: Source, ps: PrintStream): Unit = {
+    val enIt = inputSource.getLines().map(Enhancer(_)).toArray.sorted.toIterator
+    val eblsIt = WigIterator.fromSource(eblsSource)
+    val enhArray = intersectionDo(enIt, eblsIt,
+      (en: Enhancer, ebls: WigIterator.WigUnit) => {
+        val lines = ebls.toVariableStep.lines.filter{case (i,_) => i >= math.max(en.start, ebls.start) && i < math.min(en.end, ebls.end)}
+        VariableStep(en.chr, 1, lines)
+    })
+    val result = enhArray.tail.foldLeft(Array(enhArray.head)){
+      case (zs, x) =>
+        if(zs.last appendableWith x) zs.init :+ (zs.last + x).toVariableStep
+        else zs :+ x
+    }
+    result.foreach(ps.println)
+  }
+
+  def intersectionDo[T : ClassTag,S1 <: Block,S2 <: Block](xit: Iterator[S1], yit: Iterator[S2], f: (S1, S2) => T):Array[T] = {
+    val buf = ArrayBuffer[T]()
+    var xunit = xit.next()
+    var yunit = yit.next()
+    while ((xit.hasNext || xunit.end > yunit.end) && (yit.hasNext || xunit.end <= yunit.end)) {
+      if (xunit.start < yunit.end && xunit.end > yunit.start) {
+          buf += f(xunit, yunit)
+      }
+      if (xunit.end <= yunit.end) {
+        xunit = xit.next()
+      }
+      else{
+        yunit = yit.next()
+      }
+    }
+    val x: Array[T] = buf.toArray
+    x
+  }
+
 }
 
-case class Enhancer(chr: String, start: Int, end: Int, gene: Array[Genes], score: Double) extends Ordered[Enhancer]{
+case class Enhancer(chr: String, start: Int, end: Int, gene: Array[Genes], score: Double) extends Ordered[Enhancer] with biformat.Block {
   def merge(that: Enhancer): Enhancer = Enhancer(chr, start, end, this.gene ++ that.gene, this.score + that.score)
+  def length = end - start
+  def appendableWith(that: biformat.Block) = that match {
+    case Enhancer(_chr, _start, _, _, _) => chr == _chr && end + 1 == _start
+    case _ => false
+  }
   override def compare(that: Enhancer): Int = {
     def chr2int(str: String): Int = {
       val suffix = str.diff("chr")
@@ -279,11 +321,11 @@ case class Enhancer(chr: String, start: Int, end: Int, gene: Array[Genes], score
 }
 
 object Enhancer{
-  val TSSLength = 401
-  val EnhancerLength = 1001
+  val TSSLength = 1001
+  val EnhancerLength = 401
   def apply(line: BedLine): Enhancer = {
     require(line.blockCount == 2)
-    val start = line.start + line.blockStarts(if(line.blockSize.head == EnhancerLength) 0 else 1)
+    val start = line.start + (if(line.blockSize.head == EnhancerLength) line.blockStarts.head else line.blockStarts.last)
     new Enhancer(line.chr, start.toInt, start.toInt + EnhancerLength, Array(Genes(line.name)), 0.0)
   }
 
