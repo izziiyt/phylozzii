@@ -17,12 +17,59 @@ import scala.io.Source
 import scala.reflect.ClassTag
 import scala.util.Sorting
 
-object Others{
-  def wighist(wigs: Source, beds: Option[Source], chr: String, out: PrintStream = System.out) {
+object Others extends {
+  /*def wighist(wigs: Source, beds: Option[Source], chr: String, out: PrintStream = System.out) {
     val bedit = beds map (b => BedIterator.fromSource(b).filter(_.chr == chr))
     val preWigit = WigIterator.fromSource(wigs, 2048)
     val wigit = bedit map preWigit.filterWithBed getOrElse preWigit
     out.println(wigit.hist(1000, 1).mkString(","))
+  }*/
+
+  def wighist(wigf: File, bedf: Option[File], out: PrintStream, enhancer: Boolean) {
+    val wigs = biformat.bigSource(wigf)
+    val beds = bedf map biformat.bigSource
+
+    val bedit =
+      if(enhancer) beds map (b => BedIterator.fromSource(b).map(Enhancer(_).toBedLine))
+      else beds map (b => BedIterator.fromSource(b))
+    val preWigit = WigIterator.fromSource(wigs, 2048)
+    val wigit = bedit map preWigit.filterWithBed getOrElse preWigit
+    out.println(wigit.hist(1000, 1.0).mkString(","))
+
+    wigs.close
+    beds.foreach(_.close)
+  }
+
+  def randomwig(size:Int, number: Int, wigs: Source, out: PrintStream = System.out,MAX: Int = 10000): Unit ={
+    val r = scala.util.Random
+    val indices = (0 until number).map{_ => r.nextInt(MAX)}.sortWith(_ > _)
+    val stairs = indices.tail.foldLeft(indices.head::Nil){case (zs,x) => x :: zs.head - x - 1 :: zs.tail}
+
+    val wigit = WigIterator.fromSource(wigs)
+
+    var wig = wigit.next()
+
+    for(i <- 1 to number) yield {
+      val j = i * 100 / number
+      wig = if(stairs(i - 1) == -1) wig else wigit.drop(stairs(i - 1)).next()
+      val diff = wig.length - Enhancer.EnhancerLength
+      if(diff >= 0){
+        val n = if(diff == 0) 0 else r.nextInt(diff)
+        val tmpwig = wig.toVariableStep.lines.slice(n, n+Enhancer.EnhancerLength)
+        out.println(VariableStep(wig.chr,wig.span,tmpwig))
+      }
+      if(i % 20 == 0 || i == number - 1) {
+        printf("%3d%% [%-50s]\r", j, "=" * (j / 2))
+        System.out.flush()
+      }
+    }
+    println()
+  }
+
+  def wigfilter(wigs: Source, beds: Source, out: PrintStream): Unit = {
+    val bedit = BedIterator.fromSource(beds).filter(_.length >=  Enhancer.EnhancerLength)
+    val wigit = WigIterator.fromSource(wigs).filterWithBed(bedit)
+    wigit.foreach(out.println)
   }
 
   def counter(s: Source, out: PrintStream = System.out):Unit = {
@@ -200,6 +247,65 @@ object Others{
   }
 
   /**
+    * make .hist with .bed .wig
+    * @param gotsvf
+    * @param bed
+    * @param wigf
+    */
+  def goHist(gotsvf: File, bed: File, wigf: File, outdir: File, outfName: String): Unit = {
+    val gotsvs = Source.fromFile(gotsvf)
+    val gotsv = gotsvs.getLines().map{
+      line =>
+        val parts = line.split('\t')
+        val go = parts(0) + ':' + parts(1).replace(' ', '_')
+        val genes = parts(2).split(':').toSet
+        (go, genes)
+    }
+    for((go, genes) <- gotsv){
+      val beds = biformat.bigSource(bed)
+      val enhit = BedIterator.fromSource(beds).map(Enhancer(_)).
+        collect{
+          case enh if enh.gene.map(_.names.toSet).reduce(_ union _).intersect(genes).nonEmpty => enh.toBedLine
+        }
+      val wigs = biformat.bigSource(wigf)
+      val wigit = WigIterator.fromSource(wigs, 2048).filterWithBed(enhit)
+      new File(outdir.getAbsolutePath, go).mkdir
+      val ps = new PrintStream(new File(outdir.getAbsolutePath, go + "/" + outfName))
+      ps.println(wigit.hist(1000, 1.0).mkString(","))
+      ps.close()
+      wigs.close()
+      beds.close()
+    }
+    gotsvs.close()
+  }
+
+  /*for (line <- gotsv.getLines();
+       parts = line.split('\t');
+       subdir = parts(0) + ':' + parts(1).replace(' ', '_');
+       genes = parts(2).split(':').toSet) {
+    for (f <- enhdir.listFiles(); opath = new File(s"/tmp/${subdir}") if f.isFile) {
+      val s = biformat.bigSource(f)
+      opath.mkdirs()
+      val o = new PrintStream(opath + s"/${f.getName}")
+      s.getLines().map(Enhancer(_)).withFilter {
+        _.gene.exists(gs => gs.names.exists(genes.contains))
+      }.foreach (o.println)
+      s.close()
+      o.close()
+    }
+    for (f <- wigdir.listFiles;
+         opath = new File(s"target/gohist/${subdir}")) {
+      opath.mkdirs()
+      val wigs = biformat.bigSource(f)
+      val chr = f.getName.split('.').head
+      val beds = biformat.bigSource(s"/tmp/${subdir}/${chr}.bls.enh")
+      wighist(wigs, Some(beds), chr, new PrintStream(new FileOutputStream(opath + s"/${f.getName}")))
+      wigs.close()
+      beds.close()
+    }
+  }*/
+
+  /**
     * prints significant genes on an output stream
     *
     * @param inputSources
@@ -223,9 +329,9 @@ object Others{
     val enArray = BedIterator.fromSource(referenceSource).map(Enhancer(_)).toArray
     val enIt =
       enArray.sorted.
-      foldLeft(Nil: List[Enhancer]){
-      (zs,x) => if(zs.nonEmpty && zs.last == x) zs.head.merge(x) :: zs.tail else x :: zs
-    }.reverse.toIterator
+        foldLeft(Nil: List[Enhancer]){
+          (zs,x) => if(zs.nonEmpty && zs.last == x) zs.head.merge(x) :: zs.tail else x :: zs
+        }.reverse.toIterator
 
     val eblsIt = WigIterator.fromSource(inputSource)
 
@@ -236,7 +342,7 @@ object Others{
     val tmp = new ArrayBuffer[Double]()
 
     while (eblsIt.hasNext && enIt.hasNext) {
-      if (eblsunit.chrom != enunit.chr || enunit.end <= eblsunit.start) {
+      if (eblsunit.chr != enunit.chr || enunit.end <= eblsunit.start) {
         if(tmp.nonEmpty) {
           buf += enunit.withScore(tmp.sum / tmp.length)
           tmp.clear()
@@ -255,28 +361,52 @@ object Others{
     buf.sortBy(_.score).foreach{ps.println}
   }
 
-  def bedSort(inputSource: Source, ps: PrintStream): Unit ={
-    val bedar = BedIterator.fromSource(inputSource).toArray
-    Sorting.stableSort(bedar, (x:BedLine, y: BedLine) => x.end < y.end)
-    Sorting.stableSort(bedar, (x:BedLine, y: BedLine) => x.start < y.start)
-    Sorting.stableSort(bedar, (x:BedLine, y: BedLine) => x.chr < y.chr)
+  /**
+    * sort .bed with chrommosome names, starting positions and end positions
+    *
+    * @param inputFile
+    * @param outputFile
+    */
+  def bedSort(inputFile: File, outputFile: File, enhancer: Boolean): Unit ={
+    val inputSource = biformat.bigSource(inputFile)
+    val bedar = if(enhancer) inputSource.getLines().map(Enhancer(_)).toArray else BedIterator.fromSource(inputSource).toArray
+    Sorting.stableSort(bedar, (x:Block, y: Block) => x.end < y.end)
+    Sorting.stableSort(bedar, (x:Block, y: Block) => x.start < y.start)
+    Sorting.stableSort(bedar, (x:Block, y: Block) => Chromosome(x.chr) < Chromosome(y.chr))
+    inputSource.close()
+    val ps = new PrintStream(outputFile)
     bedar foreach ps.println
+    ps.close()
   }
 
+  /**
+    * extracts enhancer regions from .wig file, the enhancer regions are defined in eblsSource
+    * extracts regions are (start - WING) to (end + WING)
+    *
+    * @param inputSource .wig file
+    * @param eblsSource enhancer regions are defined in
+    * @param ps output stream
+    */
   def extractEnhancers(inputSource: Source, eblsSource: Source, ps: PrintStream): Unit = {
-    val enIt = inputSource.getLines().map(Enhancer(_)).toArray.sorted.toIterator
+    val WING = 400
+    val enIt = BedIterator.fromSource(inputSource).map{
+      b =>
+        val tmp = Enhancer(b)
+        Enhancer(tmp.chr, max(tmp.start - WING, 0), tmp.end + WING,tmp.gene, tmp.score)
+    }.toArray.sorted.toIterator
     val eblsIt = WigIterator.fromSource(eblsSource)
     val enhArray = intersectionDo(enIt, eblsIt,
       (en: Enhancer, ebls: WigIterator.WigUnit) => {
         val lines = ebls.toVariableStep.lines.filter{case (i,_) => i >= math.max(en.start, ebls.start) && i < math.min(en.end, ebls.end)}
         VariableStep(en.chr, 1, lines)
-    })
+      })
     val result = enhArray.tail.foldLeft(Array(enhArray.head)){
       case (zs, x) =>
-        if(zs.last appendableWith x) zs.init :+ (zs.last + x).toVariableStep
+        if(zs.last.end == x.start) zs.init :+ (zs.last + x).toVariableStep
         else zs :+ x
     }
     result.foreach(ps.println)
+    //result.foreach( t => assert(t.length == 401))
   }
 
   def intersectionDo[T : ClassTag,S1 <: Block,S2 <: Block](xit: Iterator[S1], yit: Iterator[S2], f: (S1, S2) => T):Array[T] = {
@@ -284,10 +414,10 @@ object Others{
     var xunit = xit.next()
     var yunit = yit.next()
     while ((xit.hasNext || xunit.end > yunit.end) && (yit.hasNext || xunit.end <= yunit.end)) {
-      if (xunit.start < yunit.end && xunit.end > yunit.start) {
-          buf += f(xunit, yunit)
+      if (xunit.chr == yunit.chr && xunit.start < yunit.end && xunit.end > yunit.start) {
+        buf += f(xunit, yunit)
       }
-      if (xunit.end <= yunit.end) {
+      if (xunit.chr != yunit.chr || xunit.end <= yunit.end) {
         xunit = xit.next()
       }
       else{
@@ -300,50 +430,34 @@ object Others{
 
 }
 
-case class Enhancer(chr: String, start: Int, end: Int, gene: Array[Genes], score: Double) extends Ordered[Enhancer] with biformat.Block {
-  def merge(that: Enhancer): Enhancer = Enhancer(chr, start, end, this.gene ++ that.gene, this.score + that.score)
-  def length = end - start
-  def appendableWith(that: biformat.Block) = that match {
-    case Enhancer(_chr, _start, _, _, _) => chr == _chr && end + 1 == _start
-    case _ => false
-  }
-  override def compare(that: Enhancer): Int = {
-    def chr2int(str: String): Int = {
-      val suffix = str.diff("chr")
-      try suffix.toInt catch {case _:Exception => suffix.head.toInt + 99}
+class Chromosome private (val chr: String) extends Ordered[Chromosome] {
+
+  override def compare(that: Chromosome): Int = {
+    def chr2int(chr: String): Int = {
+      try chr.toInt
+      catch {
+        case _: Exception => chr.head.toInt + 99
+      }
     }
-    val tmp = chr2int(this.chr) - chr2int(that.chr)
-    if(tmp == 0) this.start - that.start
-    else tmp
-  }
-  def withScore(x: Double): Enhancer = Enhancer(chr, start, end, gene, x)
-  override def toString: String = s"$chr\t$start\t$end\t" + gene.mkString("~") + s"\t$score"
-}
-
-object Enhancer{
-  val TSSLength = 1001
-  val EnhancerLength = 401
-  def apply(line: BedLine): Enhancer = {
-    require(line.blockCount == 2)
-    val start = line.start + (if(line.blockSize.head == EnhancerLength) line.blockStarts.head else line.blockStarts.last)
-    new Enhancer(line.chr, start.toInt, start.toInt + EnhancerLength, Array(Genes(line.name)), 0.0)
+    chr2int(this.chr) - chr2int(that.chr)
   }
 
-  def apply(str: String): Enhancer = {
-    val args = str.split("""\p{javaWhitespace}""")
-    val genes = args(3).split("~").map(Genes(_))
-    new Enhancer(args.head, args(1).toInt, args(2).toInt, args(3).split("~").map(Genes(_)), args(4).toDouble)
+  override def toString = "chr" + chr
+
+}
+
+object Chromosome{
+
+  def apply(chr: Any): Chromosome = {
+    chr match {
+      case x: Int => new Chromosome(x.toString)
+      case x: String => new Chromosome(x.diff("chr"))
+      case x: Chromosome => x
+      case _ => throw new Exception
+    }
   }
-}
-
-case class Genes(names: Array[String], R: String, FDR: String){
-  override def toString: String = names.mkString(",") + s";$R;$FDR"
-}
-
-object Genes{
-  def apply(str: String): Genes = {
-    val args = str.split(";")
-    val initialIndex = if(args(0).startsWith("chr")) 1 else 0
-    Genes(args(initialIndex).split(","), args.init.last, args.last)
+  object Human{
+    lazy val list: List[Chromosome] =
+      (1 to 22).toList.map(Chromosome(_)) ::: List("X", "Y").map(Chromosome(_))
   }
 }

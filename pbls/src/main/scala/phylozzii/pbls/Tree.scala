@@ -16,13 +16,13 @@ import breeze.math.LogDouble.SemiringLogDouble
 sealed trait LDTree extends PrimitiveTree{
   /** inside variable*/
   def alpha: Array[VL]
-  /** inside diagonal variable*/
+  /** diagonal-inside variable*/
   def alphaD: Array[VL]
   /** outside variable*/
   def beta: Array[VL]
-  /** outside diagonale variable*/
+  /** diagonal-outside variable*/
   def betaD: Array[VL]
-  /** (i,j) is mutation probability j to i in time [[phylozzii.fdur.PrimitiveTree.t]]*/
+  /** trans(i,j) is mutation probability j to i in time [[phylozzii.fdur.PrimitiveTree.t]]*/
   def trans: ML
   /** diagonal matrix of [[trans]]*/
   def transD: ML
@@ -83,9 +83,9 @@ object LDTree extends LDTreeUtilTrait {
     }
   }
 
-  def mkBeta(fromSib:List[Array[VL]],fromPar:Array[VL]):Array[VL] = mkAlpha(fromPar :: fromSib)
+  protected def mkBeta(fromSib:List[Array[VL]],fromPar:Array[VL]):Array[VL] = mkAlpha(fromPar :: fromSib)
 
-  def mkBetaD(fromSib:List[Array[VL]],fromPar:Array[VL],fromSibD:List[Array[VL]],fromParD:Array[VL]):Array[VL] =
+  protected def mkBetaD(fromSib:List[Array[VL]],fromPar:Array[VL],fromSibD:List[Array[VL]],fromParD:Array[VL]):Array[VL] =
     mkAlphaD(fromPar :: fromSib, fromParD :: fromSibD)
 
   protected def outside(tree:LDChild, fromSib:List[Array[VL]], fromPar:Array[VL],
@@ -139,7 +139,7 @@ object LDTree extends LDTreeUtilTrait {
     val root = inout(tr, model, columns, target)
     val regbls = tr.branches.sum
     val regblsa = tr.anclen(target)
-    (root.bls.map(_ / regbls),root.blsa.map(_ / regblsa))
+    (root.bls.map(_ / regbls), root.blsa.map(_ / regblsa))
   }
   /**
     *  probablistic Branch Length Score, sum of expected preserved time on branches which are

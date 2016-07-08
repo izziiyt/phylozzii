@@ -1,13 +1,13 @@
 lazy val commonSettings = Seq(
   organization := "izziiyt",
   version := "0.2.0-SNAPSHOT",
-  scalaVersion := "2.10.5",
+  scalaVersion := "2.10.6",
   name := "phylozzii",
   libraryDependencies ++= Seq(
-    "org.scalatest" %% "scalatest" % "2.1.3" % "test",
-    "org.scalanlp" %% "breeze" % "0.11.2",
-    "org.scalanlp" %% "breeze-natives" % "0.11.2",
-    "org.scalanlp" %% "breeze-viz" % "0.11.2"
+    "org.scalatest" %% "scalatest" % "2.2.6" % "test",
+    "org.scalanlp" %% "breeze" % "0.12",
+    "org.scalanlp" %% "breeze-natives" % "0.12",
+    "org.scalanlp" %% "breeze-viz" % "0.12"
   ),
   resolvers ++= Seq(
     "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/",
@@ -64,7 +64,7 @@ lazy val root = project.in(file(".")).settings(commonSettings: _*).
   dependsOn(biutil).
   aggregate(fdur, pbls, core)
 
-lazy val biutil = uri("git://github.com/izziiyt/biutil.git#dev")
+lazy val biutil = uri("git://github.com/izziiyt/biutil.git#master")
 
 lazy val fdur = project.in(file("fdur")).settings(commonSettings: _*).
   settings(

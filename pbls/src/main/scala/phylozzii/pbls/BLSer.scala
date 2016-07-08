@@ -73,7 +73,7 @@ object BLSer {
           f(blsa, indices.map(_+ it.start), hg19.subname, outblsa)
         }
     }
-    def f(bls: ArrayBuffer[Double], indices: Array[Long], chrom: String, w:PrintWriter): Unit ={
+    def f(bls: ArrayBuffer[Double], indices: Array[Int], chrom: String, w:PrintWriter): Unit ={
       w.println("variableStep\tchrom=" + chrom)
       (bls, indices).zipped.foreach {(b, i) => w.println(i + "\t" + b.toString)}
       w.println()

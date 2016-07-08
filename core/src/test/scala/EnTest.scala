@@ -18,4 +18,8 @@ class EnTest extends FunSuite{
     println(tree.anclenList("Human"))
     println(tmp2)
   }*/
+
+  test("enhancer"){
+
+  }
 }
