@@ -1,11 +1,11 @@
 package phylozzii.core
 
 import java.io._
+import java.util.zip.GZIPOutputStream
 
 import phylozzii.pbls.BLSer
 import scopt.OptionParser
 
-import scala.io.Source
 
 object Main extends App{
   import BLSer._
@@ -90,14 +90,14 @@ object Main extends App{
       } text "input .aln file"
       )
 
-    cmd("bedchrsplit") action { (_, c) => c.copy(mode = "bedsplit") } text
+    /*cmd("bedchrsplit") action { (_, c) => c.copy(mode = "bedsplit") } text
       "split bed file by chromosome" children (
       opt[File]('o',"out") optional() valueName "<directory>" action {
         (x, c) => c.copy(out = x)
       } text "a directory to put output files, default is .",
       bed
       )
-
+*/
     cmd("sge-fdur-estep") abbr "sfe" action { (_, c) => c.copy(mode = "qe") } text
       "phylozzii.fdur's estep for runnig on SGE system" children (
       cbf,
@@ -127,26 +127,43 @@ object Main extends App{
       } text "input directory which containsa .tsv file"
       )
 
-    cmd("enhancers") action {(_,c) => c.copy(mode = "enhancers")} text
+  /*  cmd("enhancers") action {(_,c) => c.copy(mode = "enhancers")} text
       "print chromosome, position, score and geneIDs" children (
       out,
       wig,
       bed
       )
-
+*/
     cmd("bedSort") action {(_,c) => c.copy(mode = "bedSort")} text
       "sorts .bed file with chromosome name, starting posisition, end position" children (
-      opt[Unit]('e', "enhancer") optional() action {
-        (_, c) => c.copy(sp = true)
-      } text "flag to use enhancer not bed",
       out,
       bed
       )
-
+    cmd("wigSort") action {(_,c) => c.copy(mode = "bedSort")} text
+      "sorts .bed file with chromosome name, starting posisition, end position" children (
+      out,
+      wig
+      )
     cmd("extract") action {(_,c) => c.copy(mode = "extenh")} text "" children(
       out,
       wig,
       bed
+      )
+
+    cmd("length") action {(_,c) => c.copy(mode = "length")} text
+      "returns length of structured formated file" children(
+      opt[Unit]('e', "enhancer") optional() action {
+        (_, c) => c.copy(optionalIntegers = c.optionalIntegers :+ 0)
+      } text "flag to use enhancer not bed",
+      opt[Unit]('w', "wig") optional() action {
+        (_, c) => c.copy(optionalIntegers = c.optionalIntegers :+ 2)
+      } text "flag to use wig",
+      opt[Unit]('b', "bed") optional() action {
+        (_, c) => c.copy(optionalIntegers = c.optionalIntegers :+ 1)
+      } text "flag to use bed",
+      arg[File]("<file>") required() action { (x, c) =>
+      c.copy(inputFiles = c.inputFiles :+ x)
+      } text "input file"
       )
 
     cmd("randomwig") action {(_,c) => c.copy(mode = "randomwig")} text "" children(
@@ -157,13 +174,27 @@ object Main extends App{
       } text "size",
       arg[Int]("<integer>") required() action { (x, c) =>
         c.copy(optionalIntegers = c.optionalIntegers :+ x)
-      } text "number",
-      arg[Int]("<integer>") optional() valueName "max" action { (x, c) =>
+      } text "number"
+      )
+
+    cmd("randombed") action {(_,c) => c.copy(mode = "randombed")} text "" children(
+      out,
+      bed,
+      arg[Int]("<integer>") required() action { (x, c) =>
         c.copy(optionalIntegers = c.optionalIntegers :+ x)
-      } text "maximum"
+      } text "size"
       )
 
     cmd("wigfilter") action {(_,c) => c.copy(mode = "wigfilter")} text "" children(
+      opt[Unit]('e', "enhancer") optional() action {
+        (_, c) => c.copy(stringArgs = c.stringArgs :+ "enhancer")
+      } text "flag to use enhancer not bed",
+      opt[Unit]('t', "tss") optional() action {
+        (_, c) => c.copy(stringArgs = c.stringArgs :+ "tss")
+      } text "flag to use tss not bed",
+      opt[Int]('w',"wing") optional() valueName "<integer>" action { (x, c) =>
+        c.copy(optionalIntegers = c.optionalIntegers :+ x)
+      } text "filter with bed.start - wing to bed.end + wing",
       out,
       wig,
       bed
@@ -211,7 +242,8 @@ object Main extends App{
           blser(conf.stringArgs.head, conf.inputFiles(0), conf.inputFiles(1), conf.inputFiles(2), bls, blsa, conf.optionalFiles.head)
 
         case "wighist" =>
-          def f(wigf: File) = {
+          wighist(conf.inputFiles.head, conf.optionalFiles.headOption, conf.out, conf.sp)
+          /*def f(wigf: File) = {
             val prefix = wigf.getName.replace(".wig", "").replace(".gz", "")
             val bedf = conf.optionalFiles.headOption
             val outf = new File(conf.out.getAbsolutePath, prefix + ".hist")
@@ -221,6 +253,7 @@ object Main extends App{
           }
           val _wigf = conf.inputFiles.head
           if(_wigf.isDirectory) _wigf.listFiles.foreach(f) else f(_wigf)
+*/
 
         case "goHist" =>
           def f(wigf: File) = {
@@ -233,15 +266,26 @@ object Main extends App{
           if(_wigf.isDirectory) _wigf.listFiles.foreach(f) else f(_wigf)
 
         case "wigfilter" =>
-          val ws = biformat.bigSource(conf.inputFiles.head)
-          val bs = biformat.bigSource(conf.inputFiles(1))
-          val os = if(conf.out.getName == ".") System.out else f2stream(conf.out)
-          try wigfilter(ws, bs, os)
-          finally {
-            ws.close()
-            bs.close()
-            if(conf.out.isFile) os.close()
+          def f(wf: File) {
+            val prefix = wf.getName
+            val isgz = wf.getName.split('.').last == "gz"
+            val bf = conf.inputFiles(1)
+            val outf = new File(conf.out.getAbsolutePath, prefix)
+            val os =
+              if (isgz) new PrintStream(new GZIPOutputStream(new FileOutputStream(outf), 1024 * 1024))
+              else f2stream(outf)
+            if(conf.stringArgs.isEmpty)
+              wigfilter(wf, bf, os, conf.optionalIntegers.headOption.getOrElse(0),false)
+            else if(conf.stringArgs.head == "enhancer")
+              wigfilter(wf, bf, os, conf.optionalIntegers.headOption.getOrElse(0),true)
+            else
+              wigfilter(wf, bf, os, conf.optionalIntegers.headOption.getOrElse(0),false, true)
           }
+          val _wf = conf.inputFiles.head
+          if(_wf.isDirectory) {
+            conf.out.mkdir()
+            _wf.listFiles.foreach(f)
+          } else f(_wf)
 
         case "wigwig" =>
           val ws1 = biformat.bigSource(conf.inputFiles(0))
@@ -272,11 +316,11 @@ object Main extends App{
           try entrop(as, name)
           finally as.close()
 
-        case "bedsplit" =>
+       /* case "bedsplit" =>
           val bedSource = biformat.bigSource(conf.inputFiles.head)
           bedChrSplit(bedSource, conf.out)
-
-        case "geneList" =>
+*/
+        /*case "geneList" =>
           val inputSources = conf.inputFiles.head.listFiles.map(biformat.bigSource)
           val minimum = if(conf.doubleArgs(0) < 0.0) 0.0 else conf.doubleArgs(0)
           val maximum = if(conf.doubleArgs(1) < 0.0) 1.0 else conf.doubleArgs(1)
@@ -286,9 +330,9 @@ object Main extends App{
           ps match {
             case _:PrintStream => ps.close()
             case _ =>
-          }
+          }*/
 
-        case "enhancers" =>
+        /*case "enhancers" =>
           if(!conf.inputFiles(1).isFile) throw new Exception("input .bed file isn't detected.")
           val inputSource = biformat.bigSource(conf.inputFiles(0))
           val referenceSource = biformat.bigSource(conf.inputFiles(1))
@@ -300,12 +344,19 @@ object Main extends App{
             case _:PrintStream => ps.close()
             case _ =>
           }
-
+*/
         case "bedSort" =>
           val in = conf.inputFiles.head
-          bedSort(in, if(conf.out.getName == ".") in else conf.out, conf.sp)
+          bedSort(in, if(conf.out.getName == ".") in else conf.out)
 
-        case "extenh" =>
+        case "randombed" =>
+          randombed(conf.inputFiles.head, conf.out, conf.optionalIntegers.head)
+
+        case "wigSort" =>
+          val in = conf.inputFiles.head
+          wigSort(in, if(conf.out.getName == ".") in else conf.out)
+
+        /*case "extenh" =>
           val ps = if(conf.out.getName == ".") System.out else new PrintStream(conf.out)
           val wig = biformat.bigSource(conf.inputFiles.head)
           val enh = biformat.bigSource(conf.inputFiles(1))
@@ -316,12 +367,16 @@ object Main extends App{
           }
           wig.close()
           enh.close()
-
-        case "randomwig" =>
+*/
+        case "length" =>
+          val f = conf.inputFiles.head
+          val mode = conf.optionalIntegers.headOption.getOrElse(Int.MaxValue)
+          length(f,mode)
+        /*case "randomwig" =>
           val ps = if(conf.out.getName == ".") System.out else f2stream(conf.out)
           val wig = biformat.bigSource(conf.inputFiles.head)
           if(conf.optionalIntegers.length == 3)
-            randomwig(conf.optionalIntegers(0),conf.optionalIntegers(1),wig,ps,conf.optionalIntegers(2))
+            randomwig(conf.optionalIntegers(0),conf.optionalIntegers(1),wig,ps)
           else
             randomwig(conf.optionalIntegers(0),conf.optionalIntegers(1),wig,ps)
           ps match {
@@ -329,16 +384,17 @@ object Main extends App{
             case _ =>
           }
           wig.close()
+          */
       }
 
     case None => Unit
   }
 
-  def f2stream(f: File): PrintStream =
+  private def f2stream(f: File): PrintStream =
     new PrintStream(new BufferedOutputStream(new FileOutputStream(f), 1024 * 1024))
 }
 
-case class Config(mode: String = "", doubleArgs: Array[Double] = Array.empty[Double],
+case class Config(mode: String = "", doubleArgs: Array[Double] = Array.empty[Double], optionalBooleans: Array[Boolean] = Array.empty[Boolean],
                   inputFiles: Array[File] = Array.empty[File], optionalIntegers: Array[Int] = Array.empty[Int],
                   out: File = new File("."), stringArgs: Array[String] = Array.empty[String],
                   optionalFiles: Array[File] = Array.empty[File], isSciName: Boolean = false, sp: Boolean = false,
