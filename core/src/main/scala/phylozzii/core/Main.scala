@@ -108,9 +108,18 @@ object Main extends App{
 
     cmd("wigwig") action {(_,c) => c.copy(mode = "wigwig")} text
       "puts values in intersections of two input .wig files" children (
+      opt[Unit]('p', "phyloP") optional() action {
+        (_, c) => c.copy(optionalBooleans = c.optionalBooleans :+ true)
+      } text "if second .wig contains phyloP value, default phastCons value",
       out,
       wig,
       wig
+      )
+
+    cmd("bedUnion") action {(_,c) => c.copy(mode = "bedUnion")} text
+      "" children (
+      out,
+      bed
       )
 
     cmd("geneList") action {(_,c) => c.copy(mode = "geneList")} text
@@ -168,13 +177,10 @@ object Main extends App{
 
     cmd("randomwig") action {(_,c) => c.copy(mode = "randomwig")} text "" children(
       out,
-      wig,
-      arg[Int]("<integer>") required() action { (x, c) =>
+      arg[Int]("<integer>") optional() action { (x, c) =>
         c.copy(optionalIntegers = c.optionalIntegers :+ x)
-      } text "size",
-      arg[Int]("<integer>") required() action { (x, c) =>
-        c.copy(optionalIntegers = c.optionalIntegers :+ x)
-      } text "number"
+      } text "number of random selected wigUnit",
+      wig
       )
 
     cmd("randombed") action {(_,c) => c.copy(mode = "randombed")} text "" children(
@@ -182,7 +188,7 @@ object Main extends App{
       bed,
       arg[Int]("<integer>") required() action { (x, c) =>
         c.copy(optionalIntegers = c.optionalIntegers :+ x)
-      } text "size"
+      } text "number of random selected BedLine"
       )
 
     cmd("wigfilter") action {(_,c) => c.copy(mode = "wigfilter")} text "" children(
@@ -280,6 +286,7 @@ object Main extends App{
               wigfilter(wf, bf, os, conf.optionalIntegers.headOption.getOrElse(0),true)
             else
               wigfilter(wf, bf, os, conf.optionalIntegers.headOption.getOrElse(0),false, true)
+            os.close()
           }
           val _wf = conf.inputFiles.head
           if(_wf.isDirectory) {
@@ -292,7 +299,7 @@ object Main extends App{
           val ws2 = biformat.bigSource(conf.inputFiles(1))
           conf.out.createNewFile()
           val os = if(conf.out.isFile) f2stream(conf.out) else System.out
-          try wigwigphyloP(ws1, ws2, os)
+          try wigwig(ws1, ws2, os, conf.optionalBooleans.headOption.getOrElse(false))
           finally {
             ws1.close()
             ws2.close()
@@ -345,9 +352,30 @@ object Main extends App{
             case _ =>
           }
 */
+
+        case "bedUnion" =>
+          val os =
+          if (conf.out.getName.endsWith(".gz")) new PrintStream(new GZIPOutputStream(new FileOutputStream(conf.out), 1024 * 1024))
+          else f2stream(conf.out)
+          bedUnion(conf.inputFiles.head, os)
+          os.close()
+
         case "bedSort" =>
           val in = conf.inputFiles.head
           bedSort(in, if(conf.out.getName == ".") in else conf.out)
+
+        case "randomwig" =>
+          def f(wigf: File): Unit =  {
+            val outf = new File(conf.out.getAbsolutePath, wigf.getName)
+            val os = if (wigf.getName.endsWith(".gz")) {
+              new PrintStream(new GZIPOutputStream(new FileOutputStream(outf), 2048))
+            } else {
+              f2stream(outf)
+            }
+            randomwig(conf.inputFiles.head, os, conf.optionalIntegers.headOption.getOrElse(500))
+            os.close()
+          }
+          conf.inputFiles.head.listFiles.foreach(f)
 
         case "randombed" =>
           randombed(conf.inputFiles.head, conf.out, conf.optionalIntegers.head)

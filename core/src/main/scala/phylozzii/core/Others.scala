@@ -12,6 +12,7 @@ import breeze.linalg._
 import breeze.numerics._
 import breeze.plot._
 
+import scala.annotation.tailrec
 import scala.collection.mutable.ArrayBuffer
 import scala.io.Source
 import scala.reflect.ClassTag
@@ -76,7 +77,7 @@ object Others extends {
     * @param wigs
     * @param out
     */
-  def randomwig(number: Int, wigs: Source, out: PrintStream = System.out): Unit ={
+  /*def randomwig(number: Int, wigs: Source, out: PrintStream = System.out): Unit ={
     val MAX = wigs.getLines.length - 1
     wigs.reset()
     val r = scala.util.Random
@@ -104,6 +105,50 @@ object Others extends {
       }*/
     }
     println()
+  }*/
+
+  def bedUnion(bedir: File, os: PrintStream): Unit ={
+    val files = bedir.listFiles.filter(_.isFile)
+    val beds = biformat.bigSource(files.head)
+    val bedarr = BedIterator.fromSource(beds).filter(!_.chr.contains('_')).toArray
+    beds.close()
+    @tailrec
+    def f(fs: Array[File], bedarr: Array[BedLine]): BedIterator = {
+      if (fs.isEmpty) bedarr.toIterator
+      else {
+        val _beds = biformat.bigSource(fs.head)
+        val _bedit = BedIterator.fromSource(_beds).filter(!_.chr.contains('_'))
+        val tmp = _bedit.union(bedarr.toIterator).toArray
+        _beds.close()
+        f(fs.tail, tmp)
+      }
+    }
+    val bedit = f(files.tail, bedarr)
+    bedit.foreach(os.println)
+  }
+
+  def randomwig(wigf: File, os: PrintStream, num: Int): Unit ={
+    val _wigs = biformat.bigSource(wigf)
+    val MAX = WigIterator.fromSource(_wigs).length
+    _wigs.close()
+
+    val r = scala.util.Random
+    val stairs = (0 until num).map{_ => r.nextInt(MAX)}.
+      sortWith(_ > _).foldLeft(Nil:List[Int]){
+      case (z::zs,x) => x :: z - x - 1 :: zs
+      case (Nil,x) => x :: Nil
+    }
+
+    val wigs = biformat.bigSource(wigf)
+    val wigit = WigIterator.fromSource(wigs).map(_.toVariableStep)
+
+    var wig = wigit.next()
+
+    for(i <- 1 to num) yield {
+      wig = if(stairs(i - 1) == -1) wig else wigit.drop(stairs(i - 1)).next()
+      os.println(wig)
+    }
+    wigs.close()
   }
 
   def randombed(bedf: File, out: File, num: Int): Unit ={
@@ -202,41 +247,41 @@ object Others extends {
     f.saveas("target/" + name + ".png")
   }
 
- /* def bedChrSplit(bedSource: Source, odir: File = new File(".")): Unit = {
-    val farray = scala.collection.mutable.Map[String, PrintWriter]()
-    def choosePrinter(chr: String): PrintWriter = {
-      farray(chr) =
-        if(farray.contains(chr)) farray(chr)
-        else new PrintWriter(new GZIPOutputStream(new FileOutputStream(odir + "/" + chr +  ".bed.gz"), 1024 * 1024))
-      farray(chr)
-    }
-    def bedManage(chr: String, f: List[BedLine] => List[BedLine], name: String = ""): Unit = {
-      val bed = new File(odir + "/" + chr +  ".bed.gz")
-      val source = biformat.bigSource(bed)
-      val tmpbed = new File(s"/tmp/$chr.tmp.bed.gz")
-      //val tmpbed = new File(odir + "/" + chr +  ".tmp.bed.gz")
-      val printer = new PrintWriter(new GZIPOutputStream(new FileOutputStream(tmpbed), 1024 * 1024))
-      try {
-        val bedList = BedIterator.fromSource(source).toList
-        f(bedList) foreach printer.println
-      }
-      finally {
-        source.close()
-        printer.close()
-        tmpbed.renameTo(bed)
-      }
-    }
+  /* def bedChrSplit(bedSource: Source, odir: File = new File(".")): Unit = {
+     val farray = scala.collection.mutable.Map[String, PrintWriter]()
+     def choosePrinter(chr: String): PrintWriter = {
+       farray(chr) =
+         if(farray.contains(chr)) farray(chr)
+         else new PrintWriter(new GZIPOutputStream(new FileOutputStream(odir + "/" + chr +  ".bed.gz"), 1024 * 1024))
+       farray(chr)
+     }
+     def bedManage(chr: String, f: List[BedLine] => List[BedLine], name: String = ""): Unit = {
+       val bed = new File(odir + "/" + chr +  ".bed.gz")
+       val source = biformat.bigSource(bed)
+       val tmpbed = new File(s"/tmp/$chr.tmp.bed.gz")
+       //val tmpbed = new File(odir + "/" + chr +  ".tmp.bed.gz")
+       val printer = new PrintWriter(new GZIPOutputStream(new FileOutputStream(tmpbed), 1024 * 1024))
+       try {
+         val bedList = BedIterator.fromSource(source).toList
+         f(bedList) foreach printer.println
+       }
+       finally {
+         source.close()
+         printer.close()
+         tmpbed.renameTo(bed)
+       }
+     }
 
-    def bedRemoveOverlap(chr: String) =
-      bedManage(chr, zs => zs.tail.foldLeft(zs.head :: Nil){(ns, n) => if(ns.head hasOverlap n) ns else n :: ns}.reverse)
-    def bedSort(chr: String): Unit = bedManage(chr, zs => zs.sortBy(_.start))
+     def bedRemoveOverlap(chr: String) =
+       bedManage(chr, zs => zs.tail.foldLeft(zs.head :: Nil){(ns, n) => if(ns.head hasOverlap n) ns else n :: ns}.reverse)
+     def bedSort(chr: String): Unit = bedManage(chr, zs => zs.sortBy(_.start))
 
-    val bit = BedIterator.fromSource(bedSource)
-    bit.foreach{it => choosePrinter(it.chr).println(it.toString())}
-    farray.values.foreach(_.close())
-    farray.keys.foreach(bedSort)
-    farray.keys.foreach(bedRemoveOverlap)
-  }*/
+     val bit = BedIterator.fromSource(bedSource)
+     bit.foreach{it => choosePrinter(it.chr).println(it.toString())}
+     farray.values.foreach(_.close())
+     farray.keys.foreach(bedSort)
+     farray.keys.foreach(bedRemoveOverlap)
+   }*/
 
   def diff(blsf: File, blsaf: File, out: PrintStream = System.out): Unit = {
     val bls = biformat.bigSource(blsf)
@@ -260,7 +305,7 @@ object Others extends {
     blsa.close()
   }
 
-  def wigwigphyloP(ws1: Source, ws2: Source, prnt: PrintStream): Unit = {
+  /*def wigwigphyloP(ws1: Source, ws2: Source, prnt: PrintStream): Unit = {
     val SIZE = 100
     val mat = DenseMatrix.zeros[Int](SIZE, SIZE)
 
@@ -269,6 +314,7 @@ object Others extends {
       val end = min(first.end, second.end)
       val x1 = first.lines.dropWhile(_._1 < start).takeWhile(_._1 < end)
       val x2 = second.lines.dropWhile(_._1 < start).takeWhile(_._1 < end)
+      require(x1.length == x2.length)
       (x1 zip x2).foreach{
         case (x, y) =>
           val y2 = ((if(y._2 < 0) max(-15.0, y._2) else min(15.0, y._2)) + 15.0) / 30.0
@@ -296,9 +342,9 @@ object Others extends {
     for(i <- 0 until mat.rows){
       prnt.println(mat(i, ::).t.toArray.mkString(","))
     }
-  }
+  }*/
 
-  def wigwig(ws1: Source, ws2: Source, prnt: PrintStream): Unit = {
+  def wigwig(ws1: Source, ws2: Source, prnt: PrintStream, phylop: Boolean): Unit = {
     val SIZE = 100
     val mat = DenseMatrix.zeros[Int](SIZE, SIZE)
 
@@ -307,7 +353,14 @@ object Others extends {
       val end = min(first.end, second.end)
       val x1 = first.lines.dropWhile(_._1 < start).takeWhile(_._1 < end)
       val x2 = second.lines.dropWhile(_._1 < start).takeWhile(_._1 < end)
-      (x1 zip x2).foreach{case (x, y) => mat(min(99, (x._2 * SIZE).toInt), min(99, (y._2 * SIZE).toInt)) += 1}
+      require(x1.length == x2.length)
+      if(phylop)
+        (x1 zip x2).foreach{
+          case (x, y) =>
+            val y2 = ((if(y._2 < 0) max(-15.0, y._2) else min(15.0, y._2)) + 15.0) / 30.0
+            mat(min(99, (x._2 * SIZE).toInt), min(99, (y2 * SIZE).toInt)) += 1}
+      else
+        (x1 zip x2).foreach{case (x, y) => mat(min(99, (x._2 * SIZE).toInt), min(99, (y._2 * SIZE).toInt)) += 1}
     }
 
     val wi1 = WigIterator.fromSource(ws1)
@@ -437,7 +490,11 @@ object Others extends {
     Sorting.stableSort(bedar, (x:Block, y: Block) => x.start < y.start)
     Sorting.stableSort(bedar, (x:Block, y: Block) => Chromosome(x.chr) < Chromosome(y.chr))
     inputSource.close()
-    val ps = new PrintStream(outputFile)
+    val ps =
+      if(outputFile.getName.endsWith(".gz"))
+        new PrintStream(new GZIPOutputStream(new FileOutputStream(outputFile),2048))
+      else
+        new PrintStream(outputFile)
     bedar foreach ps.println
     ps.close()
   }
@@ -449,7 +506,11 @@ object Others extends {
     Sorting.stableSort(wigar, (x:Block, y: Block) => x.start < y.start)
     Sorting.stableSort(wigar, (x:Block, y: Block) => Chromosome(x.chr) < Chromosome(y.chr))
     inputSource.close()
-    val ps = new PrintStream(new GZIPOutputStream(new FileOutputStream(outputFile), 2048))
+    val ps =
+      if(outputFile.getName.endsWith(".gz"))
+        new PrintStream(new GZIPOutputStream(new FileOutputStream(outputFile),2048))
+      else
+        new PrintStream(outputFile)
     wigar foreach ps.println
     ps.close()
   }
