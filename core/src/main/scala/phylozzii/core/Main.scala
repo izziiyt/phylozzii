@@ -177,9 +177,6 @@ object Main extends App{
 
     cmd("randomwig") action {(_,c) => c.copy(mode = "randomwig")} text "" children(
       out,
-      arg[Int]("<integer>") optional() action { (x, c) =>
-        c.copy(optionalIntegers = c.optionalIntegers :+ x)
-      } text "number of random selected wigUnit",
       wig
       )
 
@@ -372,7 +369,7 @@ object Main extends App{
             } else {
               f2stream(outf)
             }
-            randomwig(conf.inputFiles.head, os, conf.optionalIntegers.headOption.getOrElse(500))
+            randomwig(wigf, os, conf.optionalIntegers.headOption.getOrElse(500))
             os.close()
           }
           conf.inputFiles.head.listFiles.foreach(f)

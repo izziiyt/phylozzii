@@ -358,7 +358,7 @@ object Others extends {
         (x1 zip x2).foreach{
           case (x, y) =>
             val y2 = ((if(y._2 < 0) max(-15.0, y._2) else min(15.0, y._2)) + 15.0) / 30.0
-            mat(min(99, (x._2 * SIZE).toInt), min(99, (y2 * SIZE).toInt)) += 1}
+            mat(min(SIZE - 1, (x._2 * SIZE).toInt), min(99, (y2 * (SIZE - 1)).toInt)) += 1}
       else
         (x1 zip x2).foreach{case (x, y) => mat(min(99, (x._2 * SIZE).toInt), min(99, (y._2 * SIZE).toInt)) += 1}
     }
