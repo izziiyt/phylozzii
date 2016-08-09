@@ -44,7 +44,7 @@ lazy val commonSettings = Seq(
 
   assemblyJarName in assembly := name.value + "-" + version.value + ".jar",
 
-  //assemblyOutputPath in assembly := file("target/scala-2.10/"),
+  assemblyOutputPath in assembly := file("target/scala-2.10/"),
 
   //assemblyPackageDependency in assembly ++= Seq(fdur,pbls,core),
 
@@ -74,7 +74,7 @@ lazy val fdur = project.in(file("fdur")).settings(commonSettings: _*).
     name := "fdur",
     version := "0.3.0",
     mainClass in assembly := Some("phylozzii.fdur.Main"),
-      libraryDependencies  ++= Seq(
+    libraryDependencies  ++= Seq(
       //"org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4",
       //"com.typesafe.scala-logging" % "scala-logging-slf4j_2.10" % "2.1.2",
       //"ch.qos.logback" % "logback-classic" % "1.1.3",
@@ -87,7 +87,7 @@ lazy val fdur = project.in(file("fdur")).settings(commonSettings: _*).
         exclude("commons-logging", "commons-logging").
         exclude("org.spark-project.spark", "unused").
         exclude("com.esotericsoftware.minlog", "minlog")
-      )
+    )
   ).
   dependsOn(biutil)
 
