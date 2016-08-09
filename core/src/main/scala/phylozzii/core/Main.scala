@@ -3,36 +3,17 @@ package phylozzii.core
 import java.io._
 import java.util.zip.GZIPOutputStream
 
-import phylozzii.pbls.BLSer
 import scopt.OptionParser
 
 
 object Main extends App{
-  import BLSer._
   import Others._
-  import SparkFdur._
 
   val parser = new OptionParser[Config]("phylozzii") {
     head("phylozzii", "0.2.0-SNAP_SHOT")
     help("help") abbr "h" text "prints this usage text"
     version("version") abbr "v" text "prints version information"
     opt[Unit]("yaml") abbr "yml" valueName "<file>" text "pending"
-
-    cmd("ebls") action { (_, c) => c.copy(mode = "ebls") } text
-      "calculates expected branch length scores on a phylogenetic tree" children(
-      opt[File]('c',"change-name") valueName "<file>" optional() action {
-        (x, c) => c.copy(inputFiles = c.inputFiles :+ x)
-      } text "to change scientific names to common names, and vice versa",
-      opt[String]('t', "target") required() valueName "<string>" action {
-        (x, c) => c.copy(stringArgs = c.stringArgs :+ x)
-      } text "target species",
-      opt[File]('o', "out") optional() valueName "<file>" action {
-        (x, c) => c.copy(out = x)
-      } text "a directory to put output files, default is .",
-      maf,
-      newick,
-      param
-      )
 
     cmd("goHist") action { (_, c) => c.copy(mode = "goHist") } text
       "make histgram with go txv" children(
@@ -48,22 +29,6 @@ object Main extends App{
       } text "directory which contains .wig"
       )
 
-    cmd("fdur") action { (_, c) => c.copy(mode = "fdur") } text
-      "estimates parameters on a phylogenetic tree by EM maximum likelihood estimation" children(
-      cbf,
-      opt[Int]("maxit") abbr "mi" valueName "<integer>" action {
-        (x, c) => c.copy(optionalIntegers = c.optionalIntegers :+ x)
-      } text "how many iterates at most",
-      opt[Int]('P', "partition") valueName "<integer>" action {
-        (x, c) => c.copy(optionalIntegers = c.optionalIntegers :+ x)
-      } text "data partition size",
-      opt[Unit]('s', "spark") required() action {
-        (_, c) => c.copy(spark = true)
-      } text "flag to use on spark",
-      maf,
-      newick,
-      param
-      )
 
     cmd("wighist") action { (_, c) => c.copy(mode = "wighist") } text
       "filters .wig file on the basis of information of .bed" children(
@@ -90,13 +55,6 @@ object Main extends App{
       } text "input .aln file"
       )
 
-    cmd("sge-fdur-estep") abbr "sfe" action { (_, c) => c.copy(mode = "qe") } text
-      "phylozzii.fdur's estep for runnig on SGE system" children (
-      cbf,
-      maf,
-      newick,
-      param
-      )
 
     cmd("wigwig") action {(_,c) => c.copy(mode = "wigwig")} text
       "puts values in intersections of two input .wig files" children (
@@ -226,15 +184,6 @@ object Main extends App{
   parser.parse(args, Config()) match {
     case Some(conf) =>
       conf.mode match {
-        case "fdur" =>
-          sparkem(conf.inputFiles(0), conf.inputFiles(1), conf.inputFiles(2), conf.optionalIntegers(0), conf.optionalIntegers(1), conf.constFreq)
-
-        case "ebls" =>
-          val prefix = conf.inputFiles.head.getName.split('.').head
-          val bls = new File(conf.out.getPath + s"/$prefix.bls.wig.gz")
-          val blsa = new File(conf.out.getPath + s"/$prefix.blsa.wig.gz")
-          blser(conf.stringArgs.head, conf.inputFiles(0), conf.inputFiles(1), conf.inputFiles(2), bls, blsa, conf.optionalFiles.head)
-
         case "wighist" =>
           wighist(conf.inputFiles.head, conf.optionalFiles.headOption, conf.out, conf.sp)
 

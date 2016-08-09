@@ -1,10 +1,10 @@
-package phylozzii.core
+package phylozzii.fdur
 
 import java.io._
+
 import biformat.MafIterator
-import breeze.linalg.{DenseVector,DenseMatrix}
-import org.apache.spark.{AccumulatorParam, SparkConf, SparkContext, Logging}
-import phylozzii.fdur._
+import breeze.linalg.{DenseMatrix, DenseVector}
+import org.apache.spark.{AccumulatorParam, Logging, SparkConf, SparkContext}
 
 object SparkFdur extends Logging{
 

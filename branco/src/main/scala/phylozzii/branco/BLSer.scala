@@ -1,4 +1,4 @@
-package phylozzii.pbls
+package phylozzii.branco
 
 import java.io._
 import java.util.zip.GZIPOutputStream
@@ -15,14 +15,15 @@ object BLSer {
 
   def blser(target: String, maf: File, newick: File, param: File, bls: File, blsa: File, nameFile: File): Unit = {
     val in = biformat.bigSource(maf)
-    val its = MafIterator.fromSource(in, target).merged(10240)
-    val model = Model(Parameters.fromFile(param))
-    val outbls = new PrintWriter(new GZIPOutputStream(new FileOutputStream(bls), 1024 * 1024))
-    val outblsa = new PrintWriter(new GZIPOutputStream(new FileOutputStream(blsa), 1024 * 1024))
-    val tree =
-      if (nameFile.isFile) ModelTree.fromFile(newick).changeNames(ModelTree.fromFile(nameFile).names)
-      else ModelTree.fromFile(newick)
+    val outbls = bigPrintWriter(bls)
+    val outblsa = bigPrintWriter(blsa)
+
     try{
+      val its = MafIterator.fromSource(in, target).merged(10240)
+      val model = Model(Parameters.fromFile(param))
+      val tree =
+        if (nameFile.isFile) ModelTree.fromFile(newick).changeNames(ModelTree.fromFile(nameFile).names)
+        else ModelTree.fromFile(newick)
       if(!tree.names.contains(target))
         throw new UnsupportedOperationException("newick formatted tree doesn't contain " + target + ".")
       blsexe(its,tree,model,target,outbls,outblsa)
@@ -36,6 +37,9 @@ object BLSer {
       outblsa.close()
     }
   }
+
+  protected def bigPrintWriter(f : File): PrintWriter =
+    new PrintWriter(new GZIPOutputStream(new FileOutputStream(f), 1024 * 1024))
 
   protected def mkCol(mu:MafUnit, names:List[String],target: String): (List[Array[Base]], Array[Int]) = {
     def f(xs:Array[Base], indices:Array[Int]): Array[Base] = indices.map(xs(_))
@@ -66,7 +70,7 @@ object BLSer {
           val hg19 = it.lines(target)
           val (bls, blsa) = cols.foldLeft((ArrayBuffer[Double](),ArrayBuffer[Double]())){
             (n, x) =>
-              val (b, ba) = phylozzii.pbls.LDTree.bls(tree, model, x, target)
+              val (b, ba) = phylozzii.branco.LDTree.bls(tree, model, x, target)
               (n._1 ++ b, n._2 ++ ba)
           }
           f(bls, indices.map(_+ it.start), hg19.subname, outbls)

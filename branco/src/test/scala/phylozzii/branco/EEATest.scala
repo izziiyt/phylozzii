@@ -1,4 +1,4 @@
-package phylozzii.pbls
+package phylozzii.branco
 
 import alignment.Base
 import breeze.linalg.{DenseMatrix, DenseVector, diag}
@@ -42,7 +42,7 @@ class EEATest extends FunSuite with LDTreeUtilTrait{
   test("inside && outside"){
     val model = fdur.Model(Parameters(DenseVector(0.3,0.1,0.1,0.2,0.2,0.1),
       DenseVector(1.0,2.0,3.0,4.0)))
-    val tree = fdur.ModelTree.fromFile("pbls/src/test/resources/test3.nh")
+    val tree = fdur.ModelTree.fromFile("branco/src/test/resources/test3.nh")
     val cols:List[Array[Base]] = List(Array(Base.C),Array(Base.G),Array(Base.T))
     val target = "hg18"
     val ldtree = LDTree.inout(tree,model,cols,target)

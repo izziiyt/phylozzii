@@ -1,3 +1,5 @@
+import sbt.Keys._
+
 lazy val commonSettings = Seq(
   organization := "izziiyt",
   version := "0.2.0-SNAPSHOT",
@@ -7,7 +9,8 @@ lazy val commonSettings = Seq(
     "org.scalatest" %% "scalatest" % "2.2.6" % "test",
     "org.scalanlp" %% "breeze" % "0.12",
     "org.scalanlp" %% "breeze-natives" % "0.12",
-    "org.scalanlp" %% "breeze-viz" % "0.12"
+    "org.scalanlp" %% "breeze-viz" % "0.12",
+    "com.github.scopt" %% "scopt" % "3.5.0"
   ),
   resolvers ++= Seq(
     "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/",
@@ -62,27 +65,16 @@ lazy val commonSettings = Seq(
 
 lazy val root = project.in(file(".")).settings(commonSettings: _*).
   dependsOn(biutil).
-  aggregate(fdur, pbls, core)
+  aggregate(fdur, branco, core)
 
 lazy val biutil = uri("git://github.com/izziiyt/biutil.git#master")
 
 lazy val fdur = project.in(file("fdur")).settings(commonSettings: _*).
   settings(
-    name := "fdur"
-  ).
-  dependsOn(biutil)
-
-lazy val pbls = project.in(file("pbls")).settings(commonSettings: _*).
-  settings(
-    name := "pbls"
-  ).
-  dependsOn(biutil, fdur)
-
-lazy val core = project.in(file("core")).settings(commonSettings: _*).
-  settings(
-    name := "core",
-    libraryDependencies  ++= Seq(
-      "com.github.scopt" %% "scopt" % "3.4.0",
+    name := "fdur",
+    version := "0.3.0",
+    mainClass in assembly := Some("phylozzii.fdur.Main"),
+      libraryDependencies  ++= Seq(
       //"org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4",
       //"com.typesafe.scala-logging" % "scala-logging-slf4j_2.10" % "2.1.2",
       //"ch.qos.logback" % "logback-classic" % "1.1.3",
@@ -95,9 +87,23 @@ lazy val core = project.in(file("core")).settings(commonSettings: _*).
         exclude("commons-logging", "commons-logging").
         exclude("org.spark-project.spark", "unused").
         exclude("com.esotericsoftware.minlog", "minlog")
-    )
+      )
   ).
-  dependsOn(biutil, fdur, pbls)
+  dependsOn(biutil)
+
+lazy val branco = project.in(file("branco")).settings(commonSettings: _*).
+  settings(
+    name := "branco",
+    version := "0.2.1",
+    mainClass in assembly := Some("phylozzii.branco.Main")
+  ).
+  dependsOn(biutil, fdur)
+
+lazy val core = project.in(file("core")).settings(commonSettings: _*).
+  settings(
+    name := "core"
+  ).
+  dependsOn(biutil)
 
 
 
