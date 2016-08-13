@@ -11,9 +11,9 @@ import phylozzii.fdur._
 import scala.annotation.tailrec
 import scala.collection.mutable.ArrayBuffer
 
-object BLSer {
+object Branco {
 
-  def blser(target: String, maf: File, newick: File, param: File, bls: File, blsa: File, nameFile: File): Unit = {
+  def blser(target: String, maf: File, newick: File, param: File, bls: File, blsa: File): Unit = {
     val in = biformat.bigSource(maf)
     val outbls = bigPrintWriter(bls)
     val outblsa = bigPrintWriter(blsa)
@@ -21,12 +21,11 @@ object BLSer {
     try{
       val its = MafIterator.fromSource(in, target).merged(10240)
       val model = Model(Parameters.fromFile(param))
-      val tree =
-        if (nameFile.isFile) ModelTree.fromFile(newick).changeNames(ModelTree.fromFile(nameFile).names)
-        else ModelTree.fromFile(newick)
+      val tree = ModelTree.fromFile(newick)
       if(!tree.names.contains(target))
         throw new UnsupportedOperationException("newick formatted tree doesn't contain " + target + ".")
-      blsexe(its,tree,model,target,outbls,outblsa)
+      else
+        blsexe(its, tree, model, target, outbls, outblsa)
     }
     catch{
       case e: Throwable => e.printStackTrace()
@@ -46,7 +45,7 @@ object BLSer {
 
     val targetX = mu.lines(target)
     if(targetX.strand == "-") throw new UnsupportedOperationException("target strand is -.")
-    val indices = targetX.seq.zipWithIndex.withFilter{case (b,_) => !b.nonNuc}.map(_._2)
+    val indices = targetX.seq.zipWithIndex.withFilter{case (b, _) => !b.nonNuc}.map(_._2)
     val n = indices.length
     val tmp =
       if(n == 0) Nil
@@ -77,7 +76,7 @@ object BLSer {
           f(blsa, indices.map(_+ it.start), hg19.subname, outblsa)
         }
     }
-    def f(bls: ArrayBuffer[Double], indices: Array[Int], chrom: String, w:PrintWriter): Unit ={
+    def f(bls: ArrayBuffer[Double], indices: Array[Int], chrom: String, w:PrintWriter): Unit = {
       w.println("variableStep\tchrom=" + chrom)
       (bls, indices).zipped.foreach {(b, i) => w.println(i + "\t" + b.toString)}
       w.println()

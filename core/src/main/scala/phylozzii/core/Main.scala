@@ -3,17 +3,15 @@ package phylozzii.core
 import java.io._
 import java.util.zip.GZIPOutputStream
 
+import phylozzii.fdur.ModelTree
 import scopt.OptionParser
-
 
 object Main extends App{
   import Others._
 
   val parser = new OptionParser[Config]("phylozzii") {
-    head("phylozzii", "0.2.0-SNAP_SHOT")
+    head("branco-util", "0.2.1")
     help("help") abbr "h" text "prints this usage text"
-    version("version") abbr "v" text "prints version information"
-    opt[Unit]("yaml") abbr "yml" valueName "<file>" text "pending"
 
     cmd("goHist") action { (_, c) => c.copy(mode = "goHist") } text
       "make histgram with go txv" children(
@@ -29,7 +27,6 @@ object Main extends App{
       } text "directory which contains .wig"
       )
 
-
     cmd("wighist") action { (_, c) => c.copy(mode = "wighist") } text
       "filters .wig file on the basis of information of .bed" children(
       opt[Unit]('e', "enhancer") optional() action {
@@ -40,6 +37,17 @@ object Main extends App{
       } text ".bed file used for filtering",
       out,
       wig
+      )
+
+    cmd("changename") action { (_, c) => c.copy(mode = "changename") } text
+      "change scientific names to common names and vice versa" children(
+      out,
+      arg[File]("<File>") required() action {
+        (x, c) => c.copy(inputFiles = c.inputFiles :+ x)
+      } text "input newick format file, branch length",
+      arg[File]("<File>") required() action {
+        (x, c) => c.copy(inputFiles = c.inputFiles :+ x)
+      } text "input newick format file, leaf name"
       )
 
     cmd("counter") action { (_, c) => c.copy(mode = "counter") } text
@@ -197,6 +205,15 @@ object Main extends App{
           val _wigf = conf.inputFiles(2)
           if(_wigf.isDirectory) _wigf.listFiles.foreach(f) else f(_wigf)
 
+        case "changename" =>
+          val branch_ = conf.inputFiles.head
+          val name_ = conf.inputFiles(1)
+          val x = ModelTree.fromFile(branch_).changeNames(ModelTree.fromFile(name_).names)
+          val out = conf.out
+          val p = new PrintWriter(out)
+          p.println(x.toString)
+          p.close()
+
         case "wigfilter" =>
           def f(wf: File) {
             val prefix = wf.getName
@@ -207,11 +224,11 @@ object Main extends App{
               if (isgz) new PrintStream(new GZIPOutputStream(new FileOutputStream(outf), 1024 * 1024))
               else f2stream(outf)
             if(conf.stringArgs.isEmpty)
-              wigfilter(wf, bf, os, conf.optionalIntegers.headOption.getOrElse(0),false)
+              wigfilter(wf, bf, os, conf.optionalIntegers.headOption.getOrElse(0), false)
             else if(conf.stringArgs.head == "enhancer")
-              wigfilter(wf, bf, os, conf.optionalIntegers.headOption.getOrElse(0),true)
+              wigfilter(wf, bf, os, conf.optionalIntegers.headOption.getOrElse(0), true)
             else
-              wigfilter(wf, bf, os, conf.optionalIntegers.headOption.getOrElse(0),false, true)
+              wigfilter(wf, bf, os, conf.optionalIntegers.headOption.getOrElse(0), false, true)
             os.close()
           }
           val _wf = conf.inputFiles.head

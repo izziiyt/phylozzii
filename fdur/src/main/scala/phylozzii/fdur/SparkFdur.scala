@@ -1,12 +1,13 @@
-package phylozzii.fdur
+/*package phylozzii.fdur
 
 import java.io._
 
 import biformat.MafIterator
 import breeze.linalg.{DenseMatrix, DenseVector}
-import org.apache.spark.{AccumulatorParam, Logging, SparkConf, SparkContext}
+import org.apache.spark.util.AccumulatorV2
+import org.apache.spark.{AccumulatorParam, SparkConf, SparkContext}
 
-object SparkFdur extends Logging{
+object SparkFdur {
 
   import phylozzii.fdur.util.doubleEqual
 
@@ -41,7 +42,7 @@ object SparkFdur extends Logging{
     try {
       while (i <= maxit && f) {
         val model = Model(param)
-        logInfo("Starting " + i.toString + "th of iteration.")
+        //logInfo("Starting " + i.toString + "th of iteration.")
         val mapped = cols.map { c =>
           val tmpt = tree
           val tmpm = model
@@ -69,7 +70,7 @@ object SparkFdur extends Logging{
       lglw.close()
       branchw.close()
     }
-    logInfo(if(f) "Iteration number reached upper limit." else "Parameters are converged.")
+    //logInfo(if(f) "Iteration number reached upper limit." else "Parameters are converged.")
     val (rbr, rpr) = Optimizer.regularize(tree.branches, param)
     println("pi\t" + rpr.pi.toArray.mkString(","))
     println("b\t" + rpr.Bvec.toArray.mkString(","))
@@ -104,7 +105,10 @@ object Eresult{
   }
 }
 
-object FdurAccumulatorParam extends AccumulatorParam[Eresult] {
+object FdurAccumulator extends AccumulatorV2[Eresult, Eresult] {
   def zero(initialValue: Eresult) : Eresult = Eresult.zero(initialValue.size)
+  val result_: Eresult = Eresult.zero()
+  def reset(): Eresult =
   def addInPlace(v1: Eresult, v2: Eresult): Eresult = v1 + v2
 }
+*/

@@ -2,11 +2,13 @@ package phylozzii.fdur
 
 import breeze.linalg.DenseVector
 import org.scalatest.FunSuite
+import scala.collection.GenTraversableOnce
 
 class FdurTest extends FunSuite {
 
   import biformat._
   import util.doubleEqual
+
   val nh = ModelTree.fromFile("fdur/src/test/resources/test3.nh")
   val cols = readMaf(MafIterator.fromSource(bigSource("fdur/src/test/resources/tmp.maf"),"hg19"), 1000)
   val param = Parameters.fromFile("fdur/src/test/resources/testparam.txt")
