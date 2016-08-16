@@ -1,4 +1,4 @@
-package phylozzii.core
+package phylozzii.util
 
 import java.io._
 import java.util.zip.GZIPOutputStream

@@ -1,4 +1,4 @@
-package phylozzii.core
+package phylozzii.util
 
 import biformat.BedIterator.BedLine
 import biformat.BlockIterator.FilteredBlockIterator

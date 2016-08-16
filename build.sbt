@@ -17,7 +17,7 @@ lazy val commonSettings = Seq(
     "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases/",
     Resolver.sonatypeRepo("public")
   ),
-  assemblyMergeStrategy in assembly := {
+  /*assemblyMergeStrategy in assembly := {
     case PathList("META-INF") => MergeStrategy.first
     case x if Assembly.isConfigFile(x) =>
       MergeStrategy.concat
@@ -38,7 +38,7 @@ lazy val commonSettings = Seq(
         case _ => MergeStrategy.first
       }
     case _ => MergeStrategy.first
-  },
+  },*/
 
   test in assembly := {},
 
@@ -98,9 +98,9 @@ lazy val branco = project.in(file("branco")).settings(commonSettings: _*).
   ).
   dependsOn(biutil, fdur)
 
-lazy val core = project.in(file("core")).settings(commonSettings: _*).
+lazy val core = project.in(file("util")).settings(commonSettings: _*).
   settings(
-    name := "core"
+    name := "util"
   ).
   dependsOn(biutil, fdur)
 

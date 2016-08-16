@@ -27,9 +27,5 @@ object Main extends App{
 
 }
 
-case class Config(mode: String = "", doubleArgs: Array[Double] = Array.empty[Double], optionalBooleans: Array[Boolean] = Array.empty[Boolean],
-                  inputFiles: Array[File] = Array.empty[File], optionalIntegers: Array[Int] = Array.empty[Int],
-                  out: File = new File("."), stringArgs: Array[String] = Array.empty[String],
-                  optionalFiles: Array[File] = Array.empty[File], isSciName: Boolean = false, sp: Boolean = false,
-                  partition: Int = 512, constFreq: Boolean = false, spark: Boolean = false)
+case class Config(inputFiles: Array[File] = Array.empty[File], out: File = new File("."), stringArgs: Array[String] = Array.empty[String])
 

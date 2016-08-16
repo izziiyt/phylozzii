@@ -1,4 +1,4 @@
-package phylozzii.core
+package phylozzii.util
 
 import java.io._
 import java.util.zip.GZIPOutputStream
@@ -10,7 +10,7 @@ object Main extends App{
   import Others._
 
   val parser = new OptionParser[Config]("phylozzii") {
-    head("branco-util", "0.2.1")
+    head("util", "0.2.1")
     help("help") abbr "h" text "prints this usage text"
 
     cmd("goHist") action { (_, c) => c.copy(mode = "goHist") } text
