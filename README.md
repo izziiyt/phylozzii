@@ -34,7 +34,7 @@ Other jdks are not checked.
 ####sbt_0.13 or later
 [sbt](http://www.scala-sbt.org/index.html) is a build tool for scala.
 Installing takes you very long time because of resolving dependency.
-These depended libraries are cached in your $HOME/.sbt or $HOME/.ivy2 and used next time.
+These depended libraries are cached in your $HOME/.sbt or $HOME/.ivy2 by default and used next time.
 
 ###command
 

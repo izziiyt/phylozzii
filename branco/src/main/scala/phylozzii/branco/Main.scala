@@ -12,9 +12,6 @@ object Main extends App{
   val parser = new OptionParser[Config]("branco") {
     //override def renderingMode = scopt.RenderingMode.OneColumn
     head("branco", "0.2.1")
-    opt[Unit]("gzip").abbr("gz").action{ (_, c) =>
-      c.copy(gz = true)
-    } text "output will be gzip compressed"
     opt[File]('o', "out") optional() valueName "<Prefix-Path>" action {
       (x, c) =>
         c.copy(out = x)
@@ -25,6 +22,9 @@ object Main extends App{
     opt[String]('t', "target") required() valueName "<String>" action {
       (x, c) => c.copy(target = x)
     } text "target species' name"
+    opt[Unit]("gzip").abbr("z").action{ (_, c) =>
+      c.copy(gz = true)
+    } text "output will be gzip compressed"
     help("help") abbr "h" text "prints this usage text"
     version("version") abbr "v" text "prints version"
     arg[File]("<File>") required() action {
@@ -33,10 +33,10 @@ object Main extends App{
     arg[File]("<File>") required() action {
       (x, c) => c.copy(nh = x)
     } text ".nh file"
-    arg[File]("<File | Directory>") required() action {
+    arg[File]("<File>") required() action {
       (x, c) =>
           c.copy(maf = x)
-    } text "single .maf file or a directory which contains some .maf files"
+    } text ".maf file"
   }
 
   parser.parse(args, Config()) match {
