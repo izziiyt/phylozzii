@@ -7,24 +7,18 @@ import phylozzii.fdur
 import phylozzii.fdur._
 import phylozzii.fdur.util._
 
-class EEATest extends FunSuite with LDTreeUtilTrait{
+class BrancoTest extends FunSuite with LDTreeUtilTrait{
 
-  /*test("BLSer"){
-    core.Main.main(Array(
-      "phylozzii.pbls/src/main/scala/phylozzii.pbls",
-      "-nh", "src/test/resources/eea/blstest.nh",
-      "-p", "src/test/resources/eea/blstest.param",
-      "--target", "hg19",
-      "-cn", "src/test/resources/hg19.100way.nh",
-      "-o", "target",
-      "src/test/resources/eea/test3.maf"
+  test("main"){
+    Main.main(Array(
+      "-r",
+      "-t", "hg19",
+      "-o", "target/sample",
+      "branco/src/test/resources/test3.param",
+      "branco/src/test/resources/test3.nh",
+      "branco/src/test/resources/test3.maf"
     ))
-
-    val s1 = biformat.bigSource("target/test3.bls.wig.gz")
-    val s2 = biformat.bigSource("src/test/resources/eea/blsertest.wig.gz")
-    s1.close()
-    s2.close()
-  }*/
+  }
 
   test("confound"){
     val x = List(1,2,3)
@@ -42,9 +36,9 @@ class EEATest extends FunSuite with LDTreeUtilTrait{
   test("inside && outside"){
     val model = fdur.Model(Parameters(DenseVector(0.3,0.1,0.1,0.2,0.2,0.1),
       DenseVector(1.0,2.0,3.0,4.0)))
-    val tree = fdur.ModelTree.fromFile("branco/src/test/resources/test3.nh")
+    val tree = fdur.ModelTree.fromFile("branco/src/test/resources/testinout.nh")
     val cols:List[Array[Base]] = List(Array(Base.C),Array(Base.G),Array(Base.T))
-    val target = "hg18"
+    val target = "hg19"
     val ldtree = LDTree.inout(tree,model,cols,target)
     val fldtree = fdur.LDTree.inout(tree,model,cols)
     (ldtree.toList,fldtree.toList).zipped.foreach((e,f) => assert(e.alpha.head == f.alpha.head))

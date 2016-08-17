@@ -1,0 +1,6 @@
+##maf version=1 program=Bio++
+
+a score=156767
+s hg19.chr21            16091781 2 +  48129895 TAGGA
+s panTro4.chr21          1176546 2 -  32799110 TGNAA
+s gorGor3.chr21          2969961 2 +  35451371 TCNAA

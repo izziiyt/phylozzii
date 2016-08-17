@@ -5,7 +5,6 @@ import breeze.linalg.{DenseMatrix, DenseVector}
 import breeze.math.LogDouble
 import phylozzii.fdur._
 
-
 case class LDLeaf(name:String, t:Double, trans:ML, transD:ML, alpha:Array[VL], alphaD:Array[VL], beta:Array[VL],
                   betaD:Array[VL], model:Model) extends LDChild with PrimitiveLeaf{
   def toList:List[LDTree] = this :: Nil
@@ -15,8 +14,6 @@ case class LDLeaf(name:String, t:Double, trans:ML, transD:ML, alpha:Array[VL], a
   def blsa(lgl:Array[Double]) =
     innerBls(lgl, alphaD, beta, dltA)
 }
-
-
 
 object LDLeaf extends LDTreeUtilTrait{
   def inside(name:String, t:Double, column:Array[Base],m:Model,isTarget:Boolean,targetColumn: Array[Base]):LDLeaf = {
@@ -41,7 +38,7 @@ object LDLeaf extends LDTreeUtilTrait{
         tmp(x.toInt) = 1.0
         tmp.toLogDouble
       case _ =>
-        sys.error("mkAlpha error.")
+        throw new UnsupportedOperationException
     }
   }
 }

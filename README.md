@@ -2,7 +2,9 @@
 
 [![Build Status](https://travis-ci.com/izziiyt/pbls.svg?token=BJziRYquXYXWWkAa7YYz)](https://travis-ci.com/izziiyt/pbls)
 
-This repository contains three softwares' source codes.
+This repository contains three bioinformatics softwares' source codes.
+
+##Overview
 
 ###fdur
 
@@ -12,34 +14,52 @@ This software can run on single workstation also on [Spark](http://spark.apache.
 
 ###branco
 
-branco can assess evolutionary conservation using a phylogenetic tree, a phylogenetic model and a multiple alignment.
+branco can assess evolutionary conservation using a phylogenetic tree, a probablistic evolution model and a multiple alignment.
 branco outputs expected branch length scores (EBLS) of a target nucleotide. EBLS is statistical expectaion of how long the nucleotide 
 conserved without mutations in phylogenetic tree. 
 
 ###util
 
 This utility software consists with some supportive functions. With these functions, 
-you can execute deeper analisys or data reformatting to branco outputs.
+you can execute deeper analisys or data reformatting to branco's outputs.
 
 ##Install & Build
 
+###requirement
+
+####jdk
+This program is checked running on [oracle jdk](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)1.8.0_45 or later.
+Other jdks are not checked.
+
+####sbt_0.13 or later
+[sbt](http://www.scala-sbt.org/index.html) is a build tool for scala.
+Installing takes you very long time because of resolving dependency.
+These depended libraries are cached in your $HOME/.sbt or $HOME/.ivy2 and used next time.
+
+###command
+
 put later commands on your terminal
 
-```
+```bash
 git clone https://github.com/izziiyt/phylozzii
 cd phylozzii
 chmod u+x sbt
 ./sbt +assembly
 ```
 
-after that, jar file are build at these locations  
+after that, jar files are build at these locations  
 
-phylozzii/branco/target/scala-2.11/branco-[version].jar  
-phylozzii/fdur/target/scala-2.11/fdur-[version].jar  
-phylozzii/util/target/scala-2.11/util-[version].jar  
+* phylozzii/branco/target/scala-2.11/branco-[version].jar  
+* phylozzii/fdur/target/scala-2.11/fdur-[version].jar  
+* phylozzii/util/target/scala-2.11/util-[version].jar  
 
 ##Usage
 
-see wiki
+see [wiki](https://github.com/izziiyt/pbls/wiki)
 
+##LICENSE
 
+##Contatct
+
+Yuto Ichikawa : ichikaway{at}cb.k.u-tokyo.ac.jp  
+Hisanori Kiryu : kiryu-h{at}k.u-tokyo.ac.jp

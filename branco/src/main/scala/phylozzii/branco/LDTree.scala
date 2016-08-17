@@ -135,9 +135,7 @@ object LDTree extends LDTreeUtilTrait {
     */
   def bls(tr:ModelRoot, model:Model, columns:List[Array[Base]], target:String): (Array[Double], Array[Double]) = {
     val root = inout(tr, model, columns, target)
-    val regbls = tr.branches.sum
-    val regblsa = tr.anclen(target)
-    (root.bls.map(_ / regbls), root.blsa.map(_ / regblsa))
+    (root.bls, root.blsa)
   }
 
 }
