@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.com/izziiyt/pbls.svg?token=BJziRYquXYXWWkAa7YYz)](https://travis-ci.com/izziiyt/phylozzii)
 
-[Scaladoc](http://izziiyt.github.io/api/phylozzii)
+[Scaladoc](http://izziiyt.github.io/scaladoc/phylozzii/2.11)
 
 This repository contains three bioinformatics softwares' source codes.
 
