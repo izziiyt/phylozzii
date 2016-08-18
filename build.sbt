@@ -76,7 +76,7 @@ lazy val root = project.in(file(".")).settings(commonSettings: _*).
   settings(
     name := "phylozzii",
     autoAPIMappings := true,
-    apiURL := Some(url("https://github.com/izziiyt/izziiyt.github.io/scaladoc/phylozzii/2.11/")),
+    apiURL := Some(url("https://izziiyt.github.io/scaladoc/phylozzii/2.11/")),
     unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(biutil)
   ).
   aggregate(fdur, branco, util)
