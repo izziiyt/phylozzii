@@ -1,4 +1,6 @@
-import sbt.Keys._
+//import sbt.Keys._
+//import sbt._
+import UnidocKeys._
 
 lazy val commonSettings = Seq(
   organization := "izziiyt",
@@ -60,18 +62,29 @@ lazy val commonSettings = Seq(
     "-deprecation",
     "-language:reflectiveCalls",
     "-language:implicitConversions"
-  ),
-
-  target in Compile in doc := baseDirectory.value.getParentFile / "../izziiyt.github.io/api/phylozzii/"
+  )
+  //target in Compile in doc := baseDirectory.value.getParentFile / "../izziiyt.github.io/api/"
+  /*apiMappings += (
+    (classDirectory in biutil).
+      ->
+      url("https://github.com/izziiyt/izziiyt.github.io/scaladoc/biutil/api/")
+    )*/
 )
 
 lazy val root = project.in(file(".")).settings(commonSettings: _*).
-  dependsOn(biutil).
-  aggregate(fdur, branco, core)
+  settings(unidocSettings: _*).
+  settings(
+    name := "phylozzii",
+    autoAPIMappings := true,
+    apiURL := Some(url("https://github.com/izziiyt/izziiyt.github.io/scaladoc/phylozzii/api/")),
+    unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(biutil)
+  ).
+  aggregate(fdur, branco, util)
 
-lazy val biutil = uri("git://github.com/izziiyt/biutil.git#master")
+lazy val biutil = RootProject(uri("git://github.com/izziiyt/biutil.git#master"))
 
 lazy val fdur = project.in(file("fdur")).settings(commonSettings: _*).
+
   settings(
     name := "fdur",
     mainClass in assembly := Some("phylozzii.fdur.Main")
@@ -96,10 +109,11 @@ lazy val branco = project.in(file("branco")).settings(commonSettings: _*).
   settings(
     name := "branco",
     mainClass in assembly := Some("phylozzii.branco.Main")
+
   ).
   dependsOn(biutil, fdur)
 
-lazy val core = project.in(file("util")).settings(commonSettings: _*).
+lazy val util = project.in(file("util")).settings(commonSettings: _*).
   settings(
     name := "util"
   ).

@@ -1,6 +1,6 @@
 #Phylozzii
 
-[![Build Status](https://travis-ci.com/izziiyt/pbls.svg?token=BJziRYquXYXWWkAa7YYz)](https://travis-ci.com/izziiyt/pbls)
+[![Build Status](https://travis-ci.com/izziiyt/pbls.svg?token=BJziRYquXYXWWkAa7YYz)](https://travis-ci.com/izziiyt/phylozzii)
 
 [Scaladoc](http://izziiyt.github.io/api/phylozzii)
 
@@ -8,13 +8,13 @@ This repository contains three bioinformatics softwares' source codes.
 
 ##Overview
 
-###fdur
+###[fdur](http://izziiyt.github.io/api/phylozzii/phylozzii/fdur)
 
 This software is Scala version of [fdur-algorithm](http://www.ncrna.org/software/fdur/) implementations. 
 If your data is not so large, you should use the above c++ version implementation alternatively.
 This software can run on single workstation also on [Spark](http://spark.apache.org/) clusters.
 
-###branco
+###[branco](http://izziiyt.github.io/api/phylozzii/phylozzii/branco)
 
 branco can assess evolutionary conservation using a phylogenetic tree, a probablistic evolution model and a multiple alignment.
 branco outputs expected branch length scores (EBLS) of a target nucleotide. EBLS is statistical expectaion of how long the nucleotide 
@@ -60,6 +60,8 @@ after that, jar files are build at these locations
 see [wiki](https://github.com/izziiyt/pbls/wiki)
 
 ##LICENSE
+
+Under the MIT License, see LICENSE.txt
 
 ##Contatct
 
