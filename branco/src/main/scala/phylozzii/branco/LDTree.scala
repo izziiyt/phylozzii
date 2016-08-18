@@ -21,7 +21,7 @@ sealed trait LDTree extends PrimitiveTree{
   def beta: Array[VL]
   /** diagonal-outside variable*/
   def betaD: Array[VL]
-  /** trans(i,j) is mutation probability j to i in time [[phylozzii.fdur.PrimitiveTree.t]]*/
+  /** trans(i,j) is mutation probability j to i in time t*/
   def trans: ML
   /** diagonal matrix of [[trans]]*/
   def transD: ML
@@ -37,7 +37,7 @@ sealed trait LDTree extends PrimitiveTree{
     require(alpha.nonEmpty)
     alphaD.map(a => transD.t * a)
   }
-  /** tree-form to [[List]] form*/
+  /** changes to List form*/
   def toList: List[LDTree]
 }
 

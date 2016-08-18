@@ -1,6 +1,6 @@
 package phylozzii.fdur
 
-import java.io.File
+import java.io.{File, PrintWriter}
 
 import alignment.Base
 import biformat.MafIterator
@@ -19,8 +19,14 @@ object Optimizer extends {
     val cols = readMaf(its)
     val param = Parameters.fromFile(pf)
     val (optbrnch, optparam, _, _) = ldem(im, tree, cols, param)
-    SGEFdur.writeLine(tree.changeBranches(optbrnch).toString, onh,false)
-    SGEFdur.writeLine(optparam.toString, opf, false)
+
+    val nhw = new PrintWriter(onh)
+    nhw.println(tree.changeBranches(optbrnch).toString, onh)
+    nhw.close()
+
+    val pw = new PrintWriter(opf)
+    pw.println(optparam.toString, opf)
+    pw.close()
   }
 
   protected def emLike(itemax: Int, treex: ModelRoot, colsx: GenSeq[List[Array[Base]]], paramx: Parameters,

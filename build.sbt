@@ -60,8 +60,9 @@ lazy val commonSettings = Seq(
     "-deprecation",
     "-language:reflectiveCalls",
     "-language:implicitConversions"
-  )
+  ),
 
+  target in Compile in doc := baseDirectory.value.getParentFile / "../izziiyt.github.io/api/phylozzii/"
 )
 
 lazy val root = project.in(file(".")).settings(commonSettings: _*).
@@ -103,8 +104,4 @@ lazy val core = project.in(file("util")).settings(commonSettings: _*).
     name := "util"
   ).
   dependsOn(biutil, fdur)
-
-
-
-
 

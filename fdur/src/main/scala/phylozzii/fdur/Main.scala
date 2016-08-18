@@ -3,6 +3,8 @@ package phylozzii.fdur
 import scopt.OptionParser
 import java.io.File
 
+import biformat._
+
 object Main extends App{
 
   val parser = new OptionParser[Config]("branco") {
@@ -13,8 +15,11 @@ object Main extends App{
     opt[Int]('P', "partition") valueName "<Integer>" action {
       (x, c) => c.copy(partition = x)
     } text "data partition size"
+    reference
     opt[Unit]('s', "spark") required() action {
-      (_, c) => c.copy(spark = true)
+      (_, c) =>
+        reportError("'spark' is in maintainance")
+        sys.exit(1)
     } text "runs on spark"
     newick
     param
@@ -42,6 +47,18 @@ object Main extends App{
       param,
       intermidiate
       )
+
+    def log = opt[File]('l', "log")  optional() action {
+      (x, c) =>
+        if(!x.isDirectory)
+          x.mkdirs
+        c.copy(log = x)
+    } text "directory to put log file"
+
+    def reference = opt[String]('R', "reference") optional() action {
+      (x, c) =>
+        c.copy(reference = x)
+    } text "manually decide reference species, default is first species in .nh file"
 
     def intermidiate = arg[File]("intermidiate-product") abbr "ip" optional() action {
       (x, c) =>
@@ -92,13 +109,34 @@ object Main extends App{
   }
 
   parser.parse(args, Config()) match {
-    case Some(conf) => Unit
+    case Some(conf) =>
+      conf.mode match {
+        case "spark" =>
+        case "e" =>
+          SGEFdur.qestep(conf.maf, conf.nh, conf.param, conf.out)
+        case "m" =>
+          SGEFdur.qmstep(conf.ip, conf.param, conf.outparam, conf.nh, conf.outnh, conf.log, conf.const)
+        case _ =>
+          val tree = ModelTree.fromFile(conf.nh)
+          val param = Parameters.fromFile(conf.param)
+          val mafsource = bigSource(conf.maf)
+          val reference = if(conf.reference == "") tree.names.head else conf.reference
+
+          try {
+            val cols = readMaf(MafIterator.fromSource(mafsource, reference), 1000)
+            Optimizer.ldem(conf.maxit, tree, cols, param)
+          }
+          finally{
+            mafsource.close()
+          }
+      }
     case None => Unit
   }
 
 }
 
-case class Config(ip: File = new File("/tmp/fdurEstepIntermidiate"), out: File = new File("."), mode: String = "", maf: File = new File("."),
-                  nh: File = new File("."), param: File = new File("."), const: Boolean = false, spark: Boolean = false,
-                  maxit: Int = 200, partition: Int = 0, outnh: File = new File("."), outparam: File = new File("."))
+case class Config(ip: File = new File("/tmp/fdurEstepIntermidiate"), out: File = new File("."), mode: String = "",
+                  maf: File = new File("."), nh: File = new File("."), param: File = new File("."),
+                  const: Boolean = false, maxit: Int = 200, partition: Int = 0, outnh: File = new File("."),
+                  outparam: File = new File("."), reference: String = "", log: File = new File("/tmp/fdurLog"))
 

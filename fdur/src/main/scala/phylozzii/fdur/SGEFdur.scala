@@ -7,22 +7,34 @@ import breeze.linalg.{DenseMatrix, DenseVector}
 import scala.util.parsing.combinator.JavaTokenParsers
 
 object SGEFdur extends SuffStatParser{
-  def qmstep(dir: File, pf: File, nh: File, cbf: Boolean): Unit = {
-    val files = dir.listFiles.filter(_.getName.endsWith(".txt"))
+  def qmstep(intermidiates: File, pif: File, pof: File, nhi: File, nho: File, log: File, cbf: Boolean): Unit = {
+    val files = intermidiates.listFiles.filter(_.getName.endsWith(".txt"))
     val suffs = files.map(EMreader)
-    val param = Parameters.fromFile(pf)
-    val tree = ModelTree.fromFile(nh)
-    val (lgl, brnch, newparam) = Optimizer.mstep(suffs,Model(param), tree.branches)
-    writeLine(if(cbf) Parameters(newparam.Bvec,param.pi).toString else newparam.toString,pf, false)
-    writeLine(newparam.Bvec.toArray.mkString(",") + "," + newparam.pi.toArray.mkString(","), new File("tmp/param.log.txt"), true)
+    val param = Parameters.fromFile(pif)
+    val tree = ModelTree.fromFile(nhi)
+    val (lgl, brnch, newparam) = Optimizer.mstep(suffs, Model(param), tree.branches)
     val newtree = tree.changeBranches(brnch)
-    writeLine(newtree.toString,nh, false)
-    writeLine(newtree.branches.mkString(","), new File("tmp/tree.log.txt"), true)
-    writeLine(lgl.toString, new File("tmp/lgl.log.txt"), true)
+
+    //prints new parameters
+    if(!cbf) {
+      val pw = new PrintWriter(pof)
+      pw.println(if (cbf) Parameters(newparam.Bvec, param.pi).toString else newparam.toString, false)
+      pw.close()
+    }
+
+    //prints new newick tree
+    val nw = new PrintWriter(nho)
+    nw.println(newtree.toString, false)
+    nw.close()
+
+    //prints log
+    writeLog(newparam.Bvec.toArray.mkString(",") + "," + newparam.pi.toArray.mkString(","), new File(log.getAbsolutePath + "param.log.txt"))
+    writeLog(newtree.branches.mkString(","), new File(log.getAbsolutePath + "tree.log.txt"))
+    writeLog(lgl.toString, new File(log.getAbsolutePath + "lgl.log.txt"))
   }
 
-  def writeLine(x:String, f:File, b:Boolean): Unit = {
-    val y = new PrintWriter(new FileWriter(f,b))
+  def writeLog(x:String, f: File): Unit = {
+    val y = new PrintWriter(new FileWriter(f, true))
     y.println(x)
     y.close()
   }
