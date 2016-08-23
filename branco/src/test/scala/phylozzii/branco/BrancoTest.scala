@@ -1,6 +1,10 @@
 package phylozzii.branco
 
+import java.io.File
+
 import alignment.Base
+import biformat.WigIterator
+import biformat.WigIterator.WigUnit
 import breeze.linalg.{DenseMatrix, DenseVector, diag}
 import org.scalatest.FunSuite
 import phylozzii.fdur
@@ -18,6 +22,21 @@ class BrancoTest extends FunSuite with LDTreeUtilTrait{
       "branco/src/test/resources/test3.nh",
       "branco/src/test/resources/test3.maf"
     ))
+    diff(new File("target/sample.bls.wig"), new File("branco/src/test/resources/.sample.bls.wig"))
+    diff(new File("target/sample.blsa.wig"), new File("branco/src/test/resources/.sample.blsa.wig"))
+    def diff(f1: File, f2: File): Unit = {
+      val bls1 = WigIterator.fromSource(biformat.bigSource(f1)).toArray
+      val bls2 = WigIterator.fromSource(biformat.bigSource(f2)).toArray
+
+      (bls1 zip bls2).foreach{
+        case (x: WigUnit, y: WigUnit) =>
+          (x.toVariableStep.lines zip y.toVariableStep.lines).foreach{
+            case (p, q) =>
+              assert(p._1 == q._1 && doubleEqual(p._2, q._2))
+          }
+      }
+    }
+
   }
 
   test("confound"){

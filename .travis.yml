@@ -12,5 +12,5 @@ script: sbt +test
 notifications:
   emails:
     - ahne.ahne.ahne@gmail.com
-  on_success: always
-  on_failure: always
+  on_success: change
+  on_failure: change

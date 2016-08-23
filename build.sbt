@@ -1,7 +1,6 @@
 //import sbt.Keys._
 //import sbt._
 import UnidocKeys._
-
 lazy val commonSettings = Seq(
   organization := "izziiyt",
   version := "0.2.1",
@@ -41,10 +40,12 @@ lazy val commonSettings = Seq(
       }
     case _ => MergeStrategy.first
   },*/
-
+  logLevel in assembly := Level.Error,
   test in assembly := {},
-
-  assemblyJarName in assembly := name.value + "-" + version.value + ".jar",
+  //logLevel in sbtassembly.Plugin.AssemblyKeys.assembly := Level.Warn,
+  assemblyJarName in assembly := name.value + ".jar",
+  assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false),
+  //assemblyJarName in assembly := name.value + "-" + version.value + ".jar",
 
   //assemblyOutputPath in assembly := file("target/"),
 
@@ -87,21 +88,20 @@ lazy val fdur = project.in(file("fdur")).settings(commonSettings: _*).
 
   settings(
     name := "fdur",
-    mainClass in assembly := Some("phylozzii.fdur.Main")
-    /*libraryDependencies  ++= Seq(
-      //"org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4",
-      //"com.typesafe.scala-logging" % "scala-logging-slf4j_2.10" % "2.1.2",
-      //"ch.qos.logback" % "logback-classic" % "1.1.3",
+    mainClass in assembly := Some("phylozzii.fdur.Main"),
+    libraryDependencies  ++= Seq(
       ("org.apache.spark" % "spark-core_2.11" % "2.0.0").
         exclude("org.mortbay.jetty", "servlet-api").
-        exclude("com.google.guava","guava").
+        //exclude("com.google.guava","guava").
         exclude("org.apache.hadoop","hadoop-yarn-api").
-        exclude("commons-beanutils", "commons-beanutils-phylozzii.core").
+        exclude("commons-beanutils", "commons-beanutils").
         exclude("commons-collections", "commons-collections").
-        exclude("commons-logging", "commons-logging").
         exclude("org.spark-project.spark", "unused").
-        exclude("com.esotericsoftware.minlog", "minlog")
-    )*/
+        //exclude("com.esotericsoftware.minlog", "minlog").
+        exclude("org.slf4j", "jcl-over-slf4j").
+        exclude("org.glassfish.hk2.external", "aopalliance-repackaged").
+        exclude("org.glassfish.hk2.external", "javax.inject")
+    )
   ).
   dependsOn(biutil)
 

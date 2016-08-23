@@ -27,6 +27,26 @@ object Main extends App{
       } text "directory which contains .wig"
       )
 
+    cmd("4dcollect") action { (_, c) => c.copy(mode = "4d")} text
+    "collect 4d sites" children(
+      out,
+      opt[File]('t', "target") optional() action{
+        (x, c) => c.copy(optionalFiles = c.optionalFiles :+ x)
+      } text "file target species written for selecting 4d sites. 4d sites are defined as intersection of 4d sites of each species.",
+      opt[File]('c', "codon-table") optional() action{
+        (x, c) => c.copy(optionalFiles = c.optionalFiles :+ x)
+      } text "a file codon table written",
+      arg[File]("<File>") required() action {
+        (x, c) => c.copy(inputFiles = c.inputFiles :+ x)
+      } text "*exon.Nuc,fa",
+      arg[File]("<File>") required() action {
+        (x, c) => c.copy(inputFiles = c.inputFiles :+ x)
+      } text "*exon.AA.fa",
+        arg[File]("<File>") required() action {
+        (x, c) => c.copy(inputFiles = c.inputFiles :+ x)
+      } text ".nh"
+      )
+
     cmd("wighist") action { (_, c) => c.copy(mode = "wighist") } text
       "filters .wig file on the basis of information of .bed" children(
       opt[Unit]('e', "enhancer") optional() action {
@@ -195,6 +215,9 @@ object Main extends App{
         case "wighist" =>
           wighist(conf.inputFiles.head, conf.optionalFiles.headOption, conf.out, conf.sp)
 
+        case "4d" =>
+          FdFilter.fdfilter(conf.inputFiles.head, conf.inputFiles(1), conf.out, conf.inputFiles(2), conf.optionalFiles.head, conf.optionalFiles(1))
+
         case "goHist" =>
           def f(wigf: File) = {
             val gotsvf = conf.inputFiles(0)
@@ -209,10 +232,14 @@ object Main extends App{
           val branch_ = conf.inputFiles.head
           val name_ = conf.inputFiles(1)
           val x = ModelTree.fromFile(branch_).changeNames(ModelTree.fromFile(name_).names)
-          val out = conf.out
-          val p = new PrintWriter(out)
-          p.println(x.toString)
-          p.close()
+          if(conf.out.getName == "."){
+            println(x.toString)
+          }
+          else {
+            val p = new PrintWriter(conf.out)
+            p.println(x.toString)
+            p.close()
+          }
 
         case "wigfilter" =>
           def f(wf: File) {

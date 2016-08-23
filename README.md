@@ -8,16 +8,16 @@ This repository contains three bioinformatics softwares' source codes.
 
 ##Overview
 
-###fdur
+###Fdur
 
-This software is Scala version of [fdur-algorithm](http://www.ncrna.org/software/fdur/) implementations. 
+This software is Scala version of [Fdur-algorithm](http://www.ncrna.org/software/fdur/) implementations. 
 If your data is not so large, you should use the above c++ version implementation alternatively.
 This software can run on single workstation also on [Spark](http://spark.apache.org/) clusters.
 
-###branco
+###Branco
 
-branco can assess evolutionary conservation using a phylogenetic tree, a probablistic evolution model and a multiple alignment.
-branco outputs expected branch length scores (EBLS) of a target nucleotide. EBLS is statistical expectaion of how long the nucleotide 
+Branco can assess evolutionary conservation using a phylogenetic tree, a probablistic evolution model and a multiple alignment.
+Branco outputs expected branch length scores (EBLS) of a target nucleotide. EBLS is statistical expectaion of how long the nucleotide 
 conserved without mutations in phylogenetic tree. 
 
 ###util
@@ -45,15 +45,14 @@ put later commands on your terminal
 ```bash
 git clone https://github.com/izziiyt/phylozzii
 cd phylozzii
-chmod u+x sbt
-./sbt +assembly
+sbt assembly
 ```
 
 after that, jar files are build at these locations  
 
-* phylozzii/branco/target/scala-2.11/branco-[version].jar  
-* phylozzii/fdur/target/scala-2.11/fdur-[version].jar  
-* phylozzii/util/target/scala-2.11/util-[version].jar  
+* phylozzii/branco/target/scala-2.11/branco.jar  
+* phylozzii/fdur/target/scala-2.11/fdur.jar  
+* phylozzii/util/target/scala-2.11/util.jar  
 
 ##Usage
 
@@ -62,6 +61,12 @@ see [wiki](https://github.com/izziiyt/phylozzii/wiki)
 ##LICENSE
 
 Under the MIT License, see LICENSE.txt
+
+##Reference
+
+* [Hisanori Kiryu
+  Sufficient statistics and expectation maximization algorithms in phylogenetic tree models
+  Bioinformatics 27(17), 2346-2353 doi:10.1093/bioinformatics/btr420 (2011)](http://bioinformatics.oxfordjournals.org/content/27/17/2346.long)
 
 ##Contatct
 

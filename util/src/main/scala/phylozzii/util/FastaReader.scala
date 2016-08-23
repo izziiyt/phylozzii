@@ -1,9 +1,10 @@
-package phylozzii.fdur.util
+package phylozzii.util
 
 import java.io.{File, PrintWriter}
+
+import alignment.{AminoAcid, Base, Codon, CodonTable}
 import phylozzii.fdur.ModelTree
-import alignment.{AminoAcid, Base}
-import alignment.{Codon, CodonTable}
+
 import scala.collection.mutable.ArrayBuffer
 import scala.io.Source
 import scala.reflect.ClassTag
@@ -156,7 +157,7 @@ object FdFilter {
     postFilter(outf)
   }
 
-  def file2Indices(fi:File, nh:File): (Set[Int],Seq[String]) = {
+  def file2Indices(fi:File, nh:File): (Set[Int], Seq[String]) = {
     val sps = Source.fromFile(fi)
     try{
       val all = ModelTree.fromFile(nh).names

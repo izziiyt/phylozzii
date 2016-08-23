@@ -1,11 +1,11 @@
-/*package phylozzii.fdur
+package phylozzii.fdur
 
 import java.io._
 
 import biformat.MafIterator
 import breeze.linalg.{DenseMatrix, DenseVector}
 import org.apache.spark.util.AccumulatorV2
-import org.apache.spark.{AccumulatorParam, SparkConf, SparkContext}
+import org.apache.spark.{SparkConf, SparkContext}
 
 object SparkFdur {
 
@@ -31,13 +31,15 @@ object SparkFdur {
     //def readMaf(mf: String, per: Int = 512): Array[List[Array[Base]]] = {
     val source = biformat.bigSource(mf)
     val its = MafIterator.fromSource(source, "hg19")
-    val cols = sc.parallelize(readMaf(its))
+    val cols = sc.parallelize(readMaf(its)).persist()
 
     var i = 1
     var f = true
     var param = Parameters.fromFile(pf)
     var tree = ModelTree.fromFile(tf)
-   // val cols = sc.parallelize(readMaf(mf.getPath, onejobsize)).cache()
+    // val cols = sc.parallelize(readMaf(mf.getPath, onejobsize)).cache()
+    val accum = new FdurAccumulatorV2(tree.branches.length)
+    sc.register(accum, "FdurAccumulator")
 
     try {
       while (i <= maxit && f) {
@@ -48,8 +50,9 @@ object SparkFdur {
           val tmpm = model
           Eresult.fromTuple(Optimizer.ldestep(tmpt, c, tmpm))
         }
-        val accum = sc.accumulator(Eresult.zero(tree.branches.length))(FdurAccumulatorParam)
-        mapped.foreach(x => accum += x)
+        accum.reset()
+        //val accum = sc.accumulator(Eresult.zero(tree.branches.length))(FdurAccumulatorParam)
+        mapped.foreach(x => accum.add(x))
         val x = accum.value
         val n = x.n.toDouble
         val (newbr, newpr) = model.mstep(x.ns / n, x.Ns.map(_ / n), x.Fd.map(_ / n), tree.branches)
@@ -84,14 +87,22 @@ object SparkFdur {
   }
 }
 
-case class Eresult(ns: VD, Ns: List[MD], Fd: List[VD], lgl: Double, n: Long) {
+case class Eresult(ns: VD, Ns: List[MD], Fd: List[VD], var lgl: Double, var n: Long) {
   def +(that:Eresult) = Eresult(
     that.ns + ns,
-    (that.Ns,Ns).zipped.map(_ + _),
-    (that.Fd,Fd).zipped.map(_ + _),
+    (that.Ns, Ns).zipped.map(_ + _),
+    (that.Fd, Fd).zipped.map(_ + _),
     that.lgl + lgl,
     that.n + n)
   def size = Ns.size
+  def reset(): Unit = {
+    for(i <- 0 until ns.length) ns.update(i, 0.0)
+    Ns.foreach{
+      x => for(i <- 0 until x.rows; j <- 0 until x.cols) x.update(i, j, 0.0)
+    }
+    lgl = 0.0
+    n = 0
+  }
 }
 
 object Eresult{
@@ -105,10 +116,12 @@ object Eresult{
   }
 }
 
-object FdurAccumulator extends AccumulatorV2[Eresult, Eresult] {
-  def zero(initialValue: Eresult) : Eresult = Eresult.zero(initialValue.size)
-  val result_: Eresult = Eresult.zero()
-  def reset(): Eresult =
-  def addInPlace(v1: Eresult, v2: Eresult): Eresult = v1 + v2
+class FdurAccumulatorV2(n: Int) extends AccumulatorV2[Eresult, Eresult] {
+  val result: Eresult = Eresult.zero(n)
+  def reset(): Unit = result.reset()
+  def add(v: Eresult): Unit = result + v
+  def merge(other: AccumulatorV2[Eresult, Eresult]): Unit = {}
+  def copy(): AccumulatorV2[Eresult, Eresult] = this.copy()
+  def value: Eresult = result
+  def isZero: Boolean = result.n == 0
 }
-*/
